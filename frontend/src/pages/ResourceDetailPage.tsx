@@ -28,12 +28,12 @@ import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { formatDate, formatRelativeTime, cn } from '../lib/utils';
 
 const typeIcons: Record<ResourceType, React.ReactNode> = {
-  design: <Palette className="w-4 h-4" />,
-  ui: <Layout className="w-4 h-4" />,
-  development: <Code2 className="w-4 h-4" />,
-  data: <Database className="w-4 h-4" />,
-  learning: <BookOpen className="w-4 h-4" />,
-  personal: <FileText className="w-4 h-4" />,
+  design: <Palette className="w-3.5 h-3.5" />,
+  ui: <Layout className="w-3.5 h-3.5" />,
+  development: <Code2 className="w-3.5 h-3.5" />,
+  data: <Database className="w-3.5 h-3.5" />,
+  learning: <BookOpen className="w-3.5 h-3.5" />,
+  personal: <FileText className="w-3.5 h-3.5" />,
 };
 
 export const ResourceDetailPage: React.FC = () => {
@@ -140,37 +140,41 @@ export const ResourceDetailPage: React.FC = () => {
   if (isLoading || !resource) {
     return (
       <div className="py-20 text-center">
-        <div className="w-8 h-8 border-2 border-[#1e3a2f] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <span className="text-xs text-[#8a8277]">Loading resource details...</span>
+        <div className="w-6 h-6 border-2 border-zinc-950 dark:border-white border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <span className="text-xs text-[#8e8d8a]">Loading resource...</span>
       </div>
     );
   }
 
-  const projectList = (resource.projectIds || []).filter((p): p is Project => typeof p === 'object' && p !== null);
-  const collectionList = (resource.collectionIds || []).filter((c): c is Collection => typeof c === 'object' && c !== null);
+  const projectList = (resource.projectIds || []).filter(
+    (p): p is Project => typeof p === 'object' && p !== null
+  );
+  const collectionList = (resource.collectionIds || []).filter(
+    (c): c is Collection => typeof c === 'object' && c !== null
+  );
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Back button */}
+    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+      {/* Back button & Action Toolbar */}
       <div className="flex items-center justify-between">
         <Link
           to="/library"
-          className="inline-flex items-center gap-1.5 text-xs text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white transition-colors"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Back to Library</span>
+          <ChevronLeft className="w-3.5 h-3.5" />
+          <span>All Resources</span>
         </Link>
 
         {/* Action button toolbar */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {resource.url && (
             <Button
               variant="outline"
-              size="sm"
+              size="xs"
               onClick={handleRefreshMetadata}
               isLoading={isRefreshing}
-              leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
-              title="Refresh OpenGraph & GitHub metadata"
+              leftIcon={<RefreshCw className="w-3 h-3" />}
+              title="Refresh metadata"
             >
               Refresh
             </Button>
@@ -178,11 +182,11 @@ export const ResourceDetailPage: React.FC = () => {
 
           <Button
             variant="outline"
-            size="sm"
+            size="xs"
             onClick={handleToggleFavourite}
             leftIcon={
               <Star
-                className={cn('w-3.5 h-3.5', resource.isFavourite && 'text-amber-500 fill-amber-500')}
+                className={cn('w-3 h-3', resource.isFavourite && 'text-amber-500 fill-amber-500')}
               />
             }
           >
@@ -191,52 +195,52 @@ export const ResourceDetailPage: React.FC = () => {
 
           <Button
             variant="outline"
-            size="sm"
+            size="xs"
             onClick={handleArchive}
-            leftIcon={<Archive className="w-3.5 h-3.5" />}
+            leftIcon={<Archive className="w-3 h-3" />}
           >
             {resource.status === 'archived' ? 'Unarchive' : 'Archive'}
           </Button>
 
           <Button
             variant="outline"
-            size="sm"
+            size="xs"
             onClick={() => setIsEditOpen(true)}
-            leftIcon={<Edit2 className="w-3.5 h-3.5" />}
+            leftIcon={<Edit2 className="w-3 h-3" />}
           >
             Edit
           </Button>
 
           <Button
             variant="ghost"
-            size="sm"
+            size="xs"
             onClick={() => setIsDeleteOpen(true)}
-            className="text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30"
+            className="text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30"
             title="Move to trash"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-3.5 h-3.5" />
           </Button>
         </div>
       </div>
 
       {/* Main Resource Card */}
-      <div className="bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
+      <div className="bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] rounded-2xl p-6 sm:p-7 shadow-2xs space-y-6">
         {/* Header row */}
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2">
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               <Badge type={resource.type}>
                 {typeIcons[resource.type]}
                 {resource.type}
               </Badge>
               {resource.status === 'archived' && (
-                <span className="text-xs px-2 py-0.5 rounded bg-[#f5f2eb] dark:bg-[#201e1b] text-[#8a8277]">
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#f2f2ef] dark:bg-[#202026] text-[#8e8d8a]">
                   Archived
                 </span>
               )}
             </div>
 
-            <h1 className="text-2xl font-bold tracking-tight text-[#191715] dark:text-[#f5f2ec]">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#2b2a28] dark:text-[#f4f4f5]">
               {resource.title}
             </h1>
 
@@ -246,7 +250,7 @@ export const ResourceDetailPage: React.FC = () => {
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#1e3a2f] dark:text-[#86efac] hover:underline flex items-center gap-1 font-mono truncate max-w-md"
+                  className="text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1 font-mono truncate max-w-md"
                 >
                   <Globe className="w-3.5 h-3.5 shrink-0" />
                   <span className="truncate">{resource.url}</span>
@@ -257,10 +261,10 @@ export const ResourceDetailPage: React.FC = () => {
                     setCopiedUrl(true);
                     setTimeout(() => setCopiedUrl(false), 2000);
                   }}
-                  className="text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] p-1 rounded cursor-pointer"
+                  className="text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white p-1 rounded cursor-pointer"
                   title="Copy URL"
                 >
-                  {copiedUrl ? <Check className="w-3.5 h-3.5 text-[#1e3a2f] dark:text-[#86efac]" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
               </div>
             )}
@@ -271,17 +275,17 @@ export const ResourceDetailPage: React.FC = () => {
               href={resource.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1e3a2f] hover:bg-[#152b22] dark:bg-[#2d5d45] text-white text-xs font-medium shadow-xs shrink-0"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#191919] hover:bg-[#2e2e2e] dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-950 text-xs font-medium shadow-xs shrink-0 transition-colors"
             >
-              <span>Visit Website</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              <span>Visit Link</span>
+              <ExternalLink className="w-3 h-3" />
             </a>
           )}
         </div>
 
         {/* Thumbnail Preview Banner */}
         {resource.previewImage && (
-          <div className="w-full max-h-72 rounded-xl overflow-hidden border border-[#ded8cb] dark:border-[#2f2c27] bg-[#f5f2eb] dark:bg-[#201e1b]">
+          <div className="w-full max-h-72 rounded-xl overflow-hidden border border-[#ececeb] dark:border-[#26262c] bg-[#f7f7f5] dark:bg-[#202026]">
             <img
               src={resource.previewImage}
               alt=""
@@ -295,7 +299,7 @@ export const ResourceDetailPage: React.FC = () => {
 
         {/* Description */}
         {resource.description && (
-          <div className="text-sm text-[#57524b] dark:text-[#aba499] leading-relaxed">
+          <div className="text-xs sm:text-sm text-[#5f5e5b] dark:text-[#a1a1aa] leading-relaxed">
             {resource.description}
           </div>
         )}
@@ -303,23 +307,23 @@ export const ResourceDetailPage: React.FC = () => {
         {/* TYPE SPECIFIC METADATA PANEL */}
         {/* 1. Development / GitHub */}
         {resource.type === 'development' && resource.metadata && (
-          <div className="p-4 rounded-xl bg-[#faf8f5] dark:bg-[#141311] border border-[#ded8cb] dark:border-[#2f2c27] space-y-3">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a8277]">
-              Repository Information
+          <div className="p-4 rounded-xl bg-[#f7f7f5] dark:bg-[#131316] border border-[#ececeb] dark:border-[#26262c] space-y-2.5">
+            <div className="text-[10px] font-mono uppercase tracking-wider text-[#8e8d8a] dark:text-[#71717a]">
+              Repository Metrics
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               {resource.metadata.language && (
                 <div>
-                  <div className="text-[#8a8277] text-[11px]">Primary Language</div>
-                  <div className="font-semibold text-[#191715] dark:text-[#f5f2ec] mt-0.5">
+                  <div className="text-[#8e8d8a] dark:text-[#71717a] text-[10px]">Primary Language</div>
+                  <div className="font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5">
                     {resource.metadata.language}
                   </div>
                 </div>
               )}
               {resource.metadata.stars !== undefined && (
                 <div>
-                  <div className="text-[#8a8277] text-[11px]">Stars</div>
-                  <div className="font-semibold text-[#191715] dark:text-[#f5f2ec] mt-0.5 flex items-center gap-1">
+                  <div className="text-[#8e8d8a] dark:text-[#71717a] text-[10px]">Stars</div>
+                  <div className="font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5 flex items-center gap-1 font-mono">
                     <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                     {resource.metadata.stars.toLocaleString()}
                   </div>
@@ -327,17 +331,17 @@ export const ResourceDetailPage: React.FC = () => {
               )}
               {resource.metadata.forks !== undefined && (
                 <div>
-                  <div className="text-[#8a8277] text-[11px]">Forks</div>
-                  <div className="font-semibold text-[#191715] dark:text-[#f5f2ec] mt-0.5 flex items-center gap-1">
-                    <GitFork className="w-3.5 h-3.5 text-[#8a8277]" />
+                  <div className="text-[#8e8d8a] dark:text-[#71717a] text-[10px]">Forks</div>
+                  <div className="font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5 flex items-center gap-1 font-mono">
+                    <GitFork className="w-3.5 h-3.5 text-[#8e8d8a]" />
                     {resource.metadata.forks.toLocaleString()}
                   </div>
                 </div>
               )}
               {resource.metadata.license && (
                 <div>
-                  <div className="text-[#8a8277] text-[11px]">License</div>
-                  <div className="font-semibold text-[#191715] dark:text-[#f5f2ec] mt-0.5 font-mono">
+                  <div className="text-[#8e8d8a] dark:text-[#71717a] text-[10px]">License</div>
+                  <div className="font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5 font-mono">
                     {resource.metadata.license}
                   </div>
                 </div>
@@ -348,11 +352,12 @@ export const ResourceDetailPage: React.FC = () => {
 
         {/* 2. Design Palettes */}
         {resource.type === 'design' && resource.metadata?.colors && (
-          <div className="p-4 rounded-xl bg-[#faf8f5] dark:bg-[#141311] border border-[#ded8cb] dark:border-[#2f2c27] space-y-3">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a8277]">
-              Color Palette (Click to copy hex)
+          <div className="p-4 rounded-xl bg-[#f7f7f5] dark:bg-[#131316] border border-[#ececeb] dark:border-[#26262c] space-y-3">
+            <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#8e8d8a] dark:text-[#71717a]">
+              <span>Color Palette Swatches</span>
+              {copiedHex && <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Copied {copiedHex}</span>}
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
               {resource.metadata.colors.map((hex: string, i: number) => (
                 <button
                   key={i}
@@ -361,109 +366,95 @@ export const ResourceDetailPage: React.FC = () => {
                     setCopiedHex(hex);
                     setTimeout(() => setCopiedHex(null), 1500);
                   }}
-                  className="flex flex-col rounded-lg overflow-hidden border border-[#ded8cb] dark:border-[#2f2c27] group text-left transition-transform hover:scale-102 cursor-pointer"
+                  className="flex flex-col rounded-lg overflow-hidden border border-black/10 dark:border-white/10 hover:scale-102 transition-transform cursor-pointer"
                 >
-                  <div className="h-14 w-full flex items-center justify-center" style={{ backgroundColor: hex }}>
-                    {copiedHex === hex && (
-                      <span className="text-xs px-2 py-0.5 rounded bg-black/75 text-white font-mono">
-                        Copied!
-                      </span>
-                    )}
+                  <div className="h-12 w-full flex items-center justify-center" style={{ backgroundColor: hex }}>
+                    {copiedHex === hex && <Check className="w-4 h-4 text-white drop-shadow" />}
                   </div>
-                  <div className="p-2 bg-white dark:bg-[#191816] text-xs font-mono font-medium text-[#57524b] dark:text-[#aba499]">
+                  <span className="p-1.5 text-center font-mono text-[11px] bg-white dark:bg-[#18181c] text-[#2b2a28] dark:text-[#f4f4f5]">
                     {hex}
-                  </div>
+                  </span>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Personal Notes / Markdown */}
+        {/* 3. Notes / Code snippet */}
         {resource.notes && (
-          <div className="space-y-2">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a8277]">
-              Personal Notes & Code Snippets
+          <div className="space-y-1.5">
+            <div className="text-xs font-semibold uppercase tracking-wider text-[#8e8d8a] dark:text-[#71717a]">
+              Personal Notes & Code Snippet
             </div>
-            <div className="p-4 rounded-xl bg-[#faf8f5] dark:bg-[#141311] border border-[#ded8cb] dark:border-[#2f2c27] font-mono text-xs text-[#191715] dark:text-[#f5f2ec] whitespace-pre-wrap leading-relaxed">
+            <pre className="p-3.5 rounded-xl bg-[#f7f7f5] dark:bg-[#131316] border border-[#ececeb] dark:border-[#26262c] font-mono text-xs text-[#2b2a28] dark:text-[#f4f4f5] overflow-x-auto whitespace-pre-wrap leading-relaxed">
               {resource.notes}
-            </div>
+            </pre>
           </div>
         )}
 
-        {/* Tags */}
-        {resource.tags && resource.tags.length > 0 && (
-          <div className="space-y-2">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a8277]">Tags</div>
-            <div className="flex flex-wrap gap-1.5">
-              {resource.tags.map((tag) => (
-                <Link
-                  key={tag}
-                  to={`/library?tag=${tag}`}
-                  className="px-2.5 py-1 rounded-md text-xs font-mono bg-[#f5f2eb] dark:bg-[#201e1b] text-[#57524b] dark:text-[#aba499] border border-[#ded8cb] dark:border-[#2f2c27] hover:border-[#1e3a2f] transition-colors"
+        {/* 4. Tags, Collections, and Projects Footer */}
+        <div className="pt-4 border-t border-[#f1f1ef] dark:border-[#222227] space-y-3 text-xs">
+          {/* Tags */}
+          {resource.tags && resource.tags.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[#8e8d8a] dark:text-[#71717a] font-mono text-[11px]">Tags:</span>
+              {resource.tags.map((t, idx) => (
+                <span
+                  key={idx}
+                  className="px-2 py-0.5 rounded font-mono text-[11px] bg-[#f2f2ef] dark:bg-[#202026] text-[#5f5e5b] dark:text-[#a1a1aa] border border-[#e5e5e3] dark:border-[#2a2a34]"
                 >
-                  #{tag}
+                  #{t}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Collections */}
+          {collectionList.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[#8e8d8a] dark:text-[#71717a] font-mono text-[11px]">Collections:</span>
+              {collectionList.map((col) => (
+                <Link
+                  key={col._id}
+                  to={`/collections/${col._id}`}
+                  className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-sans text-[11px] border hover:opacity-80 transition-opacity"
+                  style={{
+                    backgroundColor: `${col.color}15`,
+                    borderColor: `${col.color}35`,
+                    color: col.color,
+                  }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col.color }} />
+                  <span>{col.name}</span>
                 </Link>
               ))}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Associated Collections & Projects */}
-        <div className="pt-4 border-t border-[#ede8df] dark:border-[#24221f] grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <div>
-            <span className="text-[#8a8277] block mb-1.5 font-medium">Collections</span>
-            {collectionList.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5">
-                {collectionList.map((col) => (
-                  <Link
-                    key={col._id}
-                    to={`/collections/${col._id}`}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-xs font-mono"
-                    style={{
-                      backgroundColor: `${col.color}10`,
-                      borderColor: `${col.color}30`,
-                      color: col.color,
-                    }}
-                  >
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: col.color }} />
-                    <span>{col.name}</span>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <span className="text-[#8a8277]">Not assigned to any collection</span>
-            )}
-          </div>
+          {/* Projects */}
+          {projectList.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[#8e8d8a] dark:text-[#71717a] font-mono text-[11px]">Projects:</span>
+              {projectList.map((proj) => (
+                <Link
+                  key={proj._id}
+                  to={`/projects/${proj._id}`}
+                  className="px-2 py-0.5 rounded text-[11px] bg-[#f2f2ef] dark:bg-[#202026] text-[#5f5e5b] dark:text-[#a1a1aa] border border-[#e5e5e3] dark:border-[#2a2a34] hover:text-[#2b2a28] dark:hover:text-white transition-colors"
+                >
+                  📁 {proj.name}
+                </Link>
+              ))}
+            </div>
+          )}
 
-          <div>
-            <span className="text-[#8a8277] block mb-1.5 font-medium">Projects</span>
-            {projectList.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5">
-                {projectList.map((proj) => (
-                  <Link
-                    key={proj._id}
-                    to={`/projects/${proj._id}`}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#f5f2eb] dark:bg-[#201e1b] border border-[#ded8cb] dark:border-[#2f2c27] text-[#57524b] dark:text-[#aba499]"
-                  >
-                    📁 {proj.name}
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <span className="text-[#8a8277]">Not assigned to any project</span>
-            )}
+          <div className="flex items-center justify-between text-[11px] font-mono text-[#8e8d8a] dark:text-[#71717a] pt-2 border-t border-[#f1f1ef] dark:border-[#222227]">
+            <span>Added {formatDate(resource.createdAt)}</span>
+            <span>Last updated {formatRelativeTime(resource.updatedAt)}</span>
           </div>
-        </div>
-
-        {/* Timestamps */}
-        <div className="pt-4 border-t border-[#ede8df] dark:border-[#24221f] flex items-center justify-between text-[11px] font-mono text-[#8a8277]">
-          <span>Added on {formatDate(resource.createdAt)}</span>
-          <span>Last updated {formatRelativeTime(resource.updatedAt)}</span>
         </div>
       </div>
 
-      {/* Edit Modal */}
+      {/* Edit modal */}
       <EditResourceModal
         isOpen={isEditOpen}
         resource={resource}
@@ -473,9 +464,12 @@ export const ResourceDetailPage: React.FC = () => {
         onSuccess={() => fetchResource()}
       />
 
-      {/* Delete confirmation */}
+      {/* Delete modal */}
       <DeleteConfirmModal
         isOpen={isDeleteOpen}
+        title="Move Resource to Trash?"
+        message={`Are you sure you want to move "${resource.title}" to trash? You can restore it anytime within 30 days.`}
+        confirmText="Move to Trash"
         onCancel={() => setIsDeleteOpen(false)}
         onConfirm={handleDelete}
         isLoading={isDeleting}

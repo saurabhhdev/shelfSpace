@@ -74,27 +74,30 @@ export const TrashPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-6xl mx-auto pb-12">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-red-600 dark:text-red-400">
-            RECYCLE BIN
-          </span>
-          <h1 className="text-2xl font-bold tracking-tight text-[#191715] dark:text-[#f5f2ec] mt-0.5">
-            Trash
+          <div className="flex items-center gap-2 text-xs text-[#8e8d8a] dark:text-[#71717a] font-mono">
+            <span>Trash</span>
+            <span>•</span>
+            <span>{trashedResources.length} items</span>
+          </div>
+          <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5">
+            Recycle Bin
           </h1>
-          <p className="text-xs text-[#57524b] dark:text-[#aba499] mt-1">
-            Items moved to trash can be restored or permanently removed.
+          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1">
+            Items moved to trash can be restored anytime within the 30-day grace period.
           </p>
         </div>
 
         {trashedResources.length > 0 && (
           <Button
             variant="danger"
-            size="sm"
+            size="xs"
+            pill
             onClick={() => setIsEmptyTrashOpen(true)}
-            leftIcon={<Trash2 className="w-4 h-4" />}
+            leftIcon={<Trash2 className="w-3.5 h-3.5" />}
           >
             Empty Trash
           </Button>
@@ -102,10 +105,10 @@ export const TrashPage: React.FC = () => {
       </div>
 
       {/* 30-Day Retention Notice Banner */}
-      <div className="p-4 rounded-xl bg-[#fef7ee] dark:bg-[#2e2316] border border-[#fbe4c7] dark:border-[#4a361e] flex items-start gap-3">
-        <AlertTriangle className="w-4 h-4 text-[#b45309] dark:text-[#fcd34d] shrink-0 mt-0.5" />
-        <div className="text-xs text-[#78350f] dark:text-[#fde68a] leading-relaxed">
-          <span className="font-semibold block mb-0.5">30-Day Auto Retention Policy</span>
+      <div className="p-3.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/40 flex items-start gap-3">
+        <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+        <div className="text-xs text-amber-900 dark:text-amber-300 leading-relaxed">
+          <span className="font-semibold block mb-0.5">30-Day Auto Purge Policy</span>
           Resources residing in trash are permanently purged after 30 days. You can restore them to
           your active library anytime before the period expires.
         </div>
@@ -117,7 +120,7 @@ export const TrashPage: React.FC = () => {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-16 rounded-xl bg-[#f5f2eb] dark:bg-[#201e1b] animate-pulse border border-[#ded8cb] dark:border-[#2f2c27]"
+              className="h-16 rounded-xl bg-[#f7f7f5] dark:bg-[#18181c] animate-pulse border border-[#ececeb] dark:border-[#26262c]"
             />
           ))}
         </div>
@@ -126,11 +129,11 @@ export const TrashPage: React.FC = () => {
           {trashedResources.map((item) => (
             <div
               key={item._id}
-              className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] hover:border-[#1e3a2f] transition-all"
+              className="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] hover:border-[#cfcfcc] dark:hover:border-[#383842] transition-all shadow-2xs"
             >
               <div className="min-w-0 flex-1 pr-4">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-sm text-[#191715] dark:text-[#f5f2ec] truncate">
+                  <span className="font-semibold text-xs sm:text-sm text-[#2b2a28] dark:text-[#f4f4f5] truncate">
                     {item.title}
                   </span>
                   <Badge type={item.type} size="sm">
@@ -138,7 +141,7 @@ export const TrashPage: React.FC = () => {
                   </Badge>
                 </div>
 
-                <div className="flex items-center gap-3 text-xs text-[#8a8277] mt-1 font-mono">
+                <div className="flex items-center gap-3 text-xs text-[#8e8d8a] dark:text-[#71717a] mt-1 font-mono">
                   {item.trashedAt && (
                     <span>Trashed {formatRelativeTime(item.trashedAt)}</span>
                   )}
@@ -161,21 +164,21 @@ export const TrashPage: React.FC = () => {
                   variant="ghost"
                   size="xs"
                   onClick={() => setDeletingItem(item)}
-                  className="text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30"
+                  className="text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30"
                 >
-                  Delete Forever
+                  Purge
                 </Button>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ded8cb] dark:border-[#2f2c27] p-8">
-          <Trash2 className="w-10 h-10 text-[#8a8277] mx-auto mb-3" />
-          <h3 className="text-base font-semibold text-[#191715] dark:text-[#f5f2ec] mb-1">
+        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ececeb] dark:border-[#26262c] p-8 bg-white dark:bg-[#18181c]">
+          <Trash2 className="w-8 h-8 text-[#8e8d8a] mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mb-1">
             Trash is empty
           </h3>
-          <p className="text-xs text-[#57524b] dark:text-[#aba499] max-w-sm mx-auto">
+          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] max-w-sm mx-auto">
             No items are currently in your trash. Deleted resources will appear here.
           </p>
         </div>
@@ -184,21 +187,21 @@ export const TrashPage: React.FC = () => {
       {/* Empty Trash Confirmation Modal */}
       <DeleteConfirmModal
         isOpen={isEmptyTrashOpen}
-        title="Empty Trash Completely?"
-        message="This will permanently delete all items in trash. This action cannot be undone."
-        confirmText="Empty All Trash"
+        title="Empty Entire Trash?"
+        message="This will permanently delete all resources currently in the trash bin. This action cannot be undone."
+        confirmText="Empty Trash Forever"
         isPermanent
         isLoading={isEmptying}
         onCancel={() => setIsEmptyTrashOpen(false)}
         onConfirm={handleEmptyTrash}
       />
 
-      {/* Delete Item Permanently Modal */}
+      {/* Single Item Permanent Delete Confirmation Modal */}
       <DeleteConfirmModal
         isOpen={deletingItem !== null}
-        title="Permanently Delete Item?"
-        message={`"${deletingItem?.title}" will be permanently removed. This action cannot be undone.`}
-        confirmText="Permanently Delete"
+        title="Permanently Delete Resource?"
+        message={`"${deletingItem?.title}" will be wiped permanently from the database. This cannot be recovered.`}
+        confirmText="Purge Forever"
         isPermanent
         isLoading={isDeletingPermanent}
         onCancel={() => setDeletingItem(null)}

@@ -16,13 +16,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={inputId} className="text-xs font-medium text-[#45403a] dark:text-[#aba499]">
+          <label htmlFor={inputId} className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-3 text-[#8a8277] pointer-events-none flex items-center">
+            <div className="absolute left-3 text-zinc-400 dark:text-zinc-500 pointer-events-none flex items-center">
               {leftIcon}
             </div>
           )}
@@ -30,26 +30,26 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={cn(
-              'w-full h-9 rounded-lg px-3 text-sm bg-white dark:bg-[#191816] text-[#191715] dark:text-[#f5f2ec]',
-              'border border-[#ded8cb] dark:border-[#2f2c27] transition-all',
-              'placeholder:text-[#8a8277] dark:placeholder:text-[#787268]',
-              'focus:outline-none focus:ring-2 focus:ring-[#1e3a2f]/20 focus:border-[#1e3a2f] dark:focus:border-[#4ade80]',
-              'disabled:bg-[#f5f2eb] dark:disabled:bg-[#22201d] disabled:opacity-60',
+              'w-full h-9 rounded-lg px-3 text-sm bg-white dark:bg-[#18181c] text-zinc-900 dark:text-zinc-100',
+              'border border-zinc-200 dark:border-zinc-800 transition-all duration-150',
+              'placeholder:text-zinc-400 dark:placeholder:text-zinc-600',
+              'focus:outline-none focus:ring-2 focus:ring-zinc-950/10 dark:focus:ring-white/15 focus:border-zinc-400 dark:focus:border-zinc-600',
+              'disabled:bg-zinc-50 dark:disabled:bg-zinc-900 disabled:opacity-60',
               leftIcon && 'pl-9',
               rightIcon && 'pr-9',
-              error && 'border-red-500 focus:border-red-500 focus:ring-red-500/20',
+              error && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/15',
               className
             )}
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 text-[#8a8277] flex items-center">
+            <div className="absolute right-3 text-zinc-400 dark:text-zinc-500 flex items-center">
               {rightIcon}
             </div>
           )}
         </div>
-        {error && <span className="text-xs text-red-600 dark:text-red-400 font-medium">{error}</span>}
-        {hint && !error && <span className="text-xs text-[#8a8277]">{hint}</span>}
+        {error && <span className="text-xs text-rose-600 dark:text-rose-400 font-medium">{error}</span>}
+        {hint && !error && <span className="text-xs text-zinc-400 dark:text-zinc-500">{hint}</span>}
       </div>
     );
   }

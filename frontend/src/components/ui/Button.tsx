@@ -4,40 +4,64 @@ import { cn } from '../../lib/utils';
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'subtle';
   size?: 'xs' | 'sm' | 'md' | 'lg';
+  pill?: boolean;
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', isLoading = false, leftIcon, rightIcon, children, disabled, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-150 select-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] cursor-pointer';
+  (
+    {
+      className,
+      variant = 'primary',
+      size = 'md',
+      pill = false,
+      isLoading = false,
+      leftIcon,
+      rightIcon,
+      children,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
+    const baseStyles =
+      'inline-flex items-center justify-center font-medium transition-all duration-150 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] cursor-pointer';
+
+    const roundedStyle = pill ? 'rounded-full' : 'rounded-lg';
 
     const variants = {
-      primary: 'bg-[#1e3a2f] hover:bg-[#152b22] text-[#f5f2ec] dark:bg-[#2d5d45] dark:hover:bg-[#387356] border border-[#142820] dark:border-[#3d7d5d]/40 shadow-xs focus-visible:ring-[#1e3a2f]',
-      secondary: 'bg-[#f5f2eb] hover:bg-[#eae5dc] text-[#191715] dark:bg-[#22201d] dark:hover:bg-[#2a2723] dark:text-[#f5f2ec] border border-[#e2dcd0] dark:border-[#2f2c27] shadow-xs',
-      outline: 'bg-transparent hover:bg-[#f5f2eb] dark:hover:bg-[#22201d] text-[#191715] dark:text-[#f5f2ec] border border-[#ded8cb] dark:border-[#2f2c27]',
-      ghost: 'bg-transparent hover:bg-[#f5f2eb] dark:hover:bg-[#22201d] text-[#57524b] dark:text-[#aba499] hover:text-[#191715] dark:hover:text-[#f5f2ec]',
-      danger: 'bg-red-700 hover:bg-red-800 text-white shadow-xs focus-visible:ring-red-500 border border-red-800',
-      subtle: 'bg-[#edf4f0] hover:bg-[#e2ece6] text-[#1e3a2f] dark:bg-[#1e3a2f]/30 dark:hover:bg-[#1e3a2f]/45 dark:text-[#6ee7b7] border border-[#c4dad0] dark:border-[#2e6349]/50',
+      primary:
+        'bg-[#191919] hover:bg-[#2a2a2a] text-white dark:bg-white dark:hover:bg-zinc-200 dark:text-zinc-950 border border-transparent shadow-xs focus-visible:ring-zinc-950 dark:focus-visible:ring-white',
+      secondary:
+        'bg-[#f7f7f5] hover:bg-[#eeeeea] text-[#2b2a28] dark:bg-[#1a1a1e] dark:hover:bg-[#242429] dark:text-[#f4f4f5] border border-[#e5e5e3] dark:border-[#2c2c34] shadow-xs',
+      outline:
+        'bg-transparent hover:bg-[#f7f7f5] dark:hover:bg-[#1a1a1e] text-[#2b2a28] dark:text-[#f4f4f5] border border-[#e5e5e3] dark:border-[#2c2c34]',
+      ghost:
+        'bg-transparent hover:bg-[#f2f2ef] dark:hover:bg-[#1a1a1e] text-[#5f5e5b] dark:text-[#a1a1aa] hover:text-[#2b2a28] dark:hover:text-white',
+      danger:
+        'bg-rose-600 hover:bg-rose-700 text-white shadow-xs focus-visible:ring-rose-500 border border-rose-700',
+      subtle:
+        'bg-emerald-50 hover:bg-emerald-100/80 text-emerald-800 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60',
     };
 
     const sizes = {
       xs: 'text-xs px-2.5 py-1 gap-1.5 h-7',
       sm: 'text-xs px-3 py-1.5 gap-1.5 h-8',
-      md: 'text-sm px-4 py-2 gap-2 h-9',
-      lg: 'text-base px-5 py-2.5 gap-2.5 h-10.5',
+      md: 'text-sm px-3.5 py-2 gap-2 h-9',
+      lg: 'text-sm px-5 py-2.5 gap-2.5 h-10',
     };
 
     return (
       <button
         ref={ref}
         disabled={disabled || isLoading}
-        className={cn(baseStyles, variants[variant], sizes[size], className)}
+        className={cn(baseStyles, roundedStyle, variants[variant], sizes[size], className)}
         {...props}
       >
         {isLoading ? (
-          <svg className="animate-spin -ml-0.5 mr-2 h-4 w-4 text-current" fill="none" viewBox="0 0 24 24">
+          <svg className="animate-spin -ml-0.5 mr-2 h-3.5 w-3.5 text-current" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
           </svg>

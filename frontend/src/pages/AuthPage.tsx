@@ -63,55 +63,55 @@ export const AuthPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#faf8f5] dark:bg-[#121110] text-[#191715] dark:text-[#f5f2ec] transition-colors duration-200">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#fbfbfa] dark:bg-[#0d0d0f] text-[#2b2a28] dark:text-[#f4f4f5] transition-colors duration-150">
       {/* Return to Landing Page */}
-      <div className="w-full max-w-md mb-4 flex items-center justify-between">
+      <div className="w-full max-w-sm mb-4 flex items-center justify-between">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Shelfspace</span>
         </Link>
       </div>
 
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-sm">
         {/* Brand header */}
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-10 h-10 rounded-xl bg-[#1e3a2f] dark:bg-[#2d5d45] text-[#f5f2ec] font-bold flex items-center justify-center text-base shadow-xs border border-[#142820] dark:border-[#3d7d5d]/40 mb-3">
+          <div className="w-9 h-9 rounded-xl bg-[#191919] dark:bg-white text-white dark:text-zinc-950 font-bold flex items-center justify-center text-sm shadow-xs mb-3">
             S
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-[#191715] dark:text-[#f5f2ec]">
+          <h1 className="text-xl font-bold tracking-tight text-[#2b2a28] dark:text-[#f4f4f5]">
             {isLogin ? 'Sign in to Shelfspace' : 'Create your workspace'}
           </h1>
-          <p className="text-xs text-[#8a8277] mt-1">
+          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1">
             {isLogin
               ? 'Access your private developer resource library'
-              : 'Keep, organize, and reuse your developer discoveries'}
+              : 'Collect, organize, and reuse your developer tools and ideas'}
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] rounded-2xl shadow-sm p-6 sm:p-8">
+        <div className="bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] rounded-2xl shadow-2xs p-6 sm:p-7">
           {forgotPasswordOpen ? (
             <div>
-              <h2 className="text-base font-semibold mb-1">Reset Password</h2>
-              <p className="text-xs text-[#8a8277] mb-5">
+              <h2 className="text-sm font-semibold mb-1">Reset Password</h2>
+              <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mb-5">
                 Enter your account email to receive a password recovery token.
               </p>
 
               {resetSent ? (
                 <div className="text-center py-4">
-                  <CheckCircle2 className="w-10 h-10 text-[#1e3a2f] dark:text-[#86efac] mx-auto mb-2.5" />
-                  <p className="text-sm font-medium text-[#191715] dark:text-[#f5f2ec]">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
+                  <p className="text-xs font-medium text-[#2b2a28] dark:text-[#f4f4f5]">
                     Reset link generated
                   </p>
-                  <p className="text-xs text-[#8a8277] mt-1 mb-5">
+                  <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1 mb-5">
                     If an account exists with this email, the token has been processed.
                   </p>
                   <Button
                     variant="outline"
-                    className="w-full"
+                    className="w-full text-xs"
                     onClick={() => {
                       setForgotPasswordOpen(false);
                       setResetSent(false);
@@ -123,7 +123,7 @@ export const AuthPage: React.FC = () => {
               ) : (
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   {errorMessage && (
-                    <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-xs text-red-700 dark:text-red-400">
+                    <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 text-xs text-rose-700 dark:text-rose-400">
                       {errorMessage}
                     </div>
                   )}
@@ -138,14 +138,14 @@ export const AuthPage: React.FC = () => {
                     placeholder="developer@domain.com"
                   />
 
-                  <Button type="submit" className="w-full" isLoading={isLoading}>
+                  <Button type="submit" variant="primary" pill className="w-full text-xs" isLoading={isLoading}>
                     Send Reset Token
                   </Button>
 
                   <button
                     type="button"
                     onClick={() => setForgotPasswordOpen(false)}
-                    className="w-full text-center text-xs text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] mt-2 cursor-pointer"
+                    className="w-full text-center text-xs text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white mt-2 cursor-pointer"
                   >
                     Cancel and return
                   </button>
@@ -155,7 +155,7 @@ export const AuthPage: React.FC = () => {
           ) : (
             <div>
               {/* Tab Selector */}
-              <div className="flex rounded-lg bg-[#f5f2eb] dark:bg-[#201e1b] p-1 mb-5">
+              <div className="flex rounded-lg bg-[#f0f0ee] dark:bg-[#202026] p-1 mb-5 border border-[#e5e5e3] dark:border-[#2a2a34]">
                 <button
                   type="button"
                   onClick={() => {
@@ -165,8 +165,8 @@ export const AuthPage: React.FC = () => {
                   className={cn(
                     'flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer',
                     isLogin
-                      ? 'bg-white dark:bg-[#191816] text-[#191715] dark:text-[#f5f2ec] shadow-xs'
-                      : 'text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec]'
+                      ? 'bg-white dark:bg-[#2a2a34] text-[#191919] dark:text-white shadow-xs font-semibold'
+                      : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
                   )}
                 >
                   Log In
@@ -180,8 +180,8 @@ export const AuthPage: React.FC = () => {
                   className={cn(
                     'flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer',
                     !isLogin
-                      ? 'bg-white dark:bg-[#191816] text-[#191715] dark:text-[#f5f2ec] shadow-xs'
-                      : 'text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec]'
+                      ? 'bg-white dark:bg-[#2a2a34] text-[#191919] dark:text-white shadow-xs font-semibold'
+                      : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
                   )}
                 >
                   Create Account
@@ -189,7 +189,7 @@ export const AuthPage: React.FC = () => {
               </div>
 
               {errorMessage && (
-                <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-xs text-red-700 dark:text-red-400">
+                <div className="mb-4 p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 text-xs text-rose-700 dark:text-rose-400">
                   {errorMessage}
                 </div>
               )}
@@ -198,12 +198,12 @@ export const AuthPage: React.FC = () => {
                 {!isLogin && (
                   <div>
                     <Input
-                      label="Full Name"
+                      label="Your Name"
                       type="text"
-                      placeholder="Linus Torvalds"
+                      placeholder="Alex Rivera"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      required={!isLogin}
+                      required
                       leftIcon={<UserIcon className="w-4 h-4" />}
                     />
                   </div>
@@ -213,7 +213,7 @@ export const AuthPage: React.FC = () => {
                   <Input
                     label="Email Address"
                     type="email"
-                    placeholder="developer@domain.com"
+                    placeholder="developer@shelfspace.dev"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -222,66 +222,61 @@ export const AuthPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <Input
-                    label="Password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    leftIcon={<Lock className="w-4 h-4" />}
-                    rightIcon={
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                      Password
+                    </label>
+                    {isLogin && (
                       <button
                         type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] cursor-pointer"
-                        title={showPassword ? 'Hide password' : 'Show password'}
+                        onClick={() => {
+                          setForgotPasswordOpen(true);
+                          setErrorMessage('');
+                        }}
+                        className="text-[11px] text-[#787774] dark:text-[#a1a1aa] hover:text-[#2b2a28] dark:hover:text-white cursor-pointer"
                       >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        Forgot password?
                       </button>
-                    }
-                    hint={
-                      !isLogin
-                        ? 'Min 8 chars, at least one uppercase letter and number'
-                        : undefined
-                    }
-                  />
-                </div>
-
-                {isLogin && (
-                  <div className="flex justify-end pt-0.5">
+                    )}
+                  </div>
+                  <div className="relative flex items-center">
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      leftIcon={<Lock className="w-4 h-4" />}
+                    />
                     <button
                       type="button"
-                      onClick={() => {
-                        setForgotPasswordOpen(true);
-                        setErrorMessage('');
-                      }}
-                      className="text-xs text-[#1e3a2f] dark:text-[#86efac] hover:underline cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white p-1 cursor-pointer"
+                      title={showPassword ? 'Hide password' : 'Show password'}
                     >
-                      Forgot password?
+                      {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     </button>
                   </div>
-                )}
+                </div>
 
                 <Button
                   type="submit"
-                  className="w-full mt-2"
+                  variant="primary"
+                  pill
+                  className="w-full text-xs h-9 mt-2"
                   isLoading={isLoading}
-                  rightIcon={<ArrowRight className="w-4 h-4" />}
+                  rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
                 >
-                  {isLogin ? 'Sign In to Workspace' : 'Create Free Workspace'}
+                  {isLogin ? 'Sign In to Workspace' : 'Get Started Free'}
                 </Button>
               </form>
+
+              {/* Demo Hint */}
+              <div className="mt-4 pt-3 border-t border-[#ececeb] dark:border-[#26262c] text-center text-[11px] text-[#8e8d8a] font-mono">
+                Demo access: <span className="text-[#2b2a28] dark:text-[#f4f4f5]">demo@shelfspace.dev</span> / <span className="text-[#2b2a28] dark:text-[#f4f4f5]">Password123!</span>
+              </div>
             </div>
           )}
-        </div>
-
-        {/* Demo Account Hint */}
-        <div className="mt-4 p-3 rounded-xl bg-[#f5f2eb]/70 dark:bg-[#191816]/70 border border-[#ded8cb] dark:border-[#2f2c27] text-center text-[11px] text-[#8a8277]">
-          <span>Demo Account: </span>
-          <span className="font-mono text-[#191715] dark:text-[#f5f2ec]">demo@shelfspace.dev</span>
-          <span> / </span>
-          <span className="font-mono text-[#191715] dark:text-[#f5f2ec]">Password123!</span>
         </div>
       </div>
     </div>

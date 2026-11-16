@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ChevronLeft, LayoutGrid, List } from 'lucide-react';
+import { ChevronLeft, LayoutGrid, List, Plus } from 'lucide-react';
 import { apiClient } from '../api/client';
 import type { Collection, Resource } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
@@ -64,81 +64,81 @@ export const CollectionDetailPage: React.FC = () => {
   if (isLoading || !collection) {
     return (
       <div className="py-20 text-center">
-        <div className="w-8 h-8 border-2 border-[#1e3a2f] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <span className="text-xs text-[#8a8277]">Loading collection...</span>
+        <div className="w-6 h-6 border-2 border-zinc-900 dark:border-white border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <span className="text-xs text-[#8e8d8a]">Loading collection...</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-6xl mx-auto pb-12">
       {/* Top Breadcrumb */}
       <div>
         <Link
           to="/collections"
-          className="inline-flex items-center gap-1.5 text-xs text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white transition-colors"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-3.5 h-3.5" />
           <span>All Collections</span>
         </Link>
       </div>
 
       {/* Collection Banner Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] shadow-xs">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] shadow-2xs">
+        <div className="flex items-center gap-3.5">
           <div
-            className="w-11 h-11 rounded-xl flex items-center justify-center border"
+            className="w-10 h-10 rounded-xl flex items-center justify-center border"
             style={{
-              backgroundColor: `${collection.color}12`,
-              borderColor: `${collection.color}30`,
+              backgroundColor: `${collection.color}15`,
+              borderColor: `${collection.color}35`,
               color: collection.color,
             }}
           >
             <span
-              className="w-4 h-4 rounded-full"
+              className="w-3.5 h-3.5 rounded-full"
               style={{ backgroundColor: collection.color }}
             />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-[#191715] dark:text-[#f5f2ec]">
+            <h1 className="text-lg font-semibold text-[#2b2a28] dark:text-[#f4f4f5]">
               {collection.name}
             </h1>
             {collection.description && (
-              <p className="text-xs text-[#57524b] dark:text-[#aba499] mt-0.5">
+              <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-0.5">
                 {collection.description}
               </p>
             )}
-            <div className="text-xs font-mono text-[#8a8277] mt-1">
-              {resources.length} saved {resources.length === 1 ? 'item' : 'items'}
+            <div className="text-[11px] font-mono text-[#8e8d8a] dark:text-[#71717a] mt-1">
+              {resources.length} {resources.length === 1 ? 'item' : 'items'}
             </div>
           </div>
         </div>
 
         {/* View mode toggle */}
-        <div className="flex rounded-lg border border-[#ded8cb] dark:border-[#2f2c27] bg-white dark:bg-[#191816] p-0.5 shrink-0">
+        <div className="flex rounded-lg border border-[#ececeb] dark:border-[#26262c] bg-white dark:bg-[#18181c] p-0.5 shrink-0 self-start sm:self-auto">
           <button
             onClick={() => setViewMode('grid')}
             className={cn(
-              'p-1.5 rounded-md transition-colors cursor-pointer',
+              'p-1.5 rounded transition-colors cursor-pointer',
               viewMode === 'grid'
-                ? 'bg-[#f5f2eb] dark:bg-[#22201d] text-[#191715] dark:text-[#f5f2ec]'
-                : 'text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec]'
+                ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white'
+                : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
             )}
             title="Grid view"
           >
-            <LayoutGrid className="w-4 h-4" />
+            <LayoutGrid className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setViewMode('list')}
             className={cn(
-              'p-1.5 rounded-md transition-colors cursor-pointer',
+              'p-1.5 rounded transition-colors cursor-pointer',
               viewMode === 'list'
-                ? 'bg-[#f5f2eb] dark:bg-[#22201d] text-[#191715] dark:text-[#f5f2ec]'
-                : 'text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec]'
+                ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white'
+                : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
             )}
             title="List view"
           >
-            <List className="w-4 h-4" />
+            <List className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
@@ -148,7 +148,7 @@ export const CollectionDetailPage: React.FC = () => {
         <div
           className={cn(
             viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5'
               : 'space-y-2'
           )}
         >
@@ -164,16 +164,16 @@ export const CollectionDetailPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ded8cb] dark:border-[#2f2c27] p-8">
-          <p className="text-xs text-[#8a8277] mb-4">
+        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ececeb] dark:border-[#26262c] p-8 bg-white dark:bg-[#18181c]">
+          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mb-4">
             No resources associated with this collection yet.
           </p>
           <Button
-            size="sm"
-            onClick={() => {
-              const addBtn = document.querySelector('header button:has(svg)') as HTMLButtonElement;
-              if (addBtn) addBtn.click();
-            }}
+            variant="primary"
+            pill
+            size="xs"
+            leftIcon={<Plus className="w-3.5 h-3.5" />}
+            onClick={() => window.dispatchEvent(new CustomEvent('open-quick-add'))}
           >
             Add Resource to Collection
           </Button>
@@ -181,14 +181,16 @@ export const CollectionDetailPage: React.FC = () => {
       )}
 
       {/* Edit modal */}
-      <EditResourceModal
-        isOpen={editingResource !== null}
-        resource={editingResource}
-        projects={[]}
-        collections={[collection]}
-        onClose={() => setEditingResource(null)}
-        onSuccess={() => fetchCollectionData()}
-      />
+      {editingResource && (
+        <EditResourceModal
+          isOpen={editingResource !== null}
+          resource={editingResource}
+          projects={[]}
+          collections={[collection]}
+          onClose={() => setEditingResource(null)}
+          onSuccess={() => fetchCollectionData()}
+        />
+      )}
 
       {/* Delete modal */}
       <DeleteConfirmModal

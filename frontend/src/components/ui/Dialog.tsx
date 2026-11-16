@@ -49,7 +49,7 @@ export const Dialog: React.FC<DialogProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#121110]/60 dark:bg-black/75 backdrop-blur-xs transition-opacity animate-in fade-in"
+        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in"
         onClick={onClose}
       />
 
@@ -58,14 +58,14 @@ export const Dialog: React.FC<DialogProps> = ({
         role="dialog"
         aria-modal="true"
         className={cn(
-          'relative w-full bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] rounded-xl shadow-2xl p-6 z-10',
+          'relative w-full bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] rounded-2xl shadow-2xl p-6 z-10',
           'animate-in zoom-in-95 duration-150',
           maxWidths[maxWidth]
         )}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] p-1 rounded-md transition-colors cursor-pointer"
+          className="absolute top-4 right-4 text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white p-1 rounded-md transition-colors cursor-pointer"
           aria-label="Close"
         >
           <X className="w-4 h-4" />
@@ -73,9 +73,9 @@ export const Dialog: React.FC<DialogProps> = ({
 
         {title && (
           <div className="mb-4">
-            <h3 className="text-lg font-semibold text-[#191715] dark:text-[#f5f2ec]">{title}</h3>
+            <h3 className="text-base font-semibold text-[#2b2a28] dark:text-[#f4f4f5]">{title}</h3>
             {description && (
-              <p className="text-xs text-[#57524b] dark:text-[#aba499] mt-1">{description}</p>
+              <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-0.5">{description}</p>
             )}
           </div>
         )}

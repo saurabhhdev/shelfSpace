@@ -16,7 +16,6 @@ import {
   User as UserIcon,
   CheckCircle2,
   Calendar,
-  KeyRound,
   Trash2,
 } from 'lucide-react';
 import { formatDate, formatRelativeTime, cn } from '../lib/utils';
@@ -93,134 +92,136 @@ export const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-12">
+    <div className="max-w-4xl mx-auto space-y-6 pb-12">
       {/* Header */}
-      <div className="border-b border-warm-border/60 dark:border-warm-border-dark/60 pb-6">
-        <span className="text-[11px] font-mono uppercase tracking-widest text-forest-700 dark:text-forest-400 font-semibold">
-          Preferences & Security
-        </span>
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-ink-primary dark:text-ink-dark-primary mt-1">
+      <div>
+        <div className="flex items-center gap-2 text-xs text-[#8e8d8a] dark:text-[#71717a] font-mono">
+          <span>Preferences</span>
+          <span>•</span>
+          <span>Security</span>
+        </div>
+        <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5">
           Account Settings
         </h1>
-        <p className="text-sm text-ink-muted dark:text-ink-dark-muted mt-1.5 leading-relaxed">
-          Manage your account profile, visual theme appearance, and active device sessions.
+        <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1">
+          Manage your account profile, visual appearance, active devices, and privacy.
         </p>
       </div>
 
       {/* Account Profile Card */}
-      <div className="p-6 sm:p-7 rounded-2xl bg-warm-surface dark:bg-warm-surface-dark border border-warm-border dark:border-warm-border-dark shadow-xs space-y-6">
+      <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] shadow-2xs space-y-5">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-forest-50 dark:bg-forest-950/60 border border-forest-200 dark:border-forest-900/60 flex items-center justify-center text-forest-700 dark:text-forest-400">
+          <div className="w-8 h-8 rounded-lg bg-[#f0f0ee] dark:bg-[#202026] text-[#2b2a28] dark:text-[#f4f4f5] flex items-center justify-center">
             <UserIcon className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-ink-primary dark:text-ink-dark-primary">
-              Profile Overview
+            <h2 className="text-sm font-semibold text-[#2b2a28] dark:text-[#f4f4f5]">
+              Profile Details
             </h2>
-            <p className="text-xs text-ink-muted dark:text-ink-dark-muted">
-              Primary identification details associated with your Shelfspace library.
+            <p className="text-xs text-[#787774] dark:text-[#a1a1aa]">
+              Primary credentials for your Shelfspace account.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <div className="p-4 rounded-xl bg-warm-bg dark:bg-warm-bg-dark border border-warm-border/80 dark:border-warm-border-dark/80">
-            <span className="text-[11px] font-medium text-ink-muted dark:text-ink-dark-muted block mb-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div className="p-3.5 rounded-xl bg-[#f7f7f5] dark:bg-[#131316] border border-[#ececeb] dark:border-[#26262c]">
+            <span className="text-[11px] font-medium text-[#8e8d8a] dark:text-[#71717a] block mb-1">
               Full Name
             </span>
-            <span className="font-semibold text-ink-primary dark:text-ink-dark-primary text-sm">
+            <span className="font-semibold text-[#2b2a28] dark:text-[#f4f4f5] text-sm">
               {user?.name || 'Shelfspace User'}
             </span>
           </div>
 
-          <div className="p-4 rounded-xl bg-warm-bg dark:bg-warm-bg-dark border border-warm-border/80 dark:border-warm-border-dark/80">
-            <span className="text-[11px] font-medium text-ink-muted dark:text-ink-dark-muted block mb-1">
+          <div className="p-3.5 rounded-xl bg-[#f7f7f5] dark:bg-[#131316] border border-[#ececeb] dark:border-[#26262c]">
+            <span className="text-[11px] font-medium text-[#8e8d8a] dark:text-[#71717a] block mb-1">
               Email Address
             </span>
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-ink-primary dark:text-ink-dark-primary text-sm truncate">
+              <span className="font-semibold text-[#2b2a28] dark:text-[#f4f4f5] text-sm truncate">
                 {user?.email}
               </span>
-              <span className="shrink-0 text-[10px] font-medium px-2 py-0.5 rounded-full bg-forest-100/70 dark:bg-forest-950/60 text-forest-800 dark:text-forest-300 border border-forest-300/60 dark:border-forest-800 flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3 text-forest-600 dark:text-forest-400" />
+              <span className="shrink-0 text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                 Active
               </span>
             </div>
           </div>
         </div>
 
-        <div className="text-[12px] text-ink-muted dark:text-ink-dark-muted pt-4 border-t border-warm-border/60 dark:border-warm-border-dark/60 flex items-center gap-2 font-mono">
-          <Calendar className="w-3.5 h-3.5 text-ink-muted" />
+        <div className="text-[11px] text-[#8e8d8a] dark:text-[#71717a] pt-3 border-t border-[#f1f1ef] dark:border-[#222227] flex items-center gap-1.5 font-mono">
+          <Calendar className="w-3.5 h-3.5" />
           <span>Member since {user?.createdAt ? formatDate(user.createdAt) : 'Recently'}</span>
         </div>
       </div>
 
       {/* Appearance Card */}
-      <div className="p-6 sm:p-7 rounded-2xl bg-warm-surface dark:bg-warm-surface-dark border border-warm-border dark:border-warm-border-dark shadow-xs space-y-5">
+      <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] shadow-2xs space-y-4">
         <div>
-          <h2 className="text-base font-semibold text-ink-primary dark:text-ink-dark-primary">
+          <h2 className="text-sm font-semibold text-[#2b2a28] dark:text-[#f4f4f5]">
             Interface Appearance
           </h2>
-          <p className="text-xs text-ink-muted dark:text-ink-dark-muted mt-1">
-            Choose between warm ivory light mode, deep charcoal dark mode, or system default.
+          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-0.5">
+            Choose light workspace, deep dark mode, or system default.
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 max-w-md">
+        <div className="grid grid-cols-3 gap-3 max-w-sm">
           <button
             onClick={() => setTheme('light')}
             className={cn(
-              'flex flex-col items-center gap-2.5 p-4 rounded-xl border text-xs font-medium transition-all cursor-pointer',
+              'flex flex-col items-center gap-2 p-3 rounded-xl border text-xs font-medium transition-all cursor-pointer',
               theme === 'light'
-                ? 'border-forest-700 bg-forest-50/60 text-forest-900 font-semibold shadow-xs'
-                : 'border-warm-border dark:border-warm-border-dark bg-warm-bg dark:bg-warm-bg-dark hover:border-ink-muted text-ink-primary dark:text-ink-dark-primary'
+                ? 'border-[#191919] bg-[#f0f0ee] text-[#191919] font-semibold shadow-2xs'
+                : 'border-[#ececeb] dark:border-[#26262c] bg-white dark:bg-[#131316] hover:border-[#cfcfcc] text-[#5f5e5b] dark:text-[#a1a1aa]'
             )}
           >
-            <Sun className="w-5 h-5 text-amber-600" />
+            <Sun className="w-4 h-4 text-amber-500" />
             <span>Light</span>
           </button>
 
           <button
             onClick={() => setTheme('dark')}
             className={cn(
-              'flex flex-col items-center gap-2.5 p-4 rounded-xl border text-xs font-medium transition-all cursor-pointer',
+              'flex flex-col items-center gap-2 p-3 rounded-xl border text-xs font-medium transition-all cursor-pointer',
               theme === 'dark'
-                ? 'border-forest-400 bg-forest-950/40 text-forest-300 font-semibold shadow-xs'
-                : 'border-warm-border dark:border-warm-border-dark bg-warm-bg dark:bg-warm-bg-dark hover:border-ink-muted text-ink-primary dark:text-ink-dark-primary'
+                ? 'border-white bg-[#22222a] text-white font-semibold shadow-2xs'
+                : 'border-[#ececeb] dark:border-[#26262c] bg-white dark:bg-[#131316] hover:border-[#cfcfcc] text-[#5f5e5b] dark:text-[#a1a1aa]'
             )}
           >
-            <Moon className="w-5 h-5 text-forest-400" />
+            <Moon className="w-4 h-4 text-amber-400" />
             <span>Dark</span>
           </button>
 
           <button
             onClick={() => setTheme('system')}
             className={cn(
-              'flex flex-col items-center gap-2.5 p-4 rounded-xl border text-xs font-medium transition-all cursor-pointer',
+              'flex flex-col items-center gap-2 p-3 rounded-xl border text-xs font-medium transition-all cursor-pointer',
               theme === 'system'
-                ? 'border-forest-700 dark:border-forest-400 bg-forest-50/60 dark:bg-forest-950/40 text-forest-900 dark:text-forest-300 font-semibold shadow-xs'
-                : 'border-warm-border dark:border-warm-border-dark bg-warm-bg dark:bg-warm-bg-dark hover:border-ink-muted text-ink-primary dark:text-ink-dark-primary'
+                ? 'border-[#191919] dark:border-white bg-[#f0f0ee] dark:bg-[#22222a] text-[#191919] dark:text-white font-semibold shadow-2xs'
+                : 'border-[#ececeb] dark:border-[#26262c] bg-white dark:bg-[#131316] hover:border-[#cfcfcc] text-[#5f5e5b] dark:text-[#a1a1aa]'
             )}
           >
-            <Laptop className="w-5 h-5 text-ink-muted" />
+            <Laptop className="w-4 h-4 text-[#8e8d8a]" />
             <span>System</span>
           </button>
         </div>
       </div>
 
       {/* Active Sessions Card */}
-      <div className="p-6 sm:p-7 rounded-2xl bg-warm-surface dark:bg-warm-surface-dark border border-warm-border dark:border-warm-border-dark shadow-xs space-y-5">
+      <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] shadow-2xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-forest-50 dark:bg-forest-950/60 border border-forest-200 dark:border-forest-900/60 flex items-center justify-center text-forest-700 dark:text-forest-400">
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-ink-primary dark:text-ink-dark-primary">
-                Active Sessions
+              <h2 className="text-sm font-semibold text-[#2b2a28] dark:text-[#f4f4f5]">
+                Active Device Sessions
               </h2>
-              <p className="text-xs text-ink-muted dark:text-ink-dark-muted">
-                Authenticated browsers and devices holding an active session.
+              <p className="text-xs text-[#787774] dark:text-[#a1a1aa]">
+                Authenticated browsers and devices holding access to your library.
               </p>
             </div>
           </div>
@@ -229,21 +230,22 @@ export const SettingsPage: React.FC = () => {
             <Button
               variant="outline"
               size="xs"
+              pill
               onClick={handleRevokeAllOtherSessions}
               isLoading={isRevokingAll}
               className="text-xs"
             >
-              Revoke Other Sessions
+              Revoke Other Devices
             </Button>
           )}
         </div>
 
         {isLoadingSessions ? (
-          <div className="py-8 text-center text-xs text-ink-muted dark:text-ink-dark-muted font-mono">
+          <div className="py-6 text-center text-xs text-[#8e8d8a] font-mono">
             Loading session security details...
           </div>
         ) : (
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             {sessions.map((sess) => {
               const isCurrent = sess._id === currentSessionId;
               const isMobile = /mobile|android|iphone/i.test(sess.userAgent);
@@ -251,24 +253,24 @@ export const SettingsPage: React.FC = () => {
               return (
                 <div
                   key={sess._id}
-                  className="flex items-center justify-between p-4 rounded-xl border border-warm-border/80 dark:border-warm-border-dark/80 bg-warm-bg/70 dark:bg-warm-bg-dark/60 text-xs transition-colors hover:border-forest-600/30"
+                  className="flex items-center justify-between p-3.5 rounded-xl border border-[#ececeb] dark:border-[#26262c] bg-[#fbfbfa] dark:bg-[#131316] text-xs transition-colors hover:border-[#cfcfcc]"
                 >
-                  <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="w-9 h-9 shrink-0 rounded-lg bg-warm-surface dark:bg-warm-surface-dark border border-warm-border dark:border-warm-border-dark flex items-center justify-center text-ink-primary dark:text-ink-dark-primary">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 shrink-0 rounded-lg bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] flex items-center justify-center text-[#2b2a28] dark:text-[#f4f4f5]">
                       {isMobile ? <Smartphone className="w-4 h-4" /> : <Laptop className="w-4 h-4" />}
                     </div>
 
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2 font-medium text-ink-primary dark:text-ink-dark-primary">
+                      <div className="flex items-center gap-2 font-medium text-[#2b2a28] dark:text-[#f4f4f5]">
                         <span className="truncate max-w-xs text-xs font-mono">{sess.userAgent}</span>
                         {isCurrent && (
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-forest-100 dark:bg-forest-950/70 text-forest-800 dark:text-forest-300 font-semibold border border-forest-300 dark:border-forest-800">
+                          <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200 dark:border-emerald-800">
                             Current Device
                           </span>
                         )}
                       </div>
 
-                      <div className="text-[11px] text-ink-muted dark:text-ink-dark-muted flex items-center gap-2 mt-1 font-mono">
+                      <div className="text-[11px] text-[#8e8d8a] dark:text-[#71717a] flex items-center gap-2 mt-0.5 font-mono">
                         <span>IP: {sess.ipAddress}</span>
                         <span>•</span>
                         <span>Active {formatRelativeTime(sess.lastActiveAt)}</span>
@@ -281,7 +283,7 @@ export const SettingsPage: React.FC = () => {
                       variant="ghost"
                       size="xs"
                       onClick={() => handleRevokeSession(sess._id)}
-                      className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 text-xs font-mono"
+                      className="text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-mono"
                     >
                       Revoke
                     </Button>
@@ -294,18 +296,18 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Danger Zone: Account Deletion */}
-      <div className="p-6 sm:p-7 rounded-2xl bg-red-50/40 dark:bg-red-950/15 border border-red-200/60 dark:border-red-900/40 shadow-xs space-y-4">
+      <div className="p-5 sm:p-6 rounded-2xl bg-rose-50/40 dark:bg-rose-950/15 border border-rose-200/60 dark:border-rose-900/40 shadow-2xs space-y-4">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/40 border border-red-200 dark:border-red-800/60 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900/40 border border-rose-200 dark:border-rose-800/60 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
             <AlertTriangle className="w-4 h-4" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-base font-semibold text-red-700 dark:text-red-400">
+            <h2 className="text-sm font-semibold text-rose-700 dark:text-rose-400">
               Danger Zone: Account Deletion
             </h2>
-            <p className="text-xs text-ink-muted dark:text-ink-dark-muted leading-relaxed">
+            <p className="text-xs text-[#787774] dark:text-[#a1a1aa] leading-relaxed">
               Deleting your account terminates all active sessions immediately. With the built-in{' '}
-              <strong className="text-ink-primary dark:text-ink-dark-primary font-semibold">30-day grace period</strong>,
+              <strong className="text-[#2b2a28] dark:text-[#f4f4f5] font-semibold">30-day grace period</strong>,
               you can recover your library anytime by signing back in within 30 days. After that period,
               all stored resources, projects, and collections will be wiped forever.
             </p>
@@ -315,7 +317,8 @@ export const SettingsPage: React.FC = () => {
         <div className="pt-2">
           <Button
             variant="danger"
-            size="sm"
+            size="xs"
+            pill
             onClick={() => setIsDeleteAccountOpen(true)}
             className="flex items-center gap-2 text-xs"
           >

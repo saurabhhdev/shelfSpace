@@ -17,25 +17,32 @@ export const Badge: React.FC<BadgeProps> = ({
   ...props
 }) => {
   const typeStyles: Record<ResourceType, string> = {
-    design: 'bg-[#faf0eb] dark:bg-[#2b1f1a] text-[#9c4221] dark:text-[#f09a7d] border-[#f0ded5] dark:border-[#422c24]',
-    ui: 'bg-[#edf4f0] dark:bg-[#1a2b22] text-[#1e3a2f] dark:text-[#86efac] border-[#cce1d6] dark:border-[#2d4d3c]',
-    development: 'bg-[#edf2f7] dark:bg-[#1d242e] text-[#2d3748] dark:text-[#90cdf4] border-[#d8e2ed] dark:border-[#2b394b]',
-    data: 'bg-[#fef7ee] dark:bg-[#2e2316] text-[#b45309] dark:text-[#fcd34d] border-[#fbe4c7] dark:border-[#4a361e]',
-    learning: 'bg-[#eff6ff] dark:bg-[#17253d] text-[#1d4ed8] dark:text-[#93c5fd] border-[#d4e4fc] dark:border-[#253959]',
-    personal: 'bg-[#f5f2eb] dark:bg-[#24221f] text-[#57524b] dark:text-[#d1cbc2] border-[#e2dcd0] dark:border-[#38342e]',
+    design:
+      'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200/80 dark:border-amber-800/60',
+    ui:
+      'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200/80 dark:border-emerald-800/60',
+    development:
+      'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200/80 dark:border-blue-800/60',
+    data:
+      'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-200/80 dark:border-purple-800/60',
+    learning:
+      'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border-indigo-200/80 dark:border-indigo-800/60',
+    personal:
+      'bg-zinc-100 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700/60',
   };
 
-  const defaultStyle = 'bg-[#f5f2eb] dark:bg-[#22201d] text-[#57524b] dark:text-[#aba499] border-[#e2dcd0] dark:border-[#2f2c27]';
+  const defaultStyle =
+    'bg-zinc-100 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700/60';
 
   const sizes = {
-    sm: 'text-[10px] px-2 py-0.5 font-medium leading-none',
+    sm: 'text-[10.5px] px-2 py-0.5 font-medium leading-none',
     md: 'text-xs px-2.5 py-1 font-medium leading-none',
   };
 
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 rounded-md border tracking-wider uppercase font-mono',
+        'inline-flex items-center gap-1 rounded-md border tracking-wide font-sans',
         type ? typeStyles[type] : defaultStyle,
         sizes[size],
         className
