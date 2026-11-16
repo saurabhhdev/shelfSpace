@@ -1,0 +1,33 @@
+import { Router } from 'express';
+import { ResourceController } from './resource.controller';
+import { requireAuth } from '../../middleware/auth';
+import { validateBody, validateQuery } from '../../middleware/validate';
+import {
+  createResourceSchema,
+  updateResourceSchema,
+  importResourceSchema,
+  listResourcesQuerySchema,
+} from './resource.validation';
+
+const router = Router();
+
+router.use(requireAuth);
+
+router.get('/', validateQuery(listResourcesQuerySchema), ResourceController.list);
+router.post('/', validateBody(createResourceSchema), ResourceController.create);
+router.post('/import', validateBody(importResourceSchema), ResourceController.import);
+
+router.get('/trash', ResourceController.listTrash);
+router.delete('/trash', ResourceController.emptyTrash);
+
+router.get('/:resourceId', ResourceController.getById);
+router.patch('/:resourceId', validateBody(updateResourceSchema), ResourceController.update);
+router.delete('/:resourceId', ResourceController.moveToTrash);
+router.delete('/:resourceId/permanent', ResourceController.deletePermanently);
+
+router.patch('/:resourceId/favourite', ResourceController.toggleFavourite);
+router.patch('/:resourceId/archive', ResourceController.archive);
+router.patch('/:resourceId/restore', ResourceController.restore);
+router.post('/:resourceId/refresh-metadata', ResourceController.refreshMetadata);
+
+export default router;

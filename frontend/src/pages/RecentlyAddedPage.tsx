@@ -1,0 +1,155 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { Clock, LayoutGrid, List } from 'lucide-react';
+import { apiClient } from '../api/client';
+import { Resource } from '../types';
+import { ResourceCard } from '../components/resources/ResourceCard';
+import { EditResourceModal } from '../components/resources/EditResourceModal';
+import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
+import { cn } from '../lib/utils';
+
+export const RecentlyAddedPage: React.FC = () => {
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  const [editingResource, setEditingResource] = useState<Resource | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const fetchRecent = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await apiClient.get('/resources', {
+        params: { sortBy: 'recent', limit: 30, status: 'active' },
+      });
+      if (res.data?.success) {
+        setResources(res.data.data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchRecent();
+  }, [fetchRecent]);
+
+  const handleToggleFavourite = async (id: string) => {
+    setResources((prev) =>
+      prev.map((r) => (r._id === id ? { ...r, isFavourite: !r.isFavourite } : r))
+    );
+    await apiClient.patch(`/resources/${id}/favourite`);
+  };
+
+  const handleDelete = async () => {
+    if (!deletingId) return;
+    try {
+      await apiClient.delete(`/resources/${deletingId}`);
+      setDeletingId(null);
+      fetchRecent();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+            Timeline
+          </span>
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mt-0.5">
+            Recently Added
+          </h1>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+            Chronological log of your most recent discoveries and entries.
+          </p>
+        </div>
+
+        <div className="flex rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-0.5">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={cn(
+              'p-1.5 rounded-md transition-colors',
+              viewMode === 'grid'
+                ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100'
+                : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+            )}
+            title="Grid view"
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setViewMode('list')}
+            className={cn(
+              'p-1.5 rounded-md transition-colors',
+              viewMode === 'list'
+                ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100'
+                : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+            )}
+            title="List view"
+          >
+            <List className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="h-44 rounded-xl bg-zinc-200/60 dark:bg-zinc-800/50 animate-pulse border border-zinc-200/50 dark:border-zinc-800/50"
+            />
+          ))}
+        </div>
+      ) : resources.length > 0 ? (
+        <div
+          className={cn(
+            viewMode === 'grid'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
+              : 'space-y-2'
+          )}
+        >
+          {resources.map((resource) => (
+            <ResourceCard
+              key={resource._id}
+              resource={resource}
+              viewMode={viewMode}
+              onToggleFavourite={handleToggleFavourite}
+              onDelete={(id) => setDeletingId(id)}
+              onEdit={(r) => setEditingResource(r)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="py-16 text-center rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 p-8">
+          <Clock className="w-10 h-10 text-zinc-400 mx-auto mb-3" />
+          <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+            No recent resources
+          </h3>
+          <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+            Resources you save will automatically appear here in chronological order.
+          </p>
+        </div>
+      )}
+
+      <EditResourceModal
+        isOpen={editingResource !== null}
+        resource={editingResource}
+        projects={[]}
+        collections={[]}
+        onClose={() => setEditingResource(null)}
+        onSuccess={() => fetchRecent()}
+      />
+
+      <DeleteConfirmModal
+        isOpen={deletingId !== null}
+        onCancel={() => setDeletingId(null)}
+        onConfirm={handleDelete}
+      />
+    </div>
+  );
+};
