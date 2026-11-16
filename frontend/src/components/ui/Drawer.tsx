@@ -47,28 +47,28 @@ export const Drawer: React.FC<DrawerProps> = ({
     <div className="fixed inset-0 z-50 flex justify-end">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in"
+        className="fixed inset-0 bg-[#121110]/60 dark:bg-black/75 backdrop-blur-xs transition-opacity animate-in fade-in"
         onClick={onClose}
       />
 
       {/* Drawer content */}
       <div
         className={cn(
-          'relative w-full h-full bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col z-10',
+          'relative w-full h-full bg-[#faf8f5] dark:bg-[#191816] border-l border-[#ded8cb] dark:border-[#2f2c27] shadow-2xl flex flex-col z-10',
           'animate-in slide-in-from-right duration-200',
           widths[width]
         )}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#ded8cb] dark:border-[#2f2c27] bg-white dark:bg-[#191816]">
           <div>
-            {title && <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">{title}</h2>}
+            {title && <h2 className="text-base font-semibold text-[#191715] dark:text-[#f5f2ec]">{title}</h2>}
             {description && (
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">{description}</p>
+              <p className="text-xs text-[#57524b] dark:text-[#aba499] mt-0.5">{description}</p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] p-1.5 rounded-lg hover:bg-[#f5f2eb] dark:hover:bg-[#22201d] transition-colors cursor-pointer"
             aria-label="Close drawer"
           >
             <X className="w-5 h-5" />

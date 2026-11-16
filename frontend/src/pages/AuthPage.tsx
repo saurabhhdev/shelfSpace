@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { Lock, Mail, User as UserIcon, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Lock, Mail, User as UserIcon, CheckCircle2, ArrowRight, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { apiClient } from '../api/client';
 import { cn } from '../lib/utils';
 
@@ -12,6 +12,7 @@ export const AuthPage: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
@@ -21,7 +22,7 @@ export const AuthPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = (location.state as any)?.from?.pathname || '/library';
+  const from = (location.state as any)?.from?.pathname || '/dashboard';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,37 +63,50 @@ export const AuthPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#faf8f5] dark:bg-[#121110] text-[#191715] dark:text-[#f5f2ec] transition-colors duration-200">
+      {/* Return to Landing Page */}
+      <div className="w-full max-w-md mb-4 flex items-center justify-between">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] transition-colors"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back to Shelfspace</span>
+        </Link>
+      </div>
+
       <div className="w-full max-w-md">
         {/* Brand header */}
-        <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center text-xl shadow-md border border-blue-500/30 mb-3">
+        <div className="flex flex-col items-center text-center mb-6">
+          <div className="w-10 h-10 rounded-xl bg-[#1e3a2f] dark:bg-[#2d5d45] text-[#f5f2ec] font-bold flex items-center justify-center text-base shadow-xs border border-[#142820] dark:border-[#3d7d5d]/40 mb-3">
             S
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            Shelfspace
+          <h1 className="text-xl font-bold tracking-tight text-[#191715] dark:text-[#f5f2ec]">
+            {isLogin ? 'Sign in to Shelfspace' : 'Create your workspace'}
           </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-            Personal Developer Resource Management Workspace
+          <p className="text-xs text-[#8a8277] mt-1">
+            {isLogin
+              ? 'Access your private developer resource library'
+              : 'Keep, organize, and reuse your developer discoveries'}
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl shadow-xl p-6 sm:p-8">
+        <div className="bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] rounded-2xl shadow-sm p-6 sm:p-8">
           {forgotPasswordOpen ? (
             <div>
-              <h2 className="text-lg font-semibold mb-2">Reset Password</h2>
-              <p className="text-xs text-zinc-500 mb-6">
+              <h2 className="text-base font-semibold mb-1">Reset Password</h2>
+              <p className="text-xs text-[#8a8277] mb-5">
                 Enter your account email to receive a password recovery token.
               </p>
 
               {resetSent ? (
-                <div className="text-center py-6">
-                  <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-3" />
-                  <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                    Reset token generated
+                <div className="text-center py-4">
+                  <CheckCircle2 className="w-10 h-10 text-[#1e3a2f] dark:text-[#86efac] mx-auto mb-2.5" />
+                  <p className="text-sm font-medium text-[#191715] dark:text-[#f5f2ec]">
+                    Reset link generated
                   </p>
-                  <p className="text-xs text-zinc-500 mt-1 mb-6">
+                  <p className="text-xs text-[#8a8277] mt-1 mb-5">
                     If an account exists with this email, the token has been processed.
                   </p>
                   <Button
@@ -103,13 +117,13 @@ export const AuthPage: React.FC = () => {
                       setResetSent(false);
                     }}
                   >
-                    Back to Login
+                    Back to Sign In
                   </Button>
                 </div>
               ) : (
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   {errorMessage && (
-                    <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 text-xs text-red-600 dark:text-red-400">
+                    <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-xs text-red-700 dark:text-red-400">
                       {errorMessage}
                     </div>
                   )}
@@ -121,7 +135,7 @@ export const AuthPage: React.FC = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     leftIcon={<Mail className="w-4 h-4" />}
-                    placeholder="you@domain.com"
+                    placeholder="developer@domain.com"
                   />
 
                   <Button type="submit" className="w-full" isLoading={isLoading}>
@@ -131,17 +145,17 @@ export const AuthPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setForgotPasswordOpen(false)}
-                    className="w-full text-center text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 mt-2"
+                    className="w-full text-center text-xs text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] mt-2 cursor-pointer"
                   >
-                    Cancel and return to login
+                    Cancel and return
                   </button>
                 </form>
               )}
             </div>
           ) : (
             <div>
-              {/* Tabs */}
-              <div className="flex rounded-lg bg-zinc-100 dark:bg-zinc-800 p-1 mb-6">
+              {/* Tab Selector */}
+              <div className="flex rounded-lg bg-[#f5f2eb] dark:bg-[#201e1b] p-1 mb-5">
                 <button
                   type="button"
                   onClick={() => {
@@ -149,10 +163,10 @@ export const AuthPage: React.FC = () => {
                     setErrorMessage('');
                   }}
                   className={cn(
-                    'flex-1 py-1.5 text-xs font-medium rounded-md transition-all',
+                    'flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer',
                     isLogin
-                      ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 shadow-xs'
-                      : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'
+                      ? 'bg-white dark:bg-[#191816] text-[#191715] dark:text-[#f5f2ec] shadow-xs'
+                      : 'text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec]'
                   )}
                 >
                   Log In
@@ -164,10 +178,10 @@ export const AuthPage: React.FC = () => {
                     setErrorMessage('');
                   }}
                   className={cn(
-                    'flex-1 py-1.5 text-xs font-medium rounded-md transition-all',
+                    'flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer',
                     !isLogin
-                      ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 shadow-xs'
-                      : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'
+                      ? 'bg-white dark:bg-[#191816] text-[#191715] dark:text-[#f5f2ec] shadow-xs'
+                      : 'text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec]'
                   )}
                 >
                   Create Account
@@ -175,18 +189,18 @@ export const AuthPage: React.FC = () => {
               </div>
 
               {errorMessage && (
-                <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 text-xs text-red-600 dark:text-red-400">
+                <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-xs text-red-700 dark:text-red-400">
                   {errorMessage}
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3.5">
                 {!isLogin && (
                   <div>
                     <Input
                       label="Full Name"
                       type="text"
-                      placeholder="Ada Lovelace"
+                      placeholder="Linus Torvalds"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required={!isLogin}
@@ -210,12 +224,22 @@ export const AuthPage: React.FC = () => {
                 <div>
                   <Input
                     label="Password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     leftIcon={<Lock className="w-4 h-4" />}
+                    rightIcon={
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] cursor-pointer"
+                        title={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    }
                     hint={
                       !isLogin
                         ? 'Min 8 chars, at least one uppercase letter and number'
@@ -225,14 +249,14 @@ export const AuthPage: React.FC = () => {
                 </div>
 
                 {isLogin && (
-                  <div className="flex justify-end">
+                  <div className="flex justify-end pt-0.5">
                     <button
                       type="button"
                       onClick={() => {
                         setForgotPasswordOpen(true);
                         setErrorMessage('');
                       }}
-                      className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                      className="text-xs text-[#1e3a2f] dark:text-[#86efac] hover:underline cursor-pointer"
                     >
                       Forgot password?
                     </button>
@@ -252,10 +276,13 @@ export const AuthPage: React.FC = () => {
           )}
         </div>
 
-        {/* Footer */}
-        <p className="text-center text-xs text-zinc-400 mt-6">
-          Shelfspace — Keep, organize, and reuse developer resources.
-        </p>
+        {/* Demo Account Hint */}
+        <div className="mt-4 p-3 rounded-xl bg-[#f5f2eb]/70 dark:bg-[#191816]/70 border border-[#ded8cb] dark:border-[#2f2c27] text-center text-[11px] text-[#8a8277]">
+          <span>Demo Account: </span>
+          <span className="font-mono text-[#191715] dark:text-[#f5f2ec]">demo@shelfspace.dev</span>
+          <span> / </span>
+          <span className="font-mono text-[#191715] dark:text-[#f5f2ec]">Password123!</span>
+        </div>
       </div>
     </div>
   );

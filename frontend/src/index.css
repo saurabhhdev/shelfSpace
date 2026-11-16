@@ -2,52 +2,87 @@
 
 @layer base {
   :root {
-    --bg-page: #fafafa;
+    /* Warm Ivory & Ink Palette */
+    --bg-page: #faf8f5;
     --bg-surface: #ffffff;
-    --bg-elevated: #f4f4f5;
-    --bg-subtle: #f4f4f5;
-    --border-main: #e4e4e7;
-    --border-subtle: #f4f4f5;
-    --text-primary: #09090b;
-    --text-secondary: #52525b;
-    --text-muted: #71717a;
-    --accent: #2563eb;
-    --accent-hover: #1d4ed8;
-    --accent-subtle: #eff6ff;
-    --accent-border: #bfdbfe;
-    --ring: rgba(37, 99, 235, 0.35);
+    --bg-elevated: #f5f2eb;
+    --bg-subtle: #ede8df;
+    --border-main: #e6e0d5;
+    --border-subtle: #ede8df;
+    
+    /* Typography */
+    --text-primary: #191715;
+    --text-secondary: #57524b;
+    --text-muted: #8a8277;
+
+    /* Restrained Forest Green Accent */
+    --accent: #1e3a2f;
+    --accent-hover: #152b22;
+    --accent-subtle: #edf4f0;
+    --accent-border: #cadfd5;
+    --accent-text: #173428;
+    
+    /* Secondary Warm & Sage Tokens */
+    --sage-subtle: #f0f4f1;
+    --sage-border: #d2ded5;
+    --lime-subtle: #f4f8ee;
+    --lime-border: #dbe8cd;
+    --amber-warm: #b45309;
+    --amber-subtle: #fef3c7;
+    
+    --ring: rgba(30, 58, 47, 0.25);
     color-scheme: light;
   }
 
   html.dark {
-    --bg-page: #09090b;
-    --bg-surface: #121215;
-    --bg-elevated: #18181b;
-    --bg-subtle: #27272a;
-    --border-main: #27272a;
-    --border-subtle: #1f1f23;
-    --text-primary: #f4f4f5;
-    --text-secondary: #a1a1aa;
-    --text-muted: #71717a;
-    --accent: #3b82f6;
-    --accent-hover: #60a5fa;
-    --accent-subtle: rgba(59, 130, 246, 0.12);
-    --accent-border: rgba(59, 130, 246, 0.3);
-    --ring: rgba(59, 130, 246, 0.4);
+    /* Deep Charcoal / Ink Surfaces */
+    --bg-page: #121110;
+    --bg-surface: #191816;
+    --bg-elevated: #22201d;
+    --bg-subtle: #2b2825;
+    --border-main: #2b2824;
+    --border-subtle: #22201c;
+
+    /* Typography */
+    --text-primary: #f5f2ec;
+    --text-secondary: #aba499;
+    --text-muted: #787268;
+
+    /* Muted Forest / Sage Accent */
+    --accent: #2e6349;
+    --accent-hover: #3b7d5d;
+    --accent-subtle: rgba(46, 99, 73, 0.2);
+    --accent-border: rgba(62, 133, 98, 0.35);
+    --accent-text: #6ee7b7;
+
+    --sage-subtle: rgba(46, 99, 73, 0.15);
+    --sage-border: rgba(62, 133, 98, 0.3);
+    --lime-subtle: rgba(132, 204, 22, 0.12);
+    --lime-border: rgba(132, 204, 22, 0.25);
+    --amber-warm: #fbbf24;
+    --amber-subtle: rgba(245, 158, 11, 0.12);
+
+    --ring: rgba(110, 231, 183, 0.3);
     color-scheme: dark;
   }
 
   body {
     background-color: var(--bg-page);
     color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Geist", "Inter", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Geist", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
+    letter-spacing: -0.011em;
+  }
+
+  /* Editorial Headings */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.025em;
   }
 }
 
-/* Custom scrollbars */
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

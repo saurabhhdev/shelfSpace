@@ -19,7 +19,6 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   title = 'Delete Resource?',
   message = 'Are you sure you want to move this resource to trash? It will be kept for 30 days before permanent deletion.',
   confirmText = 'Move to Trash',
-  isPermanent = false,
   isLoading = false,
   onCancel,
   onConfirm,
@@ -27,15 +26,15 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   return (
     <Dialog isOpen={isOpen} onClose={onCancel} maxWidth="sm">
       <div className="flex flex-col items-center text-center">
-        <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center mb-4">
-          <AlertTriangle className="w-6 h-6" />
+        <div className="w-11 h-11 rounded-full bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50 flex items-center justify-center mb-3">
+          <AlertTriangle className="w-5 h-5" />
         </div>
 
-        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+        <h3 className="text-base font-semibold text-[#191715] dark:text-[#f5f2ec] mb-1">
           {title}
         </h3>
 
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-6 leading-relaxed">
+        <p className="text-xs text-[#57524b] dark:text-[#aba499] mb-5 leading-relaxed">
           {message}
         </p>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
-import { ResourceType } from '../../types';
+import type { ResourceType } from '../../types';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: 'default' | 'outline' | 'subtle';
@@ -10,22 +10,22 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 export const Badge: React.FC<BadgeProps> = ({
   className,
-  variant = 'default',
+  variant: _variant = 'default',
   type,
   size = 'md',
   children,
   ...props
 }) => {
   const typeStyles: Record<ResourceType, string> = {
-    design: 'bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400 border-fuchsia-500/20',
-    ui: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20',
-    development: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
-    data: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
-    learning: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20',
-    personal: 'bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border-zinc-500/20',
+    design: 'bg-[#faf0eb] dark:bg-[#2b1f1a] text-[#9c4221] dark:text-[#f09a7d] border-[#f0ded5] dark:border-[#422c24]',
+    ui: 'bg-[#edf4f0] dark:bg-[#1a2b22] text-[#1e3a2f] dark:text-[#86efac] border-[#cce1d6] dark:border-[#2d4d3c]',
+    development: 'bg-[#edf2f7] dark:bg-[#1d242e] text-[#2d3748] dark:text-[#90cdf4] border-[#d8e2ed] dark:border-[#2b394b]',
+    data: 'bg-[#fef7ee] dark:bg-[#2e2316] text-[#b45309] dark:text-[#fcd34d] border-[#fbe4c7] dark:border-[#4a361e]',
+    learning: 'bg-[#eff6ff] dark:bg-[#17253d] text-[#1d4ed8] dark:text-[#93c5fd] border-[#d4e4fc] dark:border-[#253959]',
+    personal: 'bg-[#f5f2eb] dark:bg-[#24221f] text-[#57524b] dark:text-[#d1cbc2] border-[#e2dcd0] dark:border-[#38342e]',
   };
 
-  const defaultStyle = 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700';
+  const defaultStyle = 'bg-[#f5f2eb] dark:bg-[#22201d] text-[#57524b] dark:text-[#aba499] border-[#e2dcd0] dark:border-[#2f2c27]';
 
   const sizes = {
     sm: 'text-[10px] px-2 py-0.5 font-medium leading-none',
@@ -35,7 +35,7 @@ export const Badge: React.FC<BadgeProps> = ({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 rounded-md border tracking-wide uppercase',
+        'inline-flex items-center gap-1 rounded-md border tracking-wider uppercase font-mono',
         type ? typeStyles[type] : defaultStyle,
         sizes[size],
         className

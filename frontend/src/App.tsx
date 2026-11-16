@@ -2,6 +2,8 @@ import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { AppLayout } from './components/layout/AppLayout';
+import { LandingPage } from './pages/LandingPage';
+import { DashboardPage } from './pages/DashboardPage';
 import { AuthPage } from './pages/AuthPage';
 import { LibraryPage } from './pages/LibraryPage';
 import { ResourceDetailPage } from './pages/ResourceDetailPage';
@@ -21,11 +23,13 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-        <div className="w-10 h-10 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center text-lg shadow-md mb-4 animate-pulse">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#faf8f5] dark:bg-[#121110] text-[#191715] dark:text-[#f5f2ec]">
+        <div className="w-10 h-10 rounded-xl bg-forest-900 dark:bg-forest-600 text-white font-serif font-bold flex items-center justify-center text-lg shadow-sm mb-4 animate-pulse">
           S
         </div>
-        <div className="text-xs font-medium text-zinc-400">Loading Shelfspace...</div>
+        <div className="text-xs font-mono tracking-wider text-ink-muted dark:text-ink-dark-muted">
+          Loading Shelfspace...
+        </div>
       </div>
     );
   }
@@ -37,7 +41,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
-// Public Route Guard (Redirects away from /login if already authenticated)
+// Public Route Guard (Redirects away from /login or /register if already authenticated)
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -46,7 +50,7 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/library" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
@@ -55,6 +59,9 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 export const App: React.FC = () => {
   return (
     <Routes>
+      {/* Public Marketing Landing Page at '/' */}
+      <Route path="/" element={<LandingPage />} />
+
       {/* Public Auth Routes */}
       <Route
         path="/login"
@@ -81,8 +88,7 @@ export const App: React.FC = () => {
           </ProtectedRoute>
         }
       >
-        <Route path="/" element={<Navigate to="/library" replace />} />
-        <Route path="/dashboard" element={<Navigate to="/library" replace />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/library" element={<LibraryPage />} />
         <Route path="/library/:resourceId" element={<ResourceDetailPage />} />
         <Route path="/projects" element={<ProjectsPage />} />
@@ -93,10 +99,9 @@ export const App: React.FC = () => {
         <Route path="/recently-added" element={<RecentlyAddedPage />} />
         <Route path="/trash" element={<TrashPage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="*" element={<Navigate to="/library" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Route>
     </Routes>
   );
 };
-
 export default App;

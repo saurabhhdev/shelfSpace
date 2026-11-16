@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ExternalLink, ArrowRight, BookOpen, Code2, Database, Layout, Palette, FileText, X } from 'lucide-react';
+import { Search, ArrowRight, BookOpen, Code2, Database, Layout, Palette, FileText, X } from 'lucide-react';
 import { apiClient } from '../../api/client';
-import { Resource, ResourceType } from '../../types';
+import type { Resource, ResourceType } from '../../types';
 import { cn } from '../../lib/utils';
 
 export interface CommandPaletteProps {
@@ -36,7 +36,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     }
   }, [isOpen]);
 
-  // Search when query changes
   useEffect(() => {
     if (!query.trim()) {
       setResults([]);
@@ -58,12 +57,11 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
       } finally {
         setIsSearching(false);
       }
-    }, 200);
+    }, 180);
 
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       onClose();
@@ -87,34 +85,34 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 p-4">
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in"
+        className="fixed inset-0 bg-[#121110]/60 dark:bg-black/75 backdrop-blur-xs transition-opacity animate-in fade-in"
         onClick={onClose}
       />
 
       <div
-        className="relative w-full max-w-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl overflow-hidden z-10 animate-in zoom-in-95 duration-150"
+        className="relative w-full max-w-xl bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] rounded-2xl shadow-2xl overflow-hidden z-10 animate-in zoom-in-95 duration-150"
         onKeyDown={handleKeyDown}
       >
         {/* Search Input */}
-        <div className="flex items-center px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
-          <Search className="w-5 h-5 text-zinc-400 shrink-0 mr-3" />
+        <div className="flex items-center px-4 py-3.5 border-b border-[#ded8cb] dark:border-[#2f2c27] bg-[#faf8f5]/50 dark:bg-[#161513]">
+          <Search className="w-4 h-4 text-[#8a8277] shrink-0 mr-3" />
           <input
             ref={inputRef}
             type="text"
-            className="w-full bg-transparent text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
-            placeholder="Type to search resources, tags, projects..."
+            className="w-full bg-transparent text-sm text-[#191715] dark:text-[#f5f2ec] placeholder:text-[#8a8277] focus:outline-none"
+            placeholder="Search across all resources, tags, and projects..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1"
+              className="text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] p-1 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-block ml-2 px-1.5 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-500 rounded border border-zinc-200 dark:border-zinc-700">
+          <kbd className="hidden sm:inline-block ml-2 px-1.5 py-0.5 text-[10px] font-mono bg-[#f5f2eb] dark:bg-[#201e1b] text-[#8a8277] rounded border border-[#ded8cb] dark:border-[#2f2c27]">
             ESC
           </kbd>
         </div>
@@ -122,7 +120,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         {/* Results List */}
         <div className="max-h-80 overflow-y-auto p-2">
           {isSearching ? (
-            <div className="py-8 text-center text-xs text-zinc-400">Searching your workspace...</div>
+            <div className="py-8 text-center text-xs text-[#8a8277]">Searching workspace...</div>
           ) : results.length > 0 ? (
             <div className="space-y-1">
               {results.map((item, idx) => {
@@ -136,84 +134,84 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                     }}
                     onMouseEnter={() => setSelectedIndex(idx)}
                     className={cn(
-                      'w-full flex items-center justify-between p-2.5 rounded-lg text-left text-xs transition-colors',
+                      'w-full flex items-center justify-between p-2.5 rounded-lg text-left text-xs transition-colors cursor-pointer',
                       isSelected
-                        ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-100'
-                        : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300'
+                        ? 'bg-[#edf4f0] dark:bg-[#1a2b22] text-[#1e3a2f] dark:text-[#86efac]'
+                        : 'hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] text-[#57524b] dark:text-[#aba499]'
                     )}
                   >
                     <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                      <span className={cn('p-1 rounded-md shrink-0', isSelected ? 'bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500')}>
+                      <span className={cn('p-1 rounded-md shrink-0', isSelected ? 'bg-white dark:bg-[#22201d] text-[#1e3a2f] dark:text-[#86efac]' : 'bg-[#f5f2eb] dark:bg-[#201e1b] text-[#8a8277]')}>
                         {typeIcons[item.type]}
                       </span>
                       <div className="min-w-0">
-                        <div className="font-medium text-sm truncate">{item.title}</div>
+                        <div className="font-medium text-sm truncate text-[#191715] dark:text-[#f5f2ec]">{item.title}</div>
                         {item.description && (
-                          <div className="text-[11px] text-zinc-400 truncate">{item.description}</div>
+                          <div className="text-[11px] text-[#8a8277] truncate">{item.description}</div>
                         )}
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#f5f2eb] dark:bg-[#201e1b] text-[#8a8277]">
                         {item.type}
                       </span>
-                      <ArrowRight className="w-3.5 h-3.5 text-zinc-400" />
+                      <ArrowRight className="w-3.5 h-3.5 text-[#8a8277]" />
                     </div>
                   </button>
                 );
               })}
             </div>
           ) : query.trim() ? (
-            <div className="py-8 text-center text-xs text-zinc-400">
+            <div className="py-8 text-center text-xs text-[#8a8277]">
               No resources found matching "{query}"
             </div>
           ) : (
-            <div className="py-4 px-3 text-xs text-zinc-400 space-y-2">
-              <div className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider mb-2">
-                Quick Navigation
+            <div className="py-3 px-3 text-xs text-[#8a8277] space-y-1">
+              <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a8277] mb-2 px-1">
+                Quick Jump
               </div>
               <div
                 onClick={() => {
                   navigate('/library');
                   onClose();
                 }}
-                className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800/60 cursor-pointer"
+                className="flex items-center justify-between p-2 rounded-lg hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] cursor-pointer"
               >
-                <span>Browse All Resources</span>
-                <kbd className="font-mono text-[10px] text-zinc-400">/library</kbd>
+                <span className="text-[#191715] dark:text-[#f5f2ec]">Browse My Library</span>
+                <kbd className="font-mono text-[10px] text-[#8a8277]">/library</kbd>
               </div>
               <div
                 onClick={() => {
                   navigate('/projects');
                   onClose();
                 }}
-                className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800/60 cursor-pointer"
+                className="flex items-center justify-between p-2 rounded-lg hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] cursor-pointer"
               >
-                <span>Projects</span>
-                <kbd className="font-mono text-[10px] text-zinc-400">/projects</kbd>
+                <span className="text-[#191715] dark:text-[#f5f2ec]">Active Projects</span>
+                <kbd className="font-mono text-[10px] text-[#8a8277]">/projects</kbd>
               </div>
               <div
                 onClick={() => {
                   navigate('/collections');
                   onClose();
                 }}
-                className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800/60 cursor-pointer"
+                className="flex items-center justify-between p-2 rounded-lg hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] cursor-pointer"
               >
-                <span>Collections</span>
-                <kbd className="font-mono text-[10px] text-zinc-400">/collections</kbd>
+                <span className="text-[#191715] dark:text-[#f5f2ec]">Thematic Collections</span>
+                <kbd className="font-mono text-[10px] text-[#8a8277]">/collections</kbd>
               </div>
             </div>
           )}
         </div>
 
-        {/* Command palette footer */}
-        <div className="px-4 py-2 border-t border-zinc-100 dark:border-zinc-800/60 flex items-center justify-between text-[11px] text-zinc-400 bg-zinc-50/50 dark:bg-zinc-900/50">
+        {/* Footer */}
+        <div className="px-4 py-2 border-t border-[#ded8cb] dark:border-[#2f2c27] flex items-center justify-between text-[11px] text-[#8a8277] bg-[#faf8f5]/60 dark:bg-[#141311]">
           <div className="flex items-center gap-2">
-            <span>Navigate: <kbd className="font-mono text-[10px] bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">↑</kbd> <kbd className="font-mono text-[10px] bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">↓</kbd></span>
-            <span>Select: <kbd className="font-mono text-[10px] bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded">↵</kbd></span>
+            <span>Select: <kbd className="font-mono text-[10px] bg-[#f5f2eb] dark:bg-[#201e1b] px-1 py-0.5 rounded">↵</kbd></span>
+            <span>Navigate: <kbd className="font-mono text-[10px] bg-[#f5f2eb] dark:bg-[#201e1b] px-1 py-0.5 rounded">↑↓</kbd></span>
           </div>
-          <span>Shelfspace Quick Search</span>
+          <span className="font-mono text-[10px]">Shelfspace</span>
         </div>
       </div>
     </div>

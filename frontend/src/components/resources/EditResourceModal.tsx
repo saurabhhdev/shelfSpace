@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
-import { Resource, ResourceType, Project, Collection } from '../../types';
+import type { Resource, ResourceType, Project, Collection } from '../../types';
 import { apiClient } from '../../api/client';
 import { X } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -117,7 +117,7 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/40 text-xs text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800">
+          <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/30 text-xs text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/40">
             {error}
           </div>
         )}
@@ -141,13 +141,13 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
         </div>
 
         <div>
-          <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300 block mb-1">
+          <label className="text-xs font-medium text-[#45403a] dark:text-[#aba499] block mb-1">
             Category
           </label>
           <select
             value={type}
             onChange={(e) => setType(e.target.value as ResourceType)}
-            className="w-full h-9 rounded-lg px-3 text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100"
+            className="w-full h-9 rounded-lg px-3 text-sm bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] text-[#191715] dark:text-[#f5f2ec]"
           >
             <option value="development">Development</option>
             <option value="ui">UI & Components</option>
@@ -159,12 +159,12 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
         </div>
 
         <div>
-          <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300 block mb-1">
+          <label className="text-xs font-medium text-[#45403a] dark:text-[#aba499] block mb-1">
             Description
           </label>
           <textarea
             rows={2}
-            className="w-full rounded-lg p-2.5 text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full rounded-lg p-2.5 text-sm bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] text-[#191715] dark:text-[#f5f2ec] focus:outline-none focus:ring-2 focus:ring-[#1e3a2f]/20 focus:border-[#1e3a2f]"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -172,7 +172,7 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
 
         {/* Tags */}
         <div>
-          <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300 block mb-1">
+          <label className="text-xs font-medium text-[#45403a] dark:text-[#aba499] block mb-1">
             Tags
           </label>
           <div className="flex gap-2">
@@ -201,13 +201,13 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono bg-[#f5f2eb] dark:bg-[#22201d] text-[#57524b] dark:text-[#aba499] border border-[#e2dcd0] dark:border-[#2f2c27]"
                 >
                   #{tag}
                   <button
                     type="button"
                     onClick={() => handleRemoveTag(tag)}
-                    className="hover:text-red-500"
+                    className="hover:text-red-600 dark:hover:text-red-400 cursor-pointer"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -220,7 +220,7 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
         {/* Collections */}
         {collections.length > 0 && (
           <div>
-            <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300 block mb-1">
+            <label className="text-xs font-medium text-[#45403a] dark:text-[#aba499] block mb-1">
               Collections
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -232,10 +232,10 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
                     type="button"
                     onClick={() => toggleCollection(col._id)}
                     className={cn(
-                      'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition-all',
+                      'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition-all cursor-pointer font-mono',
                       isSelected
-                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-medium'
-                        : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                        ? 'border-[#1e3a2f] bg-[#edf4f0] dark:bg-[#1a2b22] text-[#1e3a2f] dark:text-[#86efac] font-medium'
+                        : 'border-[#ded8cb] dark:border-[#2f2c27] hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] text-[#57524b] dark:text-[#aba499]'
                     )}
                   >
                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: col.color }} />
@@ -250,7 +250,7 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
         {/* Projects */}
         {projects.length > 0 && (
           <div>
-            <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300 block mb-1">
+            <label className="text-xs font-medium text-[#45403a] dark:text-[#aba499] block mb-1">
               Projects
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -262,11 +262,11 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
                     type="button"
                     onClick={() => toggleProject(proj._id)}
                     className={cn(
-                      'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition-all',
+                      'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition-all cursor-pointer',
                       isSelected
-                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-medium'
-                        : 'border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
-                    )}
+                        ? 'border-[#1e3a2f] bg-[#edf4f0] dark:bg-[#1a2b22] text-[#1e3a2f] dark:text-[#86efac] font-medium'
+                        : 'border-[#ded8cb] dark:border-[#2f2c27] hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] text-[#57524b] dark:text-[#aba499]'
+                      )}
                   >
                     📁 {proj.name}
                   </button>
@@ -277,18 +277,18 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
         )}
 
         <div>
-          <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300 block mb-1">
+          <label className="text-xs font-medium text-[#45403a] dark:text-[#aba499] block mb-1">
             Personal Notes (Markdown)
           </label>
           <textarea
             rows={3}
-            className="w-full rounded-lg p-2.5 font-mono text-xs bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full rounded-lg p-2.5 font-mono text-xs bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] text-[#191715] dark:text-[#f5f2ec] focus:outline-none focus:ring-2 focus:ring-[#1e3a2f]/20 focus:border-[#1e3a2f]"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
         </div>
 
-        <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800 flex justify-end gap-2">
+        <div className="pt-3 border-t border-[#ded8cb] dark:border-[#2f2c27] flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>

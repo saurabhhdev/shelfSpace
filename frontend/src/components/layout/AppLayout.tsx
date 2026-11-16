@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 import {
+  Home,
   Layers,
   FolderKanban,
   BookmarkCheck,
   Star,
   Clock,
-  Trash2,
   Settings,
   Plus,
   Search,
@@ -18,12 +18,7 @@ import {
   ChevronRight,
   Menu,
   X,
-  Palette,
-  Layout,
-  Code2,
-  Database,
-  BookOpen,
-  FileText,
+  ExternalLink,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -36,7 +31,7 @@ import { cn } from '../../lib/utils';
 
 export const AppLayout: React.FC = () => {
   const { user, logout } = useAuth();
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -89,12 +84,12 @@ export const AppLayout: React.FC = () => {
   }, []);
 
   const navLinks = [
+    { to: '/dashboard', label: 'Home', icon: <Home className="w-4 h-4" /> },
     { to: '/library', label: 'My Library', icon: <Layers className="w-4 h-4" /> },
     { to: '/projects', label: 'Projects', icon: <FolderKanban className="w-4 h-4" /> },
     { to: '/collections', label: 'Collections', icon: <BookmarkCheck className="w-4 h-4" /> },
     { to: '/favourites', label: 'Favourites', icon: <Star className="w-4 h-4" /> },
     { to: '/recently-added', label: 'Recently Added', icon: <Clock className="w-4 h-4" /> },
-    { to: '/trash', label: 'Trash', icon: <Trash2 className="w-4 h-4" /> },
   ];
 
   const cycleTheme = () => {
@@ -104,7 +99,7 @@ export const AppLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans transition-colors duration-200">
+    <div className="min-h-screen flex bg-[#faf8f5] dark:bg-[#121110] text-[#191715] dark:text-[#f5f2ec] font-sans transition-colors duration-200">
       {/* Mobile Backdrop */}
       {isMobileMenuOpen && (
         <div
@@ -116,30 +111,28 @@ export const AppLayout: React.FC = () => {
       {/* SIDEBAR */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex flex-col justify-between border-r border-zinc-200/80 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 transition-all duration-200 ease-in-out md:static',
-          isCollapsed ? 'w-16' : 'w-64',
+          'fixed inset-y-0 left-0 z-40 flex flex-col justify-between border-r border-[#e6e0d5] dark:border-[#2b2824] bg-white dark:bg-[#191816] transition-all duration-200 ease-in-out md:static',
+          isCollapsed ? 'w-16' : 'w-60',
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
         <div>
           {/* Brand Header */}
-          <div className="flex items-center justify-between h-14 px-4 border-b border-zinc-200/80 dark:border-zinc-800/80">
-            <NavLink to="/library" className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow-xs border border-blue-500/30">
+          <div className="flex items-center justify-between h-14 px-4 border-b border-[#e6e0d5] dark:border-[#2b2824]">
+            <Link to="/dashboard" className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#1e3a2f] text-[#f5f2ec] dark:bg-[#2d5d45] font-bold flex items-center justify-center text-xs shadow-xs border border-[#142820] dark:border-[#3d7d5d]/40">
                 S
               </div>
               {!isCollapsed && (
-                <div className="flex flex-col">
-                  <span className="font-semibold text-sm tracking-tight text-zinc-900 dark:text-zinc-100">
-                    Shelfspace
-                  </span>
-                </div>
+                <span className="font-semibold text-sm tracking-tight text-[#191715] dark:text-[#f5f2ec]">
+                  Shelfspace
+                </span>
               )}
-            </NavLink>
+            </Link>
 
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="hidden md:flex text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="hidden md:flex text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] p-1 rounded-md hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] cursor-pointer"
               title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -147,26 +140,14 @@ export const AppLayout: React.FC = () => {
 
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="md:hidden text-zinc-400 p-1"
+              className="md:hidden text-[#8a8277] p-1 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Workspace Status Badge */}
-          {!isCollapsed && (
-            <div className="px-4 py-2.5 my-2 mx-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2 truncate">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                <span className="text-zinc-600 dark:text-zinc-300 font-medium truncate">
-                  Personal Library
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Quick Add Button in Sidebar */}
-          <div className="px-3 pt-2 pb-3">
+          {/* Quick Add CTA in Sidebar */}
+          <div className="px-3 pt-3 pb-2">
             <Button
               className={cn('w-full justify-center', isCollapsed && 'px-0')}
               size="sm"
@@ -178,7 +159,7 @@ export const AppLayout: React.FC = () => {
           </div>
 
           {/* Nav Links */}
-          <nav className="px-2 space-y-0.5">
+          <nav className="px-2 space-y-0.5 mt-2">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.to;
               return (
@@ -189,8 +170,8 @@ export const AppLayout: React.FC = () => {
                   className={cn(
                     'flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100',
+                      ? 'bg-[#edf4f0] dark:bg-[#1a2b22] text-[#1e3a2f] dark:text-[#86efac] font-semibold'
+                      : 'text-[#57524b] dark:text-[#aba499] hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] hover:text-[#191715] dark:hover:text-[#f5f2ec]',
                     isCollapsed && 'justify-center px-0'
                   )}
                   title={isCollapsed ? link.label : undefined}
@@ -205,18 +186,18 @@ export const AppLayout: React.FC = () => {
           {/* Quick Collections Section */}
           {!isCollapsed && collections.length > 0 && (
             <div className="mt-6 px-3">
-              <div className="flex items-center justify-between px-2 text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+              <div className="flex items-center justify-between px-2 text-[10px] font-mono uppercase tracking-wider text-[#8a8277] mb-1.5">
                 <span>Collections</span>
-                <NavLink to="/collections" className="text-blue-500 hover:underline">
+                <NavLink to="/collections" className="text-[#1e3a2f] dark:text-[#86efac] hover:underline">
                   All
                 </NavLink>
               </div>
-              <div className="space-y-0.5 max-h-40 overflow-y-auto pr-1">
+              <div className="space-y-0.5 max-h-36 overflow-y-auto pr-1">
                 {collections.map((col) => (
                   <NavLink
                     key={col._id}
                     to={`/collections/${col._id}`}
-                    className="flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors"
+                    className="flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs text-[#57524b] dark:text-[#aba499] hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] transition-colors"
                   >
                     <div className="flex items-center gap-2 truncate">
                       <span
@@ -226,7 +207,7 @@ export const AppLayout: React.FC = () => {
                       <span className="truncate">{col.name}</span>
                     </div>
                     {col.resourceCount !== undefined && col.resourceCount > 0 && (
-                      <span className="text-[10px] text-zinc-400 font-mono">
+                      <span className="text-[10px] text-[#8a8277] font-mono">
                         {col.resourceCount}
                       </span>
                     )}
@@ -238,11 +219,12 @@ export const AppLayout: React.FC = () => {
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-3 border-t border-zinc-200/80 dark:border-zinc-800/80 space-y-1">
+        <div className="p-3 border-t border-[#e6e0d5] dark:border-[#2b2824] space-y-1">
+          {/* Settings */}
           <NavLink
             to="/settings"
             className={cn(
-              'flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors',
+              'flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-[#57524b] dark:text-[#aba499] hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] hover:text-[#191715] dark:hover:text-[#f5f2ec] transition-colors',
               isCollapsed && 'justify-center px-0'
             )}
             title="Settings & Sessions"
@@ -255,15 +237,15 @@ export const AppLayout: React.FC = () => {
           <button
             onClick={cycleTheme}
             className={cn(
-              'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors',
+              'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-[#57524b] dark:text-[#aba499] hover:bg-[#f5f2eb] dark:hover:bg-[#201e1b] hover:text-[#191715] dark:hover:text-[#f5f2ec] transition-colors cursor-pointer',
               isCollapsed && 'justify-center px-0'
             )}
             title={`Current theme: ${theme} (Click to toggle)`}
           >
             {theme === 'dark' ? (
-              <Moon className="w-4 h-4 shrink-0 text-blue-400" />
+              <Moon className="w-4 h-4 shrink-0 text-amber-400" />
             ) : theme === 'light' ? (
-              <Sun className="w-4 h-4 shrink-0 text-amber-500" />
+              <Sun className="w-4 h-4 shrink-0 text-amber-600" />
             ) : (
               <Laptop className="w-4 h-4 shrink-0" />
             )}
@@ -274,10 +256,10 @@ export const AppLayout: React.FC = () => {
           <button
             onClick={async () => {
               await logout();
-              navigate('/login');
+              navigate('/');
             }}
             className={cn(
-              'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600 dark:hover:text-red-400 transition-colors',
+              'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-[#8a8277] hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700 dark:hover:text-red-400 transition-colors cursor-pointer',
               isCollapsed && 'justify-center px-0'
             )}
             title="Log Out"
@@ -288,13 +270,13 @@ export const AppLayout: React.FC = () => {
 
           {/* User profile brief */}
           {!isCollapsed && user && (
-            <div className="pt-2 px-2 border-t border-zinc-100 dark:border-zinc-800/60 flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold flex items-center justify-center text-xs shrink-0">
+            <div className="pt-2 px-2 border-t border-[#ede8df] dark:border-[#24221f] flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full bg-[#edf4f0] dark:bg-[#1a2b22] text-[#1e3a2f] dark:text-[#86efac] font-bold flex items-center justify-center text-xs shrink-0 border border-[#cadfd5] dark:border-[#2d4d3c]">
                 {user.name.charAt(0).toUpperCase()}
               </div>
               <div className="truncate text-xs">
-                <div className="font-medium text-zinc-900 dark:text-zinc-100 truncate">{user.name}</div>
-                <div className="text-[10px] text-zinc-400 truncate">{user.email}</div>
+                <div className="font-medium text-[#191715] dark:text-[#f5f2ec] truncate">{user.name}</div>
+                <div className="text-[10px] text-[#8a8277] truncate">{user.email}</div>
               </div>
             </div>
           )}
@@ -304,11 +286,11 @@ export const AppLayout: React.FC = () => {
       {/* MAIN VIEW AREA */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="h-14 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
+        <header className="h-14 border-b border-[#e6e0d5] dark:border-[#2b2824] bg-white/85 dark:bg-[#191816]/85 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3 flex-1 max-w-xl">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 p-1"
+              className="md:hidden text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] p-1 cursor-pointer"
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -317,13 +299,13 @@ export const AppLayout: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsCommandOpen(true)}
-              className="w-full flex items-center justify-between h-9 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-800/70 border border-zinc-200/60 dark:border-zinc-700/60 text-xs text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors text-left"
+              className="w-full flex items-center justify-between h-9 px-3 rounded-lg bg-[#faf8f5] dark:bg-[#141311] border border-[#ded8cb] dark:border-[#2f2c27] text-xs text-[#8a8277] hover:border-[#1e3a2f] dark:hover:border-[#387356] transition-colors text-left cursor-pointer"
             >
               <div className="flex items-center gap-2">
                 <Search className="w-3.5 h-3.5" />
-                <span>Quick search resources, tags, projects...</span>
+                <span>Search resources, tags, projects...</span>
               </div>
-              <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono bg-white dark:bg-zinc-900 rounded border border-zinc-200 dark:border-zinc-700 text-zinc-500">
+              <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono bg-white dark:bg-[#201e1b] rounded border border-[#ded8cb] dark:border-[#2f2c27] text-[#8a8277]">
                 <span>⌘</span>K
               </kbd>
             </button>
@@ -331,6 +313,15 @@ export const AppLayout: React.FC = () => {
 
           {/* Header Action Buttons */}
           <div className="flex items-center gap-2.5">
+            <Link
+              to="/"
+              className="text-xs text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] hidden sm:inline-flex items-center gap-1 font-medium mr-1"
+              title="View public landing page"
+            >
+              <span>Public Page</span>
+              <ExternalLink className="w-3 h-3" />
+            </Link>
+
             <Button
               size="sm"
               onClick={() => setIsQuickAddOpen(true)}
@@ -362,7 +353,6 @@ export const AppLayout: React.FC = () => {
         collections={collections}
         onSuccess={() => {
           fetchWorkspaceData();
-          // Dispatch custom event to notify active pages to refresh their list
           window.dispatchEvent(new CustomEvent('resource-added'));
         }}
       />

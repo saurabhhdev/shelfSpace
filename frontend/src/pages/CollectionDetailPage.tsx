@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { BookmarkCheck, ChevronLeft, LayoutGrid, List } from 'lucide-react';
+import { ChevronLeft, LayoutGrid, List } from 'lucide-react';
 import { apiClient } from '../api/client';
-import { Collection, Resource } from '../types';
+import type { Collection, Resource } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
 import { Button } from '../components/ui/Button';
 import { EditResourceModal } from '../components/resources/EditResourceModal';
@@ -64,8 +64,8 @@ export const CollectionDetailPage: React.FC = () => {
   if (isLoading || !collection) {
     return (
       <div className="py-20 text-center">
-        <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <span className="text-xs text-zinc-400">Loading collection...</span>
+        <div className="w-8 h-8 border-2 border-[#1e3a2f] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <span className="text-xs text-[#8a8277]">Loading collection...</span>
       </div>
     );
   }
@@ -76,7 +76,7 @@ export const CollectionDetailPage: React.FC = () => {
       <div>
         <Link
           to="/collections"
-          className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec] transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
           <span>All Collections</span>
@@ -84,13 +84,13 @@ export const CollectionDetailPage: React.FC = () => {
       </div>
 
       {/* Collection Banner Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-white dark:bg-[#191816] border border-[#ded8cb] dark:border-[#2f2c27] shadow-xs">
         <div className="flex items-center gap-4">
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center border"
+            className="w-11 h-11 rounded-xl flex items-center justify-center border"
             style={{
-              backgroundColor: `${collection.color}15`,
-              borderColor: `${collection.color}35`,
+              backgroundColor: `${collection.color}12`,
+              borderColor: `${collection.color}30`,
               color: collection.color,
             }}
           >
@@ -100,29 +100,29 @@ export const CollectionDetailPage: React.FC = () => {
             />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+            <h1 className="text-xl font-bold text-[#191715] dark:text-[#f5f2ec]">
               {collection.name}
             </h1>
             {collection.description && (
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              <p className="text-xs text-[#57524b] dark:text-[#aba499] mt-0.5">
                 {collection.description}
               </p>
             )}
-            <div className="text-xs text-zinc-400 mt-1">
+            <div className="text-xs font-mono text-[#8a8277] mt-1">
               {resources.length} saved {resources.length === 1 ? 'item' : 'items'}
             </div>
           </div>
         </div>
 
         {/* View mode toggle */}
-        <div className="flex rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-0.5 shrink-0">
+        <div className="flex rounded-lg border border-[#ded8cb] dark:border-[#2f2c27] bg-white dark:bg-[#191816] p-0.5 shrink-0">
           <button
             onClick={() => setViewMode('grid')}
             className={cn(
-              'p-1.5 rounded-md transition-colors',
+              'p-1.5 rounded-md transition-colors cursor-pointer',
               viewMode === 'grid'
-                ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100'
-                : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+                ? 'bg-[#f5f2eb] dark:bg-[#22201d] text-[#191715] dark:text-[#f5f2ec]'
+                : 'text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec]'
             )}
             title="Grid view"
           >
@@ -131,10 +131,10 @@ export const CollectionDetailPage: React.FC = () => {
           <button
             onClick={() => setViewMode('list')}
             className={cn(
-              'p-1.5 rounded-md transition-colors',
+              'p-1.5 rounded-md transition-colors cursor-pointer',
               viewMode === 'list'
-                ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100'
-                : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+                ? 'bg-[#f5f2eb] dark:bg-[#22201d] text-[#191715] dark:text-[#f5f2ec]'
+                : 'text-[#8a8277] hover:text-[#191715] dark:hover:text-[#f5f2ec]'
             )}
             title="List view"
           >
@@ -164,14 +164,14 @@ export const CollectionDetailPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 p-8">
-          <p className="text-xs text-zinc-400 mb-4">
+        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ded8cb] dark:border-[#2f2c27] p-8">
+          <p className="text-xs text-[#8a8277] mb-4">
             No resources associated with this collection yet.
           </p>
           <Button
             size="sm"
             onClick={() => {
-              const addBtn = document.querySelector('header button') as HTMLButtonElement;
+              const addBtn = document.querySelector('header button:has(svg)') as HTMLButtonElement;
               if (addBtn) addBtn.click();
             }}
           >
