@@ -26,10 +26,10 @@ export const OssiumCTA: React.FC = () => {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               to={isAuthenticated ? "/dashboard" : "/register"}
-              className="inline-flex items-center gap-2 rounded-none bg-[#E5E5E5] pl-6 pr-2 py-2 text-sm font-semibold text-black hover:bg-white transition-colors shadow-lg"
+              className="inline-flex items-center gap-2 rounded-md bg-[#09AE5B] hover:bg-[#089E52] pl-6 pr-2.5 py-2 text-sm font-medium text-white border border-emerald-400/30 shadow-xs transition-all duration-150 active:scale-[0.99]"
             >
               <span>{isAuthenticated ? 'Open Dashboard' : 'Get Started Free'}</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-none bg-black text-[#E5E5E5] text-xs">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-black/20 text-white text-xs font-mono">
                 ↗
               </span>
             </Link>
@@ -37,7 +37,7 @@ export const OssiumCTA: React.FC = () => {
             {!isAuthenticated && (
               <Link
                 to="/login"
-                className="inline-flex items-center justify-center rounded-none bg-[#242424] px-6 py-2.5 text-sm font-medium text-[#E5E5E5] hover:bg-[#2e2e2e] transition-colors"
+                className="inline-flex items-center justify-center rounded-md bg-white/[0.06] hover:bg-white/[0.1] px-6 py-2.5 text-sm font-medium text-[#E5E5E5] hover:text-white border border-white/[0.08] hover:border-white/15 transition-all duration-150 active:scale-[0.99]"
               >
                 Sign In
               </Link>

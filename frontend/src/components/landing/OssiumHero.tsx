@@ -22,17 +22,17 @@ export const OssiumHero: React.FC = () => {
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
           <Link
             to={isAuthenticated ? "/dashboard" : "/register"}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-none bg-[#E5E5E5] px-5 py-2 sm:py-2 text-xs sm:text-sm font-semibold text-black hover:bg-white transition-colors duration-200 shadow-sm"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-md bg-[#09AE5B] hover:bg-[#089E52] px-5 py-2 sm:py-2 text-xs sm:text-sm font-medium text-white border border-emerald-400/30 shadow-xs transition-all duration-150 active:scale-[0.99]"
           >
             <span>{isAuthenticated ? 'Go to Dashboard' : 'Start Collecting'}</span>
-            <span className="inline-flex h-5 w-5 items-center justify-center rounded-none bg-black text-[#E5E5E5] text-[11px] font-mono">
+            <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/20 text-white text-[11px] font-mono">
               ↗
             </span>
           </Link>
 
           <a
             href="#features"
-            className="w-full sm:w-auto inline-flex items-center justify-center rounded-none bg-[#242424] px-5 py-2 sm:py-2 text-xs sm:text-sm font-medium text-[#E5E5E5] hover:bg-[#2e2e2e] transition-colors duration-200"
+            className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-white/[0.06] hover:bg-white/[0.1] px-5 py-2 sm:py-2 text-xs sm:text-sm font-medium text-[#E5E5E5] hover:text-white border border-white/[0.08] hover:border-white/15 transition-all duration-150 active:scale-[0.99]"
           >
             Explore Shelfspace
           </a>

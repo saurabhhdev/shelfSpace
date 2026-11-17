@@ -362,13 +362,13 @@ export const OssiumNavbar: React.FC = () => {
             <div className="flex items-center gap-2 sm:gap-2.5">
               <Link
                 to="/login"
-                className="group inline-flex items-center justify-center px-3.5 sm:px-4 py-1 h-[28px] sm:h-[30px] rounded-none bg-[#D6D6D6] text-black text-xs sm:text-sm font-semibold hover:bg-white transition-colors duration-200 shadow-sm"
+                className="group inline-flex items-center justify-center px-3.5 sm:px-4 py-1 h-[30px] rounded-md bg-[#09AE5B] hover:bg-[#089E52] text-white text-xs sm:text-sm font-medium border border-emerald-400/30 shadow-xs transition-all duration-150 active:scale-[0.99]"
               >
-                <SplitText hoverColor="text-black">Login Now</SplitText>
+                <SplitText hoverColor="text-white">Login Now</SplitText>
               </Link>
               <Link
                 to="/register"
-                className="group hidden sm:inline-flex items-center gap-1.5 rounded-none bg-[#242424] px-4 py-1.5 h-[30px] text-xs sm:text-sm font-medium text-[#E5E5E5] hover:bg-[#2e2e2e] transition-colors duration-200"
+                className="group hidden sm:inline-flex items-center gap-1.5 rounded-md bg-white/[0.06] hover:bg-white/[0.1] px-4 py-1.5 h-[30px] text-xs sm:text-sm font-medium text-[#E5E5E5] hover:text-white border border-white/[0.08] hover:border-white/15 transition-all duration-150 active:scale-[0.99]"
               >
                 <SplitText hoverColor="text-white">Sign Up</SplitText>
               </Link>
@@ -425,7 +425,7 @@ export const OssiumNavbar: React.FC = () => {
               <Link
                 to="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2 rounded-none bg-[#E5E5E5] text-black font-semibold text-sm"
+                className="w-full text-center py-2 rounded-md bg-[#09AE5B] hover:bg-[#089E52] text-white font-medium text-sm border border-emerald-400/30 shadow-xs"
               >
                 Go to Dashboard
               </Link>
@@ -434,14 +434,14 @@ export const OssiumNavbar: React.FC = () => {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 rounded-none bg-[#D6D6D6] text-black font-semibold text-sm"
+                  className="w-full text-center py-2 rounded-md bg-[#09AE5B] hover:bg-[#089E52] text-white font-medium text-sm border border-emerald-400/30 shadow-xs"
                 >
                   Login Now
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 rounded-none bg-[#242424] text-[#E5E5E5] font-medium text-sm"
+                  className="w-full text-center py-2 rounded-md bg-white/[0.06] hover:bg-white/[0.1] text-[#E5E5E5] hover:text-white font-medium text-sm border border-white/[0.08]"
                 >
                   Create Account
                 </Link>
