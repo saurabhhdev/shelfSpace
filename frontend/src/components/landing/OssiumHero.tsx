@@ -7,10 +7,18 @@ export const OssiumHero: React.FC = () => {
 
   return (
     <section className="relative pt-24 pb-14 sm:pt-28 sm:pb-16 lg:pt-32 lg:pb-20 overflow-hidden bg-transparent">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+      {/* Celestial Ambient Glow at the top */}
+      <div 
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[480px] opacity-35 z-0"
+        style={{
+          background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(9, 174, 91, 0.22), rgba(14, 15, 16, 0) 70%)'
+        }}
+      />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center relative z-10">
         {/* Main Headline - Controlled width for balanced line wrapping */}
-        <h1 className="text-balance text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15] max-w-3xl mx-auto">
-          <span className="text-white">Your central hub for</span>{' '}
+        <h1 className="text-balance text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15] max-w-3xl mx-auto">
+          <span className="text-white block sm:inline">Your central hub for</span>{' '}
           <span className="block text-transparent [-webkit-text-stroke:1px_#ffffff] sm:[-webkit-text-stroke:1.5px_#ffffff] tracking-tight mt-1">
             everything you build with.
           </span>

@@ -67,8 +67,8 @@ export const OssiumNavbar: React.FC = () => {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-200 ${
       scrolled 
-        ? 'bg-[#000]/90 backdrop-blur-md border-b border-white/[0.07] shadow-lg shadow-black/40' 
-        : 'bg-[#000]/70 backdrop-blur-sm border-b border-white/[0.05]'
+        ? 'bg-[#0E0F10]/90 backdrop-blur-md border-b border-white/[0.07] shadow-lg shadow-black/40' 
+        : 'bg-[#0E0F10]/70 backdrop-blur-sm border-b border-white/[0.05]'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
@@ -76,8 +76,8 @@ export const OssiumNavbar: React.FC = () => {
           to="/" 
           className="flex items-center gap-2.5 group select-none py-1"
         >
-          <div className="w-7 h-7 rounded-none bg-neutral-800 border border-white/10 flex items-center justify-center group-hover:border-[#09AE5B]/50 transition-colors">
-            <span className="w-2.5 h-2.5 rounded-none bg-[#09AE5B]"></span>
+          <div className="w-7 h-7 rounded-none bg-neutral-800 border border-white/10 flex items-center justify-center group-hover:border-[#09AE5B]/50 transition-colors shadow-inner">
+            <span className="w-2.5 h-2.5 rounded-none bg-[#09AE5B] shadow-[0_0_10px_#09AE5B]"></span>
           </div>
           <span className="text-lg font-bold tracking-tight text-[#E5E5E5] group-hover:text-white transition-colors">
             <SplitText hoverColor="text-white">shelfspace</SplitText>
