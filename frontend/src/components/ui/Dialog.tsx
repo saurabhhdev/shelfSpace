@@ -53,34 +53,36 @@ export const Dialog: React.FC<DialogProps> = ({
         onClick={onClose}
       />
 
-      {/* Dialog Card - Clean Minimal Modal */}
+      {/* Dialog Card - Clean Minimal Modal with Viewport Clamping & Scroll */}
       <div
         role="dialog"
         aria-modal="true"
         className={cn(
-          'relative w-full bg-[#121316] border border-white/[0.08] rounded-lg shadow-2xl p-6 z-10 text-[#E5E5E5]',
+          'relative w-full max-h-[90vh] flex flex-col bg-[#121316] border border-white/[0.08] rounded-lg shadow-2xl z-10 text-[#E5E5E5] overflow-hidden',
           'animate-in zoom-in-95 duration-150',
           maxWidths[maxWidth]
         )}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-neutral-400 hover:text-white p-1 rounded-md transition-colors cursor-pointer"
+          className="absolute top-4 right-4 text-neutral-400 hover:text-white p-1.5 rounded-md hover:bg-white/[0.06] transition-colors cursor-pointer z-20"
           aria-label="Close"
         >
           <X className="w-4 h-4" />
         </button>
 
         {title && (
-          <div className="mb-4">
-            <h3 className="text-base font-semibold text-[#E5E5E5]">{title}</h3>
+          <div className="p-6 pb-3 shrink-0 border-b border-white/[0.04]">
+            <h3 className="text-base font-semibold text-[#E5E5E5] pr-8">{title}</h3>
             {description && (
-              <p className="text-xs text-neutral-400 mt-0.5">{description}</p>
+              <p className="text-xs text-neutral-400 mt-0.5 pr-8">{description}</p>
             )}
           </div>
         )}
 
-        <div>{children}</div>
+        <div className={cn('overflow-y-auto flex-1', title ? 'px-6 py-4' : 'p-6')}>
+          {children}
+        </div>
       </div>
     </div>
   );

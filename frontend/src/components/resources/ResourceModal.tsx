@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
-import { Badge } from '../ui/Badge';
 import {
   Wrench,
   GitBranch,
@@ -22,7 +21,7 @@ import {
   Globe,
   Image as ImageIcon,
   Check,
-  RefreshCw,
+  RotateCcw,
 } from 'lucide-react';
 import { apiClient } from '../../api/client';
 import { RESOURCE_TYPES, normalizeResourceType, getResourceTypeIcon } from '../../lib/resourceTypes';
@@ -207,7 +206,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
       } catch {
         // Silently ignore duplicate check network errors
       }
-    }, 600);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [url, resource]);
@@ -269,7 +268,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
         notify('Resource metadata retrieved successfully', 'success');
       } else {
         setHasFetchedMeta(true);
-        setFetchMetaError('Could not retrieve full metadata. You can fill in the details manually below.');
+        setFetchMetaError('Could not retrieve full metadata. You can fill in details manually below.');
       }
     } catch (err: any) {
       setHasFetchedMeta(true);
@@ -351,6 +350,18 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
     }
   };
 
+  // Reset Auto Add back to initial URL input
+  const handleResetAutoAdd = () => {
+    setHasFetchedMeta(false);
+    setFetchMetaError('');
+    setSuggestedType(null);
+    setSuggestedCategoryName(null);
+    setName('');
+    setDescription('');
+    setPreviewImage('');
+    setTags([]);
+  };
+
   // Final Form Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -416,6 +427,9 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
 
   const TypeIcon = getResourceTypeIcon(type);
 
+  // Determine whether the review/details form should be shown in Auto mode
+  const showAutoReviewForm = mode === 'auto' && (hasFetchedMeta || isFetchingMeta);
+
   return (
     <>
       <Dialog
@@ -435,7 +449,10 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
             <div className="flex items-center p-1 bg-[#0E0F10] border border-white/[0.08] rounded-md">
               <button
                 type="button"
-                onClick={() => setMode('auto')}
+                onClick={() => {
+                  setMode('auto');
+                  setFormError('');
+                }}
                 className={cn(
                   'flex-1 py-1.5 px-3 text-xs font-medium rounded transition-colors flex items-center justify-center gap-1.5 cursor-pointer',
                   mode === 'auto'
@@ -452,7 +469,10 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
 
               <button
                 type="button"
-                onClick={() => setMode('manual')}
+                onClick={() => {
+                  setMode('manual');
+                  setFormError('');
+                }}
                 className={cn(
                   'flex-1 py-1.5 px-3 text-xs font-medium rounded transition-colors flex items-center justify-center gap-1.5 cursor-pointer',
                   mode === 'manual'
@@ -487,13 +507,13 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
             </div>
           )}
 
-          {/* ==================== AUTO ADD INITIAL URL INPUT ==================== */}
-          {mode === 'auto' && !isEdit && (
-            <div className="p-3.5 rounded-md bg-[#0E0F10] border border-white/[0.08] space-y-3">
+          {/* ==================== AUTO ADD: STEP 1 (INITIAL URL INPUT) ==================== */}
+          {mode === 'auto' && !isEdit && !hasFetchedMeta && !isFetchingMeta && (
+            <div className="p-4 rounded-md bg-[#0E0F10] border border-white/[0.08] space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-medium text-neutral-300 flex items-center gap-1.5">
                   <Globe className="w-3.5 h-3.5 text-[#09AE5B]" />
-                  <span>Resource URL *</span>
+                  <span>Enter Resource URL *</span>
                 </label>
                 <span className="text-[11px] text-neutral-500">
                   GitHub repo, documentation, or tool URL
@@ -521,8 +541,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                   size="sm"
                   onClick={handleFetchMetadata}
                   disabled={!url.trim() || isFetchingMeta}
-                  isLoading={isFetchingMeta}
-                  leftIcon={!isFetchingMeta ? <Sparkles className="w-3.5 h-3.5" /> : undefined}
+                  leftIcon={<Sparkles className="w-3.5 h-3.5" />}
                   className="shrink-0"
                 >
                   Fetch Details
@@ -536,13 +555,59 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                   <span>{fetchMetaError}</span>
                 </div>
               )}
+
+              {/* Skip to manual link */}
+              <div className="flex items-center justify-between pt-1 border-t border-white/[0.04] text-[11px] text-neutral-500">
+                <span>Pasting a link will extract title, description, and preview image automatically.</span>
+                <button
+                  type="button"
+                  onClick={() => setMode('manual')}
+                  className="text-neutral-400 hover:text-white underline cursor-pointer"
+                >
+                  Or fill manually
+                </button>
+              </div>
             </div>
           )}
 
-          {/* ==================== RESOURCE DETAILS FORM (Manual or Post-Fetch) ==================== */}
-          {(mode === 'manual' || isEdit || hasFetchedMeta || url.trim().length > 0) && (
+          {/* ==================== AUTO ADD: LOADING SKELETON ==================== */}
+          {mode === 'auto' && isFetchingMeta && (
+            <div className="p-6 rounded-md bg-[#0E0F10] border border-white/[0.08] space-y-3 text-center">
+              <div className="w-8 h-8 rounded-full bg-[#16171b] border border-white/10 flex items-center justify-center mx-auto text-[#09AE5B]">
+                <Loader2 className="w-4 h-4 animate-spin" />
+              </div>
+              <div className="text-xs font-medium text-[#EDEDED]">
+                Retrieving resource metadata & classifying...
+              </div>
+              <p className="text-[11px] text-neutral-400 max-w-sm mx-auto">
+                Inspecting website tags, Open Graph preview, and classification heuristics for {url}
+              </p>
+            </div>
+          )}
+
+          {/* ==================== FORM BODY (Manual Mode, Edit Mode, or Auto Mode Post-Fetch) ==================== */}
+          {(mode === 'manual' || isEdit || showAutoReviewForm) && !isFetchingMeta && (
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Preview Banner if image available */}
+              {/* Auto Mode: Top bar to change URL or re-fetch */}
+              {mode === 'auto' && !isEdit && (
+                <div className="flex items-center justify-between p-2.5 rounded-md bg-[#0E0F10] border border-white/[0.08] text-xs">
+                  <div className="flex items-center gap-2 truncate mr-2">
+                    <Globe className="w-3.5 h-3.5 text-[#09AE5B] shrink-0" />
+                    <span className="text-neutral-400 truncate">{url}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResetAutoAdd}
+                    className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-white shrink-0 cursor-pointer"
+                    title="Change URL"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    <span>Change URL</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Preview Image Banner (if available) */}
               {previewImage && (
                 <div className="relative w-full aspect-[16/9] max-h-44 rounded-md bg-[#0E0F10] border border-white/[0.08] overflow-hidden group">
                   <img
@@ -551,7 +616,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                     className="w-full h-full object-cover"
                     onError={() => setPreviewImage('')}
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-between p-3">
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-between p-3">
                     <span className="text-[11px] text-white/90 bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs">
                       Preview Image
                     </span>
@@ -567,7 +632,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                 </div>
               )}
 
-              {/* Manual Mode URL Input */}
+              {/* Manual Mode / Edit Mode URL Input */}
               {(mode === 'manual' || isEdit) && (
                 <div>
                   <label className="text-xs font-medium text-neutral-300 block mb-1">
@@ -805,9 +870,14 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
               {/* Projects Assignment */}
               {availableProjects.length > 0 && (
                 <div>
-                  <label className="text-xs font-medium text-neutral-300 block mb-1.5">
-                    Assign to Projects (optional)
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-medium text-neutral-300">
+                      Assign to Projects (optional)
+                    </label>
+                    <span className="text-[11px] text-neutral-500 font-mono">
+                      {selectedProjectIds.length} selected
+                    </span>
+                  </div>
                   <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-[#0E0F10] border border-white/[0.08] rounded-md">
                     {availableProjects.map((p) => {
                       const isAssigned = selectedProjectIds.includes(p._id);
@@ -852,7 +922,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                 />
               </div>
 
-              {/* Custom Preview Image URL input (expandable) */}
+              {/* Custom Preview Image URL input */}
               <div>
                 <label className="text-xs font-medium text-neutral-400 block mb-1">
                   Custom Preview Image URL (optional)
@@ -864,8 +934,8 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                 />
               </div>
 
-              {/* Footer Actions */}
-              <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between">
+              {/* Sticky Footer Actions */}
+              <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between sticky bottom-0 bg-[#121316] pb-1 z-10">
                 <Button
                   type="button"
                   variant="ghost"
