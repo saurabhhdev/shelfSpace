@@ -67,8 +67,8 @@ export const OssiumNavbar: React.FC = () => {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-200 ${
       scrolled 
-        ? 'bg-[#0E0F10]/90 backdrop-blur-md border-b border-white/[0.07] shadow-lg shadow-black/40' 
-        : 'bg-[#0E0F10]/70 backdrop-blur-sm border-b border-white/[0.05]'
+        ? 'bg-[#000]/90 backdrop-blur-md border-b border-white/[0.07] shadow-lg shadow-black/40' 
+        : 'bg-[#000]/70 backdrop-blur-sm border-b border-white/[0.05]'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}

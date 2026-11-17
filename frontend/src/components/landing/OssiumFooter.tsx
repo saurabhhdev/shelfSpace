@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export const OssiumFooter: React.FC = () => {
   return (
-    <footer className="bg-[#0E0F10] border-t border-white/[0.06] pt-16 pb-12 text-[#8E8E93] text-sm">
+    <footer className="bg-transparent border-t border-white/[0.06] pt-16 pb-12 text-[#8E8E93] text-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand Info */}

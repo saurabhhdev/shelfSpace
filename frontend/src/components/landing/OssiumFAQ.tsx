@@ -28,7 +28,7 @@ export const OssiumFAQ: React.FC = () => {
   ];
 
   return (
-    <section id="faq" className="py-24 bg-[#0E0F10] border-t border-white/[0.06]">
+    <section id="faq" className="py-24 bg-transparent border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#E5E5E5]">

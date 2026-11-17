@@ -6,7 +6,7 @@ export const OssiumCTA: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <section className="py-20 sm:py-28 bg-[#0E0F10] border-t border-white/[0.06] relative overflow-hidden">
+    <section className="py-20 sm:py-28 bg-transparent border-t border-white/[0.06] relative overflow-hidden">
       {/* Radial green glow */}
       <div 
         className="pointer-events-none absolute inset-0 opacity-25"

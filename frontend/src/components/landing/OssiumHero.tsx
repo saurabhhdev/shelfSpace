@@ -6,7 +6,7 @@ export const OssiumHero: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <section className="relative pt-24 pb-14 sm:pt-28 sm:pb-16 lg:pt-32 lg:pb-20 overflow-hidden bg-[#0E0F10]">
+    <section className="relative pt-24 pb-14 sm:pt-28 sm:pb-16 lg:pt-32 lg:pb-20 overflow-hidden bg-transparent">
       {/* Celestial Ambient Glow at the top */}
       <div 
         className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[480px] opacity-35 -z-10"

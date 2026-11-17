@@ -113,7 +113,21 @@ export const AppLayout: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex bg-[#0E0F10] text-[#E5E5E5] font-sans selection:bg-[#09AE5B] selection:text-black">
+    <div
+      style={{ minHeight: "100vh", width: "100%", position: "relative" }}
+      className="flex text-[#E5E5E5] font-sans selection:bg-[#09AE5B] selection:text-black overflow-x-hidden"
+    >
+      <div
+        style={{
+          position: "fixed",
+          inset: "0",
+          zIndex: 0,
+          backgroundColor: "#000",
+          backgroundImage:
+            "repeating-linear-gradient(60deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 30px), repeating-linear-gradient(120deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 30px), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 30px)",
+          pointerEvents: "none",
+        }}
+      />
       {/* Mobile Drawer Backdrop */}
       {isMobileMenuOpen && (
         <div
@@ -382,9 +396,9 @@ export const AppLayout: React.FC = () => {
       </aside>
 
       {/* ==================== MAIN VIEW AREA ==================== */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#0E0F10]">
+      <div className="relative z-10 flex-1 flex flex-col min-w-0 bg-transparent">
         {/* Top Header: Compact Global Search */}
-        <header className="h-14 border-b border-white/[0.08] bg-[#0E0F10] sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
+        <header className="h-14 border-b border-white/[0.08] bg-[#000]/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
