@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Star,
@@ -22,11 +22,13 @@ export interface ResourceCardProps {
 
 export const ResourceCard: React.FC<ResourceCardProps> = ({
   resource,
-  viewMode = 'list',
+  viewMode = 'grid',
   onToggleFavourite,
   onDelete,
   onEdit,
 }) => {
+  const [imageError, setImageError] = useState(false);
+
   // Extract domain cleanly
   const domain = resource.url
     ? (() => {
@@ -41,33 +43,52 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   const TypeIcon = getResourceTypeIcon(resource.type);
   const typeLabel = getResourceTypeLabel(resource.type);
 
-  // Category name if assigned
+  // Category info if assigned
   const category = (resource.collectionIds || [])[0];
   const categoryName = typeof category === 'object' && category !== null ? category.name : null;
   const categoryColor = typeof category === 'object' && category !== null ? category.color : null;
 
-  // LIST VIEW LAYOUT (Default)
+  // Render Type-specific Visual Placeholder
+  const renderPlaceholder = (isSmall = false) => (
+    <div
+      className={cn(
+        'w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#16171b] to-[#0E0F10] text-neutral-500 border border-white/[0.04]',
+        isSmall ? 'p-1.5' : 'p-4'
+      )}
+    >
+      <div className={cn('rounded-full bg-white/[0.04] flex items-center justify-center text-neutral-400', isSmall ? 'w-6 h-6' : 'w-10 h-10 mb-1.5')}>
+        <TypeIcon className={isSmall ? 'w-3 h-3' : 'w-5 h-5'} />
+      </div>
+      {!isSmall && (
+        <span className="text-[11px] font-medium text-neutral-400 tracking-wide uppercase font-sans">
+          {typeLabel}
+        </span>
+      )}
+    </div>
+  );
+
+  // ==================== LIST VIEW LAYOUT ====================
   if (viewMode === 'list') {
     return (
-      <div className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors gap-2.5 sm:gap-4 font-sans">
-        <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
-          {/* Favicon or Type Icon */}
-          <div className="w-7 h-7 rounded-md bg-[#16171b] flex items-center justify-center shrink-0 border border-white/[0.06] text-neutral-400 mt-0.5 sm:mt-0">
-            {resource.favicon ? (
+      <div className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors gap-3 font-sans">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          {/* Thumbnail Preview (Left) */}
+          <div className="w-24 sm:w-28 h-16 sm:h-18 rounded-md overflow-hidden shrink-0 border border-white/[0.06] bg-[#0E0F10] relative">
+            {resource.previewImage && !imageError ? (
               <img
-                src={resource.favicon}
-                alt=""
-                className="w-3.5 h-3.5 object-contain"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
-                }}
+                src={resource.previewImage}
+                alt={resource.title}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                onError={() => setImageError(true)}
               />
             ) : (
-              <TypeIcon className="w-3.5 h-3.5" />
+              renderPlaceholder(true)
             )}
           </div>
 
-          <div className="min-w-0 flex-1">
+          {/* Central Area: Title, Type, Category, Description */}
+          <div className="min-w-0 flex-1 space-y-1">
             <div className="flex flex-wrap items-center gap-2">
               <Link
                 to={`/library/${resource._id}`}
@@ -98,15 +119,13 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               )}
             </div>
 
-            {resource.description && (
-              <p className="text-xs text-neutral-400 truncate mt-0.5">
-                {resource.description}
-              </p>
-            )}
+            <p className="text-xs text-neutral-400 line-clamp-1">
+              {resource.description?.trim() || <span className="italic text-neutral-500">No description added.</span>}
+            </p>
           </div>
         </div>
 
-        {/* Compact Actions */}
+        {/* Right Actions */}
         <div className="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/[0.04]">
           <span className="text-[11px] text-neutral-500 mr-1 font-mono">
             {formatRelativeTime(resource.createdAt)}
@@ -157,105 +176,143 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
     );
   }
 
-  // GRID VIEW LAYOUT
+  // ==================== GRID VIEW LAYOUT ====================
   return (
-    <div className="group flex flex-col justify-between p-4 bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors font-sans">
+    <div className="group flex flex-col justify-between bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors font-sans overflow-hidden">
       <div>
-        {/* Top: Badge + Action buttons */}
-        <div className="flex items-center justify-between gap-2 mb-2">
-          <Badge size="sm">
-            <TypeIcon className="w-3 h-3 text-neutral-400" />
-            <span>{typeLabel}</span>
-          </Badge>
+        {/* 1. Preview Image (Top, consistent 16:9 aspect ratio) */}
+        <div className="w-full aspect-[16/9] bg-[#0E0F10] border-b border-white/[0.06] relative overflow-hidden">
+          {resource.previewImage && !imageError ? (
+            <img
+              src={resource.previewImage}
+              alt={resource.title}
+              className="w-full h-full object-cover transition-opacity duration-150"
+              loading="lazy"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            renderPlaceholder(false)
+          )}
 
-          <div className="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
-            <button
-              onClick={() => onToggleFavourite(resource._id)}
-              className={cn(
-                'p-1 rounded-md hover:bg-white/[0.06] transition-colors cursor-pointer',
-                resource.isFavourite ? 'text-amber-400' : 'text-neutral-400 hover:text-white'
-              )}
-              title={resource.isFavourite ? 'Remove favorite' : 'Add to favorites'}
-            >
-              <Star className={cn('w-3.5 h-3.5', resource.isFavourite && 'fill-amber-400')} />
-            </button>
-
-            {resource.url && (
-              <a
-                href={resource.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-1 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
-                title="Open website"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
+          {/* Quick Favorite Star Floating Overlay */}
+          <button
+            onClick={() => onToggleFavourite(resource._id)}
+            className={cn(
+              'absolute top-2 right-2 p-1.5 rounded-md bg-black/60 backdrop-blur-xs border border-white/10 transition-colors cursor-pointer',
+              resource.isFavourite ? 'text-amber-400' : 'text-neutral-400 hover:text-white'
             )}
-
-            <button
-              onClick={() => onEdit(resource)}
-              className="p-1 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
-              title="Edit"
-            >
-              <Edit2 className="w-3.5 h-3.5" />
-            </button>
-
-            <button
-              onClick={() => onDelete(resource._id, resource.title)}
-              className="p-1 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
-              title="Delete"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
-          </div>
+            title={resource.isFavourite ? 'Remove favorite' : 'Add to favorites'}
+          >
+            <Star className={cn('w-3.5 h-3.5', resource.isFavourite && 'fill-amber-400')} />
+          </button>
         </div>
 
-        {/* Title */}
-        <Link
-          to={`/library/${resource._id}`}
-          className="font-medium text-sm text-[#EDEDED] hover:text-white line-clamp-1 block transition-colors"
-        >
-          {resource.title}
-        </Link>
+        {/* 2. Card Content Body */}
+        <div className="p-4 space-y-2">
+          {/* Type & Category Labels */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <Badge size="sm">
+              <TypeIcon className="w-3 h-3 text-neutral-400" />
+              <span>{typeLabel}</span>
+            </Badge>
 
-        {/* Source / Domain */}
-        {domain && (
-          <div className="flex items-center gap-1.5 text-[11px] text-neutral-500 mt-1">
-            <Globe className="w-3 h-3 text-neutral-500" />
-            <span className="truncate">{domain}</span>
+            {categoryName && (
+              <span className="inline-flex items-center gap-1 text-[10px] text-neutral-400 bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/[0.06]">
+                <span
+                  className="w-1.5 h-1.5 rounded-full shrink-0"
+                  style={{ backgroundColor: categoryColor || '#09AE5B' }}
+                />
+                <span className="truncate max-w-[110px]">{categoryName}</span>
+              </span>
+            )}
           </div>
-        )}
 
-        {/* Description */}
-        {resource.description && (
-          <p className="text-xs text-neutral-400 line-clamp-2 mt-1.5 leading-relaxed">
-            {resource.description}
+          {/* Resource Title */}
+          <Link
+            to={`/library/${resource._id}`}
+            className="font-medium text-sm text-[#EDEDED] hover:text-white line-clamp-1 block transition-colors pt-0.5"
+          >
+            {resource.title}
+          </Link>
+
+          {/* Source / Domain */}
+          {domain && (
+            <div className="flex items-center gap-1.5 text-[11px] text-neutral-500">
+              {resource.favicon ? (
+                <img
+                  src={resource.favicon}
+                  alt=""
+                  className="w-3 h-3 object-contain rounded-xs"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = 'none';
+                  }}
+                />
+              ) : (
+                <Globe className="w-3 h-3 text-neutral-500" />
+              )}
+              <span className="truncate">{domain}</span>
+            </div>
+          )}
+
+          {/* Meaningful Description (2-line clamp with consistent height) */}
+          <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
+            {resource.description?.trim() || <span className="italic text-neutral-500">No description added.</span>}
           </p>
-        )}
 
-        {/* Category tag */}
-        {categoryName && (
-          <div className="mt-2.5">
-            <span className="inline-flex items-center gap-1 text-[10px] text-neutral-400 bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/[0.06]">
-              <span
-                className="w-1.5 h-1.5 rounded-full shrink-0"
-                style={{ backgroundColor: categoryColor || '#09AE5B' }}
-              />
-              <span className="truncate max-w-[120px]">{categoryName}</span>
-            </span>
-          </div>
-        )}
+          {/* Tags */}
+          {resource.tags && resource.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 pt-1">
+              {resource.tags.slice(0, 3).map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.04] text-neutral-400 border border-white/[0.06]"
+                >
+                  #{tag}
+                </span>
+              ))}
+              {resource.tags.length > 3 && (
+                <span className="text-[10px] text-neutral-500 self-center">
+                  +{resource.tags.length - 3}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Footer: Date & Details link */}
-      <div className="mt-3.5 pt-2.5 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-500">
+      {/* 3. Card Footer: Date & Actions */}
+      <div className="px-4 py-2.5 border-t border-white/[0.06] bg-[#0E0F10]/50 flex items-center justify-between text-[11px] text-neutral-500">
         <span>{formatRelativeTime(resource.createdAt)}</span>
-        <Link
-          to={`/library/${resource._id}`}
-          className="text-neutral-400 hover:text-white transition-colors"
-        >
-          View details →
-        </Link>
+
+        <div className="flex items-center gap-1">
+          {resource.url && (
+            <a
+              href={resource.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+              title="Open website"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          )}
+
+          <button
+            onClick={() => onEdit(resource)}
+            className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+            title="Edit"
+          >
+            <Edit2 className="w-3.5 h-3.5" />
+          </button>
+
+          <button
+            onClick={() => onDelete(resource._id, resource.title)}
+            className="p-1 rounded text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
+            title="Delete"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
     </div>
   );
