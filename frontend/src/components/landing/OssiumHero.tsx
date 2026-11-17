@@ -17,11 +17,8 @@ export const OssiumHero: React.FC = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center relative z-10">
         {/* Main Headline - Controlled width for balanced line wrapping */}
-        <h1 className="text-balance text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15] max-w-3xl mx-auto">
-          <span className="text-white block sm:inline">Your central hub for</span>{' '}
-          <span className="block text-transparent [-webkit-text-stroke:1px_#ffffff] sm:[-webkit-text-stroke:1.5px_#ffffff] tracking-tight mt-1">
-            everything you build with.
-          </span>
+        <h1 className="text-balance text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#E5E5E5] leading-[1.12] max-w-3xl mx-auto">
+          Your central hub for <span className="text-[#09AE5B]">everything you build with</span>.
         </h1>
 
         {/* Subtitle - Moderate width to prevent long, stretched lines */}
