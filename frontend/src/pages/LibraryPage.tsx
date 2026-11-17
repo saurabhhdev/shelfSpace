@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Search,
@@ -21,7 +21,6 @@ import type { Resource, ResourceType, Project, Collection } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
 import { EditResourceModal } from '../components/resources/EditResourceModal';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
-import { Button } from '../components/ui/Button';
 import { cn } from '../lib/utils';
 
 const categories: Array<{ id: string; label: string; type?: ResourceType; icon: React.ReactNode }> = [
@@ -57,7 +56,7 @@ export const LibraryPage: React.FC = () => {
   // Modals
   const [editingResource, setEditingResource] = useState<Resource | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [_isDeleting, setIsDeleting] = useState(false);
 
   const fetchResources = useCallback(async () => {
     setIsLoading(true);
@@ -143,75 +142,78 @@ export const LibraryPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-12">
-      {/* 1. Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-xs text-[#8e8d8a] dark:text-[#71717a] font-mono">
-            <span>Library</span>
-            <span>•</span>
-            <span>{totalCount} items</span>
-          </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5">
-            Resource Library
-          </h1>
-          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1">
-            Search, filter, and organize all tools, links, color palettes, and code snippets.
-          </p>
-        </div>
-
-        {/* View mode toggle & Sort */}
-        <div className="flex items-center gap-2">
-          {/* Sort dropdown */}
-          <div className="flex items-center gap-1.5 h-8.5 px-2.5 rounded-lg border border-[#ececeb] dark:border-[#26262c] bg-white dark:bg-[#18181c] text-xs text-[#5f5e5b] dark:text-[#a1a1aa]">
-            <ArrowUpDown className="w-3.5 h-3.5 text-[#8e8d8a]" />
-            <select
-              value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value as any);
-                setPage(1);
-              }}
-              className="bg-transparent focus:outline-none cursor-pointer text-xs"
-            >
-              <option value="recent">Recently Added</option>
-              <option value="oldest">Oldest First</option>
-              <option value="title_asc">Title A–Z</option>
-              <option value="title_desc">Title Z–A</option>
-            </select>
+    <div className="space-y-6 max-w-6xl mx-auto pb-16">
+      {/* 1. Page Header Frame */}
+      <div className="relative rounded-none border border-white/[0.08] bg-[#121316] p-6 sm:p-8 shadow-xl overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-none bg-neutral-800/60 px-2 py-0.5 text-xs text-neutral-300 font-mono mb-2">
+              <span className="w-1.5 h-1.5 rounded-none bg-[#09AE5B]"></span>
+              <span>Library Index</span>
+              <span className="text-neutral-500">•</span>
+              <span>{totalCount} items saved</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#E5E5E5]">
+              Resource Catalog
+            </h1>
+            <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+              Search, filter, and reference all technical tools, links, color palettes, and code snippets.
+            </p>
           </div>
 
-          {/* View mode buttons */}
-          <div className="flex rounded-lg border border-[#ececeb] dark:border-[#26262c] bg-white dark:bg-[#18181c] p-0.5">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={cn(
-                'p-1.5 rounded transition-colors cursor-pointer',
-                viewMode === 'grid'
-                  ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white'
-                  : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
-              )}
-              title="Grid view"
-            >
-              <LayoutGrid className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={cn(
-                'p-1.5 rounded transition-colors cursor-pointer',
-                viewMode === 'list'
-                  ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white'
-                  : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
-              )}
-              title="List view"
-            >
-              <List className="w-3.5 h-3.5" />
-            </button>
+          {/* View mode toggle & Sort */}
+          <div className="flex items-center gap-2.5">
+            {/* Sort dropdown */}
+            <div className="flex items-center gap-1.5 h-8.5 px-3 rounded-none border border-white/[0.08] bg-[#0E0F10] text-xs text-neutral-400">
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#09AE5B]" />
+              <select
+                value={sortBy}
+                onChange={(e) => {
+                  setSortBy(e.target.value as any);
+                  setPage(1);
+                }}
+                className="bg-transparent focus:outline-none cursor-pointer text-xs text-[#E5E5E5]"
+              >
+                <option value="recent" className="bg-[#121316]">Recently Added</option>
+                <option value="oldest" className="bg-[#121316]">Oldest First</option>
+                <option value="title_asc" className="bg-[#121316]">Title A–Z</option>
+                <option value="title_desc" className="bg-[#121316]">Title Z–A</option>
+              </select>
+            </div>
+
+            {/* View mode buttons */}
+            <div className="flex rounded-none border border-white/[0.08] bg-[#0E0F10] p-0.5">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={cn(
+                  'p-1.5 rounded-none transition-colors cursor-pointer',
+                  viewMode === 'grid'
+                    ? 'bg-[#E5E5E5] text-black font-semibold'
+                    : 'text-neutral-400 hover:text-white'
+                )}
+                title="Grid view"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={cn(
+                  'p-1.5 rounded-none transition-colors cursor-pointer',
+                  viewMode === 'list'
+                    ? 'bg-[#E5E5E5] text-black font-semibold'
+                    : 'text-neutral-400 hover:text-white'
+                )}
+                title="List view"
+              >
+                <List className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 2. Notion-style Category Filter Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none border-b border-[#ececeb] dark:border-[#222227]">
+      {/* 2. Category Filter Pills (Sharp) */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
         {categories.map((cat) => {
           const isActive = activeCategory === cat.id;
           return (
@@ -222,10 +224,10 @@ export const LibraryPage: React.FC = () => {
                 setPage(1);
               }}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-all cursor-pointer',
+                'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-none whitespace-nowrap transition-all cursor-pointer',
                 isActive
-                  ? 'bg-[#191919] dark:bg-white text-white dark:text-zinc-950 shadow-2xs font-semibold'
-                  : 'text-[#5f5e5b] dark:text-[#a1a1aa] hover:text-[#2b2a28] dark:hover:text-white hover:bg-[#f2f2ef] dark:hover:bg-[#1c1c22]'
+                  ? 'bg-[#E5E5E5] text-black font-semibold shadow-sm'
+                  : 'text-neutral-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.08]'
               )}
             >
               {cat.icon}
@@ -237,7 +239,7 @@ export const LibraryPage: React.FC = () => {
 
       {/* 3. Search Input */}
       <div className="relative">
-        <Search className="w-3.5 h-3.5 text-[#8e8d8a] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+        <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         <input
           type="text"
           value={search}
@@ -245,13 +247,13 @@ export const LibraryPage: React.FC = () => {
             setSearch(e.target.value);
             setPage(1);
           }}
-          placeholder="Filter resources in this view..."
-          className="w-full h-9 pl-9 pr-4 rounded-xl text-xs sm:text-sm bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] text-[#2b2a28] dark:text-[#f4f4f5] placeholder:text-[#9b9a97] dark:placeholder:text-[#63636e] focus:outline-none focus:ring-2 focus:ring-zinc-950/10 dark:focus:ring-white/15 focus:border-zinc-400"
+          placeholder="Filter resources in this view by name, tag, or domain..."
+          className="w-full h-10 pl-10 pr-16 rounded-none text-xs sm:text-sm bg-[#121316] border border-white/[0.08] text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-[#09AE5B]/70 transition-colors"
         />
         {search && (
           <button
             onClick={() => setSearch('')}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white cursor-pointer"
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-neutral-400 hover:text-white cursor-pointer"
           >
             Clear
           </button>
@@ -260,11 +262,11 @@ export const LibraryPage: React.FC = () => {
 
       {/* 4. Resource Cards */}
       {isLoading ? (
-        <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5' : 'space-y-2')}>
+        <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5' : 'space-y-2.5')}>
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="h-40 rounded-xl bg-[#f7f7f5] dark:bg-[#18181c] animate-pulse border border-[#ececeb] dark:border-[#26262c]"
+              className="h-40 rounded-none bg-[#121316] animate-pulse border border-white/[0.06]"
             />
           ))}
         </div>
@@ -273,7 +275,7 @@ export const LibraryPage: React.FC = () => {
           className={cn(
             viewMode === 'grid'
               ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5'
-              : 'space-y-2'
+              : 'space-y-2.5'
           )}
         >
           {resources.map((resource) => (
@@ -288,61 +290,60 @@ export const LibraryPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ececeb] dark:border-[#26262c] p-8 bg-white dark:bg-[#18181c]">
-          <div className="w-10 h-10 rounded-xl bg-[#f7f7f5] dark:bg-[#202026] text-[#8e8d8a] flex items-center justify-center mx-auto mb-3">
+        <div className="py-16 text-center rounded-none border border-white/[0.08] p-8 bg-[#121316]">
+          <div className="w-10 h-10 rounded-none bg-white/[0.05] text-[#09AE5B] flex items-center justify-center mx-auto mb-3">
             <Search className="w-5 h-5" />
           </div>
-          <h3 className="text-sm font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mb-1">
+          <h3 className="text-sm font-semibold text-[#E5E5E5] mb-1">
             No resources found
           </h3>
-          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] max-w-sm mx-auto mb-4">
+          <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
             {search
-              ? `No resources match the query "${search}". Try clearing search filter or switching categories.`
+              ? `No resources match the query "${search}". Try clearing your search or switching categories.`
               : 'Your workspace library is currently empty. Start by saving a link or creating your first resource.'}
           </p>
           {search ? (
-            <Button variant="outline" size="xs" onClick={() => setSearch('')}>
-              Clear Search Filter
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              size="xs"
-              pill
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
-              onClick={() => window.dispatchEvent(new CustomEvent('open-quick-add'))}
+            <button
+              onClick={() => setSearch('')}
+              className="px-4 py-1.5 rounded-none bg-[#242424] text-xs font-medium text-white hover:bg-[#2e2e2e] transition-colors"
             >
-              Add First Resource
-            </Button>
+              Clear Search Filter
+            </button>
+          ) : (
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-quick-add'))}
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-none bg-[#09AE5B] text-xs font-semibold text-black hover:bg-[#07914b] transition-colors"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add First Resource</span>
+            </button>
           )}
         </div>
       )}
 
-      {/* 5. Pagination Controls */}
+      {/* 5. Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-4 border-t border-[#ececeb] dark:border-[#222227] text-xs text-[#8e8d8a] dark:text-[#71717a] font-mono">
-          <span>
-            Page {page} of {totalPages}
-          </span>
-          <div className="flex items-center gap-1.5">
-            <Button
-              variant="outline"
-              size="xs"
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
+        <div className="flex items-center justify-between pt-4 border-t border-white/[0.06] text-xs text-neutral-400">
+          <div>
+            Page {page} of {totalPages} ({totalCount} total)
+          </div>
+          <div className="flex items-center gap-2">
+            <button
               disabled={page <= 1}
-              leftIcon={<ChevronLeft className="w-3.5 h-3.5" />}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-none bg-[#121316] border border-white/[0.08] text-xs disabled:opacity-40 hover:bg-white/[0.06]"
             >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="xs"
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Prev</span>
+            </button>
+            <button
               disabled={page >= totalPages}
-              rightIcon={<ChevronRight className="w-3.5 h-3.5" />}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-none bg-[#121316] border border-white/[0.08] text-xs disabled:opacity-40 hover:bg-white/[0.06]"
             >
-              Next
-            </Button>
+              <span>Next</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       )}
@@ -350,22 +351,29 @@ export const LibraryPage: React.FC = () => {
       {/* Edit Modal */}
       {editingResource && (
         <EditResourceModal
-          isOpen={editingResource !== null}
           resource={editingResource}
+          isOpen={true}
           projects={projects}
           collections={collections}
           onClose={() => setEditingResource(null)}
-          onSuccess={() => fetchResources()}
+          onSuccess={() => {
+            setEditingResource(null);
+            fetchResources();
+          }}
         />
       )}
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
-        isOpen={deletingId !== null}
+        isOpen={!!deletingId}
+        title="Move Resource to Trash?"
+        message="This resource will be moved to Trash. You can restore it anytime within 30 days."
+        confirmText="Move to Trash"
         onCancel={() => setDeletingId(null)}
         onConfirm={handleConfirmDelete}
-        isLoading={isDeleting}
       />
     </div>
   );
 };
+
+export default LibraryPage;

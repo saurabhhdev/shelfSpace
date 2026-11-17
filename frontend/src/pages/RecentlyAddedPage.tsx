@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { Clock, LayoutGrid, List } from 'lucide-react';
 import { apiClient } from '../api/client';
 import type { Resource } from '../types';
@@ -62,7 +62,7 @@ export const RecentlyAddedPage: React.FC = () => {
             <span>•</span>
             <span>{resources.length} recent</span>
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5">
+          <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#fafafa] mt-0.5">
             Recently Added
           </h1>
           <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1">
@@ -70,14 +70,14 @@ export const RecentlyAddedPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex rounded-lg border border-[#ececeb] dark:border-[#26262c] bg-white dark:bg-[#18181c] p-0.5 self-start sm:self-auto">
+        <div className="flex rounded-none border border-white/10 bg-[#0E0F10] p-0.5 self-start sm:self-auto">
           <button
             onClick={() => setViewMode('grid')}
             className={cn(
-              'p-1.5 rounded transition-colors cursor-pointer',
+              'p-1.5 rounded-none transition-colors cursor-pointer',
               viewMode === 'grid'
-                ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white'
-                : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
+                ? 'bg-[#09AE5B] text-black font-semibold'
+                : 'text-neutral-400 hover:text-white'
             )}
             title="Grid view"
           >
@@ -86,10 +86,10 @@ export const RecentlyAddedPage: React.FC = () => {
           <button
             onClick={() => setViewMode('list')}
             className={cn(
-              'p-1.5 rounded transition-colors cursor-pointer',
+              'p-1.5 rounded-none transition-colors cursor-pointer',
               viewMode === 'list'
-                ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white'
-                : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
+                ? 'bg-[#09AE5B] text-black font-semibold'
+                : 'text-neutral-400 hover:text-white'
             )}
             title="List view"
           >
@@ -103,7 +103,7 @@ export const RecentlyAddedPage: React.FC = () => {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-36 rounded-xl bg-[#f7f7f5] dark:bg-[#18181c] animate-pulse border border-[#ececeb] dark:border-[#26262c]"
+              className="h-36 rounded-none bg-[#121316] animate-pulse border border-white/[0.08]"
             />
           ))}
         </div>
@@ -127,12 +127,12 @@ export const RecentlyAddedPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ececeb] dark:border-[#26262c] p-8 bg-white dark:bg-[#18181c]">
-          <Clock className="w-8 h-8 text-[#8e8d8a] mx-auto mb-3" />
-          <h3 className="text-sm font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mb-1">
+        <div className="py-16 text-center rounded-none border border-dashed border-white/10 p-8 bg-[#121316]">
+          <Clock className="w-8 h-8 text-[#09AE5B] mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-[#E5E5E5] mb-1">
             No recently added items
           </h3>
-          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] max-w-sm mx-auto">
+          <p className="text-xs text-neutral-400 max-w-sm mx-auto">
             Resources you save will automatically be catalogued here in chronological order.
           </p>
         </div>
@@ -157,3 +157,4 @@ export const RecentlyAddedPage: React.FC = () => {
     </div>
   );
 };
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   Home,
@@ -20,14 +20,12 @@ import {
   Menu,
   X,
   ExternalLink,
-  ChevronDown,
   Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { CommandPalette } from '../search/CommandPalette';
 import { QuickAddDrawer } from '../resources/QuickAddDrawer';
-import { Button } from '../ui/Button';
 import { apiClient } from '../../api/client';
 import type { Project, Collection } from '../../types';
 import { cn } from '../../lib/utils';
@@ -116,40 +114,40 @@ export const AppLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#fbfbfa] dark:bg-[#0d0d0f] text-[#2b2a28] dark:text-[#f4f4f5] font-sans transition-colors duration-150">
+    <div className="relative min-h-screen flex bg-[#0E0F10] text-[#E5E5E5] font-sans selection:bg-[#09AE5B] selection:text-black">
       {/* Mobile Drawer Backdrop */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs md:hidden"
+          className="fixed inset-0 z-40 bg-black/80 backdrop-blur-xs md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
-      {/* NOTION-STYLE SIDEBAR */}
+      {/* OSSIUM EDITORIAL SIDEBAR */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex flex-col justify-between border-r border-[#ececeb] dark:border-[#222227] bg-[#f7f7f5] dark:bg-[#131316] transition-all duration-200 ease-in-out md:static select-none',
+          'fixed inset-y-0 left-0 z-40 flex flex-col justify-between border-r border-white/[0.08] bg-[#0E0F10] transition-all duration-200 ease-in-out md:static select-none',
           isCollapsed ? 'w-16' : 'w-64',
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
         <div className="flex flex-col h-full overflow-hidden">
           {/* 1. Workspace Switcher Header */}
-          <div className="flex items-center justify-between h-13 px-3.5 border-b border-[#ececeb] dark:border-[#222227] shrink-0">
+          <div className="flex items-center justify-between h-14 px-4 border-b border-white/[0.08] shrink-0 bg-[#0E0F10]">
             {!isCollapsed ? (
               <div className="flex items-center justify-between w-full">
                 <Link
                   to="/dashboard"
-                  className="flex items-center gap-2.5 px-1.5 py-1 rounded-md hover:bg-[#efefed] dark:hover:bg-[#1e1e24] transition-colors truncate group"
+                  className="flex items-center gap-2.5 px-1 py-1 rounded-none hover:bg-white/[0.04] transition-colors truncate group"
                 >
-                  <div className="w-6 h-6 rounded-md bg-[#191919] dark:bg-white text-white dark:text-zinc-950 font-bold flex items-center justify-center text-xs shrink-0 shadow-2xs">
-                    S
+                  <div className="w-6 h-6 rounded-none bg-neutral-800 border border-white/10 flex items-center justify-center shrink-0 group-hover:border-[#09AE5B]/50 transition-colors">
+                    <span className="w-2 h-2 rounded-none bg-[#09AE5B] shadow-[0_0_8px_#09AE5B]"></span>
                   </div>
                   <div className="truncate text-left">
-                    <span className="text-xs font-semibold text-[#2b2a28] dark:text-[#f4f4f5] tracking-tight truncate block">
+                    <span className="text-xs font-semibold text-[#E5E5E5] tracking-tight truncate block group-hover:text-white transition-colors">
                       {user?.name ? `${user.name.split(' ')[0]}'s Shelf` : 'Shelfspace'}
                     </span>
-                    <span className="text-[10px] text-[#8e8d8a] dark:text-[#71717a] block leading-none">
+                    <span className="text-[10px] text-neutral-400 block leading-none font-mono">
                       Personal Workspace
                     </span>
                   </div>
@@ -158,16 +156,16 @@ export const AppLayout: React.FC = () => {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="hidden md:flex text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-[#f4f4f5] p-1.5 rounded-md hover:bg-[#efefed] dark:hover:bg-[#1e1e24] cursor-pointer"
+                    className="hidden md:flex text-neutral-400 hover:text-white p-1 rounded-none hover:bg-white/[0.06] cursor-pointer transition-colors"
                     title="Collapse sidebar"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="md:hidden text-[#8e8d8a] p-1.5 cursor-pointer"
+                    className="md:hidden text-neutral-400 hover:text-white p-1 cursor-pointer"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -175,7 +173,7 @@ export const AppLayout: React.FC = () => {
               <div className="w-full flex items-center justify-center">
                 <button
                   onClick={() => setIsCollapsed(false)}
-                  className="text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-[#f4f4f5] p-1.5 rounded-md hover:bg-[#efefed] dark:hover:bg-[#1e1e24] cursor-pointer"
+                  className="text-neutral-400 hover:text-[#09AE5B] p-1.5 rounded-none hover:bg-white/[0.06] cursor-pointer transition-colors"
                   title="Expand sidebar"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -185,43 +183,44 @@ export const AppLayout: React.FC = () => {
           </div>
 
           {/* 2. Quick Search & Quick Add CTA */}
-          <div className="p-2.5 space-y-1.5 shrink-0">
+          <div className="p-3 space-y-2 shrink-0">
             <button
               onClick={() => setIsCommandOpen(true)}
               className={cn(
-                'w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-[#787774] dark:text-[#a1a1aa] bg-[#f0f0ee] dark:bg-[#1a1a1f] hover:bg-[#e9e9e7] dark:hover:bg-[#222229] transition-colors cursor-pointer border border-[#e5e5e3] dark:border-[#26262e]',
+                'w-full flex items-center gap-2 px-3 py-1.5 rounded-none text-xs text-neutral-400 bg-[#141519] hover:bg-[#18191e] hover:text-neutral-200 transition-colors cursor-pointer border border-white/[0.06]',
                 isCollapsed && 'justify-center px-0'
               )}
               title="Search (⌘K)"
             >
-              <Search className="w-3.5 h-3.5 shrink-0" />
+              <Search className="w-3.5 h-3.5 text-[#09AE5B] shrink-0" />
               {!isCollapsed && (
                 <>
-                  <span className="flex-1 text-left">Search</span>
-                  <kbd className="text-[10px] font-mono px-1 py-0.2 rounded bg-white dark:bg-[#2a2a32] text-[#8e8d8a] dark:text-[#71717a] border border-[#dededb] dark:border-[#383844]">
+                  <span className="flex-1 text-left text-xs">Search...</span>
+                  <kbd className="text-[10px] font-mono px-1 py-0.5 rounded-none bg-black/40 text-neutral-400 border border-white/[0.08]">
                     ⌘K
                   </kbd>
                 </>
               )}
             </button>
 
-            <Button
-              variant="primary"
-              size="sm"
+            <button
               onClick={() => setIsQuickAddOpen(true)}
-              className={cn('w-full justify-center text-xs h-8 shadow-xs', isCollapsed && 'px-0')}
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
+              className={cn(
+                'w-full inline-flex items-center justify-center gap-1.5 rounded-none bg-[#09AE5B] hover:bg-[#07914b] text-black font-semibold text-xs h-8 px-3 transition-colors shadow-sm cursor-pointer',
+                isCollapsed && 'px-0 rounded-none'
+              )}
             >
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               {!isCollapsed && <span>Quick Add</span>}
-            </Button>
+            </button>
           </div>
 
           {/* 3. Navigation Sections (Scrollable) */}
-          <div className="flex-1 overflow-y-auto px-2 py-1 space-y-4">
+          <div className="flex-1 overflow-y-auto px-3 py-1 space-y-4">
             {/* WORKSPACE GROUP */}
             <div className="space-y-0.5">
               {!isCollapsed && (
-                <div className="px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#9b9a97] dark:text-[#71717a]">
+                <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 font-mono">
                   Workspace
                 </div>
               )}
@@ -230,17 +229,17 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-[#eaeae7] dark:bg-[#202026] text-[#191919] dark:text-white font-semibold'
-                      : 'text-[#5f5e5b] dark:text-[#a1a1aa] hover:bg-[#efefed] dark:hover:bg-[#1a1a20] hover:text-[#2b2a28] dark:hover:text-white',
+                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
                 }
                 title={isCollapsed ? 'Home' : undefined}
               >
                 <Home className="w-4 h-4 shrink-0" />
-                {!isCollapsed && <span>Home</span>}
+                {!isCollapsed && <span>Overview</span>}
               </NavLink>
 
               <NavLink
@@ -248,10 +247,10 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-[#eaeae7] dark:bg-[#202026] text-[#191919] dark:text-white font-semibold'
-                      : 'text-[#5f5e5b] dark:text-[#a1a1aa] hover:bg-[#efefed] dark:hover:bg-[#1a1a20] hover:text-[#2b2a28] dark:hover:text-white',
+                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
                 }
@@ -265,11 +264,11 @@ export const AppLayout: React.FC = () => {
             {/* COLLECTIONS & PROJECTS GROUP */}
             <div className="space-y-0.5">
               {!isCollapsed && (
-                <div className="flex items-center justify-between px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#9b9a97] dark:text-[#71717a]">
-                  <span>Collections</span>
+                <div className="flex items-center justify-between px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 font-mono">
+                  <span>Organization</span>
                   <Link
                     to="/collections"
-                    className="hover:text-[#2b2a28] dark:hover:text-white transition-colors"
+                    className="hover:text-[#09AE5B] transition-colors text-[10px]"
                   >
                     View All
                   </Link>
@@ -281,17 +280,17 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-[#eaeae7] dark:bg-[#202026] text-[#191919] dark:text-white font-semibold'
-                      : 'text-[#5f5e5b] dark:text-[#a1a1aa] hover:bg-[#efefed] dark:hover:bg-[#1a1a20] hover:text-[#2b2a28] dark:hover:text-white',
+                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
                 }
                 title={isCollapsed ? 'Collections' : undefined}
               >
-                <BookmarkCheck className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                {!isCollapsed && <span>All Collections</span>}
+                <BookmarkCheck className="w-4 h-4 shrink-0" />
+                {!isCollapsed && <span>Collections</span>}
               </NavLink>
 
               <NavLink
@@ -299,44 +298,44 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-[#eaeae7] dark:bg-[#202026] text-[#191919] dark:text-white font-semibold'
-                      : 'text-[#5f5e5b] dark:text-[#a1a1aa] hover:bg-[#efefed] dark:hover:bg-[#1a1a20] hover:text-[#2b2a28] dark:hover:text-white',
+                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
                 }
                 title={isCollapsed ? 'Projects' : undefined}
               >
-                <FolderKanban className="w-4 h-4 shrink-0 text-blue-600 dark:text-blue-400" />
+                <FolderKanban className="w-4 h-4 shrink-0" />
                 {!isCollapsed && <span>Projects</span>}
               </NavLink>
 
               {/* Direct collection items */}
               {!isCollapsed && collections.length > 0 && (
-                <div className="pl-3 pr-1 pt-1 space-y-0.5 border-l border-[#ececeb] dark:border-[#222227] ml-3.5 my-1">
-                  {collections.slice(0, 6).map((col) => (
+                <div className="pl-3 pr-1 pt-1 space-y-0.5 border-l border-white/[0.06] ml-3.5 my-1">
+                  {collections.slice(0, 5).map((col) => (
                     <NavLink
                       key={col._id}
                       to={`/collections/${col._id}`}
                       className={({ isActive }) =>
                         cn(
-                          'flex items-center justify-between px-2 py-1 rounded text-xs transition-colors',
+                          'flex items-center justify-between px-2 py-1 rounded-none text-xs transition-colors',
                           isActive
-                            ? 'bg-[#eaeae7] dark:bg-[#202026] text-[#191919] dark:text-white font-medium'
-                            : 'text-[#6f6e6b] dark:text-[#94949e] hover:bg-[#efefed] dark:hover:bg-[#1a1a20] hover:text-[#2b2a28] dark:hover:text-white'
+                            ? 'bg-white/[0.06] text-[#09AE5B] font-medium'
+                            : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200'
                         )
                       }
                     >
                       <div className="flex items-center gap-2 truncate">
                         <span
-                          className="w-1.5 h-1.5 rounded-full shrink-0"
-                          style={{ backgroundColor: col.color || '#10b981' }}
+                          className="w-1.5 h-1.5 rounded-none shrink-0"
+                          style={{ backgroundColor: col.color || '#09AE5B' }}
                         />
                         <span className="truncate">{col.name}</span>
                       </div>
                       {col.resourceCount !== undefined && col.resourceCount > 0 && (
-                        <span className="text-[10px] font-mono text-[#9b9a97] dark:text-[#63636e]">
+                        <span className="text-[10px] font-mono text-neutral-400">
                           {col.resourceCount}
                         </span>
                       )}
@@ -349,8 +348,8 @@ export const AppLayout: React.FC = () => {
             {/* QUICK ACCESS GROUP */}
             <div className="space-y-0.5">
               {!isCollapsed && (
-                <div className="px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#9b9a97] dark:text-[#71717a]">
-                  Favorites & History
+                <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 font-mono">
+                  Quick Access
                 </div>
               )}
               <NavLink
@@ -358,16 +357,16 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-[#eaeae7] dark:bg-[#202026] text-[#191919] dark:text-white font-semibold'
-                      : 'text-[#5f5e5b] dark:text-[#a1a1aa] hover:bg-[#efefed] dark:hover:bg-[#1a1a20] hover:text-[#2b2a28] dark:hover:text-white',
+                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
                 }
                 title={isCollapsed ? 'Favorites' : undefined}
               >
-                <Star className="w-4 h-4 shrink-0 text-amber-500 fill-amber-500/20" />
+                <Star className="w-4 h-4 shrink-0 text-amber-400" />
                 {!isCollapsed && <span>Favorites</span>}
               </NavLink>
 
@@ -376,16 +375,16 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-[#eaeae7] dark:bg-[#202026] text-[#191919] dark:text-white font-semibold'
-                      : 'text-[#5f5e5b] dark:text-[#a1a1aa] hover:bg-[#efefed] dark:hover:bg-[#1a1a20] hover:text-[#2b2a28] dark:hover:text-white',
+                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
                 }
                 title={isCollapsed ? 'Recently Added' : undefined}
               >
-                <Clock className="w-4 h-4 shrink-0 text-purple-500" />
+                <Clock className="w-4 h-4 shrink-0" />
                 {!isCollapsed && <span>Recently Added</span>}
               </NavLink>
 
@@ -394,31 +393,31 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-[#eaeae7] dark:bg-[#202026] text-[#191919] dark:text-white font-semibold'
-                      : 'text-[#5f5e5b] dark:text-[#a1a1aa] hover:bg-[#efefed] dark:hover:bg-[#1a1a20] hover:text-[#2b2a28] dark:hover:text-white',
+                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
                 }
                 title={isCollapsed ? 'Trash' : undefined}
               >
-                <Trash2 className="w-4 h-4 shrink-0 text-zinc-400" />
+                <Trash2 className="w-4 h-4 shrink-0" />
                 {!isCollapsed && <span>Trash</span>}
               </NavLink>
             </div>
           </div>
 
           {/* 4. Bottom Controls: User Profile & Settings */}
-          <div className="p-2 border-t border-[#ececeb] dark:border-[#222227] space-y-0.5 shrink-0 bg-[#f7f7f5] dark:bg-[#131316]">
+          <div className="p-3 border-t border-white/[0.08] space-y-1 shrink-0 bg-[#0E0F10]">
             <NavLink
               to="/settings"
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
+                  'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
                   isActive
-                    ? 'bg-[#eaeae7] dark:bg-[#202026] text-[#191919] dark:text-white font-semibold'
-                    : 'text-[#5f5e5b] dark:text-[#a1a1aa] hover:bg-[#efefed] dark:hover:bg-[#1a1a20] hover:text-[#2b2a28] dark:hover:text-white',
+                    ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                    : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                   isCollapsed && 'justify-center px-0'
                 )
               }
@@ -431,33 +430,33 @@ export const AppLayout: React.FC = () => {
             <button
               onClick={cycleTheme}
               className={cn(
-                'w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium text-[#5f5e5b] dark:text-[#a1a1aa] hover:bg-[#efefed] dark:hover:bg-[#1a1a20] hover:text-[#2b2a28] dark:hover:text-white transition-colors cursor-pointer',
+                'w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200 transition-colors cursor-pointer',
                 isCollapsed && 'justify-center px-0'
               )}
               title={`Theme: ${theme}`}
             >
               {theme === 'dark' ? (
-                <Moon className="w-4 h-4 shrink-0 text-amber-400" />
+                <Moon className="w-4 h-4 shrink-0 text-[#09AE5B]" />
               ) : theme === 'light' ? (
-                <Sun className="w-4 h-4 shrink-0 text-amber-500" />
+                <Sun className="w-4 h-4 shrink-0 text-amber-400" />
               ) : (
-                <Laptop className="w-4 h-4 shrink-0" />
+                <Laptop className="w-4 h-4 shrink-0 text-[#09AE5B]" />
               )}
               {!isCollapsed && <span className="capitalize">{theme} Theme</span>}
             </button>
 
             {/* User profile brief & logout button */}
             {!isCollapsed ? (
-              <div className="pt-2 mt-1 border-t border-[#ececeb] dark:border-[#222227] flex items-center justify-between px-1.5">
+              <div className="pt-2 mt-1 border-t border-white/[0.06] flex items-center justify-between px-1">
                 <div className="flex items-center gap-2 truncate">
-                  <div className="w-6 h-6 rounded-full bg-[#191919] dark:bg-white text-white dark:text-zinc-950 font-semibold flex items-center justify-center text-[11px] shrink-0">
+                  <div className="w-6 h-6 rounded-none bg-neutral-800 border border-white/10 text-white font-semibold flex items-center justify-center text-xs shrink-0 font-mono">
                     {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                   </div>
                   <div className="truncate text-left">
-                    <span className="text-xs font-medium text-[#2b2a28] dark:text-[#f4f4f5] truncate block leading-tight">
+                    <span className="text-xs font-medium text-[#E5E5E5] truncate block leading-tight">
                       {user?.name || 'User'}
                     </span>
-                    <span className="text-[10px] text-[#8e8d8a] dark:text-[#71717a] truncate block leading-tight">
+                    <span className="text-[10px] text-neutral-400 truncate block leading-tight font-mono">
                       {user?.email}
                     </span>
                   </div>
@@ -468,7 +467,7 @@ export const AppLayout: React.FC = () => {
                     await logout();
                     navigate('/');
                   }}
-                  className="text-[#8e8d8a] hover:text-rose-600 dark:hover:text-rose-400 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer transition-colors"
+                  className="text-neutral-400 hover:text-rose-400 p-1 rounded-none hover:bg-white/[0.06] cursor-pointer transition-colors"
                   title="Log out"
                 >
                   <LogOut className="w-3.5 h-3.5" />
@@ -480,7 +479,7 @@ export const AppLayout: React.FC = () => {
                   await logout();
                   navigate('/');
                 }}
-                className="w-full flex items-center justify-center p-1.5 rounded text-[#8e8d8a] hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer"
+                className="w-full flex items-center justify-center p-1.5 rounded-none text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] cursor-pointer transition-colors"
                 title="Log out"
               >
                 <LogOut className="w-4 h-4" />
@@ -491,64 +490,61 @@ export const AppLayout: React.FC = () => {
       </aside>
 
       {/* MAIN VIEW AREA */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#fbfbfa] dark:bg-[#0d0d0f]">
-        {/* Notion-style Top Header */}
-        <header className="h-13 border-b border-[#ececeb] dark:border-[#222227] bg-[#fbfbfa]/90 dark:bg-[#0d0d0f]/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#0E0F10]">
+        {/* Ossium Minimal Top Header */}
+        <header className="h-14 border-b border-white/[0.08] bg-[#0E0F10]/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-[#f4f4f5] p-1 cursor-pointer"
+              className="md:hidden text-neutral-400 hover:text-white p-1 cursor-pointer"
             >
               <Menu className="w-5 h-5" />
             </button>
 
             {/* Breadcrumb Title */}
-            <div className="flex items-center gap-2 text-xs text-[#8e8d8a] dark:text-[#71717a]">
-              <span className="hover:text-[#2b2a28] dark:hover:text-[#f4f4f5] transition-colors cursor-default">
+            <div className="flex items-center gap-2 text-xs text-neutral-400">
+              <Link to="/dashboard" className="hover:text-white transition-colors">
                 Shelfspace
-              </span>
-              <span>/</span>
-              <span className="text-[#2b2a28] dark:text-[#f4f4f5] font-semibold cursor-default">
+              </Link>
+              <span className="text-neutral-600">/</span>
+              <span className="text-[#E5E5E5] font-medium">
                 {getPageTitle()}
               </span>
             </div>
           </div>
 
           {/* Header Action Buttons */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2.5">
             {/* Command search trigger button */}
             <button
               type="button"
               onClick={() => setIsCommandOpen(true)}
-              className="hidden sm:flex items-center gap-2 h-8 px-2.5 rounded-md bg-[#f2f2ef] dark:bg-[#18181c] border border-[#e5e5e3] dark:border-[#27272e] text-xs text-[#787774] dark:text-[#a1a1aa] hover:border-[#cfcfcc] dark:hover:border-[#383842] transition-colors cursor-pointer"
+              className="hidden sm:flex items-center gap-2 h-8 px-3 rounded-none bg-[#141519] border border-white/[0.08] text-xs text-neutral-400 hover:border-white/20 hover:text-white transition-colors cursor-pointer"
             >
-              <Search className="w-3.5 h-3.5" />
-              <span>Search...</span>
-              <kbd className="text-[10px] font-mono px-1 py-0.2 rounded bg-white dark:bg-[#25252b] border border-[#dededb] dark:border-[#33333d]">
+              <Search className="w-3.5 h-3.5 text-[#09AE5B]" />
+              <span>Search library...</span>
+              <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded-none bg-black/50 text-neutral-400 border border-white/[0.08]">
                 ⌘K
               </kbd>
             </button>
 
             <Link
               to="/"
-              className="text-xs text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-[#f4f4f5] hidden md:inline-flex items-center gap-1 font-medium px-2 py-1 rounded hover:bg-[#f2f2ef] dark:hover:bg-[#18181c] transition-colors"
+              className="text-xs text-neutral-400 hover:text-white hidden md:inline-flex items-center gap-1 font-medium px-2.5 py-1 rounded-none hover:bg-white/[0.04] transition-colors"
               title="View public website"
             >
               <span>Landing Page</span>
               <ExternalLink className="w-3 h-3" />
             </Link>
 
-            <Button
-              variant="primary"
-              size="sm"
-              pill
+            <button
               onClick={() => setIsQuickAddOpen(true)}
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
-              className="text-xs h-8 px-3.5 font-medium shadow-xs"
+              className="inline-flex items-center gap-1.5 rounded-none bg-[#09AE5B] hover:bg-[#07914b] text-black font-semibold text-xs h-8 px-3.5 transition-colors shadow-sm cursor-pointer"
             >
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Add Resource</span>
-              <kbd className="hidden lg:inline text-[10px] opacity-75 font-mono ml-1">N</kbd>
-            </Button>
+              <kbd className="hidden lg:inline text-[10px] font-mono ml-0.5 text-black/70 font-bold">N</kbd>
+            </button>
           </div>
         </header>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FolderKanban, Plus, Layers, Edit2, Trash2, ArrowRight } from 'lucide-react';
 import { apiClient } from '../api/client';
@@ -141,7 +141,7 @@ export const ProjectsPage: React.FC = () => {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-36 rounded-xl bg-[#f7f7f5] dark:bg-[#18181c] animate-pulse border border-[#ececeb] dark:border-[#26262c]"
+              className="h-36 rounded-none bg-[#121316] animate-pulse border border-white/[0.08]"
             />
           ))}
         </div>
@@ -150,25 +150,25 @@ export const ProjectsPage: React.FC = () => {
           {projects.map((project) => (
             <div
               key={project._id}
-              className="group relative flex flex-col justify-between p-4.5 bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] rounded-xl hover:border-[#cfcfcc] dark:hover:border-[#383842] transition-all hover:shadow-2xs"
+              className="group relative flex flex-col justify-between p-4.5 bg-[#121316] border border-white/[0.08] rounded-none hover:border-[#09AE5B]/60 transition-all"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 flex items-center justify-center border border-blue-200 dark:border-blue-800/60">
+                  <div className="w-8 h-8 rounded-none bg-[#0E0F10] text-[#09AE5B] flex items-center justify-center border border-white/10">
                     <FolderKanban className="w-4 h-4" />
                   </div>
 
                   <div className="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => openEditModal(project)}
-                      className="p-1 rounded text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white hover:bg-[#f2f2ef] dark:hover:bg-[#22222a] transition-colors cursor-pointer"
+                      className="p-1 rounded-none text-neutral-400 hover:text-[#09AE5B] hover:bg-white/[0.06] transition-colors cursor-pointer"
                       title="Edit project"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => setDeletingProject(project)}
-                      className="p-1 rounded text-[#8e8d8a] hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                      className="p-1 rounded-none text-neutral-400 hover:text-rose-400 hover:bg-rose-950/40 transition-colors cursor-pointer"
                       title="Delete project"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -178,27 +178,27 @@ export const ProjectsPage: React.FC = () => {
 
                 <Link
                   to={`/projects/${project._id}`}
-                  className="font-semibold text-sm text-[#2b2a28] dark:text-[#f4f4f5] hover:text-black dark:hover:text-white block transition-colors"
+                  className="font-semibold text-sm text-[#E5E5E5] hover:text-[#09AE5B] block transition-colors"
                 >
                   {project.name}
                 </Link>
 
                 {project.description && (
-                  <p className="text-xs text-[#787774] dark:text-[#a1a1aa] line-clamp-2 mt-1">
+                  <p className="text-xs text-neutral-400 line-clamp-2 mt-1">
                     {project.description}
                   </p>
                 )}
               </div>
 
-              <div className="mt-4 pt-3 border-t border-[#f1f1ef] dark:border-[#222227] flex items-center justify-between text-xs text-[#8e8d8a] dark:text-[#71717a]">
+              <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs text-neutral-400">
                 <span className="flex items-center gap-1 font-mono text-[11px]">
-                  <Layers className="w-3.5 h-3.5" />
+                  <Layers className="w-3.5 h-3.5 text-[#09AE5B]" />
                   {project.resourceCount || 0} {project.resourceCount === 1 ? 'resource' : 'resources'}
                 </span>
 
                 <Link
                   to={`/projects/${project._id}`}
-                  className="text-xs text-[#5f5e5b] dark:text-[#a1a1aa] hover:text-[#2b2a28] dark:hover:text-white flex items-center gap-1 font-medium transition-colors"
+                  className="text-xs text-neutral-400 hover:text-[#09AE5B] flex items-center gap-1 font-medium transition-colors"
                 >
                   <span>Explore</span>
                   <ArrowRight className="w-3 h-3" />
@@ -208,17 +208,16 @@ export const ProjectsPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ececeb] dark:border-[#26262c] p-8 bg-white dark:bg-[#18181c]">
-          <FolderKanban className="w-8 h-8 text-[#8e8d8a] mx-auto mb-3" />
-          <h3 className="text-sm font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mb-1">
+        <div className="py-16 text-center rounded-none border border-dashed border-white/[0.12] p-8 bg-[#121316]">
+          <FolderKanban className="w-8 h-8 text-neutral-500 mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-[#E5E5E5] mb-1">
             No projects created
           </h3>
-          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] max-w-sm mx-auto mb-4">
+          <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
             Group your resources by repositories, client projects, or tools you build.
           </p>
           <Button
             variant="primary"
-            pill
             size="xs"
             onClick={openCreateModal}
             leftIcon={<Plus className="w-3.5 h-3.5" />}
@@ -237,7 +236,7 @@ export const ProjectsPage: React.FC = () => {
       >
         <form onSubmit={handleSave} className="space-y-4">
           {error && (
-            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 text-xs text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-900/40">
+            <div className="p-3 rounded-none bg-rose-950/30 text-xs text-rose-400 border border-rose-900/40">
               {error}
             </div>
           )}
@@ -251,23 +250,23 @@ export const ProjectsPage: React.FC = () => {
           />
 
           <div>
-            <label className="text-xs font-medium text-[#2b2a28] dark:text-[#f4f4f5] block mb-1">
+            <label className="text-xs font-medium text-[#E5E5E5] block mb-1">
               Description (optional)
             </label>
             <textarea
               rows={2}
-              className="w-full rounded-lg p-2.5 text-xs bg-white dark:bg-[#18181c] border border-zinc-200 dark:border-zinc-800 text-[#2b2a28] dark:text-[#f4f4f5] placeholder:text-[#9b9a97] dark:placeholder:text-[#63636e] focus:outline-none focus:ring-2 focus:ring-zinc-950/10 dark:focus:ring-white/15 focus:border-zinc-400"
+              className="w-full rounded-none p-2.5 text-xs bg-[#0E0F10] border border-white/10 text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-[#09AE5B]"
               placeholder="What is the scope or goals of this project?"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
 
-          <div className="pt-3 border-t border-[#ececeb] dark:border-[#222227] flex justify-end gap-2">
+          <div className="pt-3 border-t border-white/[0.08] flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" variant="primary" pill isLoading={isSubmitting}>
+            <Button type="submit" variant="primary" isLoading={isSubmitting}>
               {editingProject ? 'Save Changes' : 'Create Project'}
             </Button>
           </div>
@@ -287,3 +286,4 @@ export const ProjectsPage: React.FC = () => {
     </div>
   );
 };
+

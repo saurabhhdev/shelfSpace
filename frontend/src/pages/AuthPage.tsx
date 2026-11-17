@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Lock, Mail, User as UserIcon, CheckCircle2, ArrowRight, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { apiClient } from '../api/client';
 import { cn } from '../lib/utils';
 
 export const AuthPage: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const [isLogin, setIsLogin] = useState(location.pathname !== '/register');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +20,10 @@ export const AuthPage: React.FC = () => {
 
   const { login, register } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
+
+  useEffect(() => {
+    setIsLogin(location.pathname !== '/register');
+  }, [location.pathname]);
 
   const from = (location.state as any)?.from?.pathname || '/dashboard';
 
@@ -63,67 +66,75 @@ export const AuthPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#fbfbfa] dark:bg-[#0d0d0f] text-[#2b2a28] dark:text-[#f4f4f5] transition-colors duration-150">
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-4 bg-[#0E0F10] text-[#E5E5E5] selection:bg-[#09AE5B] selection:text-black font-sans">
+      {/* Top ambient glow */}
+      <div 
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[400px] opacity-25 -z-10"
+        style={{
+          background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(9, 174, 91, 0.35), transparent 70%)'
+        }}
+      />
+
       {/* Return to Landing Page */}
-      <div className="w-full max-w-sm mb-4 flex items-center justify-between">
+      <div className="relative z-10 w-full max-w-sm mb-4 flex items-center justify-between">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Shelfspace</span>
         </Link>
       </div>
 
-      <div className="w-full max-w-sm">
+      <div className="relative z-10 w-full max-w-sm">
         {/* Brand header */}
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-9 h-9 rounded-xl bg-[#191919] dark:bg-white text-white dark:text-zinc-950 font-bold flex items-center justify-center text-sm shadow-xs mb-3">
-            S
+          <div className="w-8 h-8 rounded-none bg-neutral-800 border border-white/10 flex items-center justify-center mb-3 shadow-inner">
+            <span className="w-2.5 h-2.5 rounded-none bg-[#09AE5B] shadow-[0_0_8px_#09AE5B]"></span>
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-[#2b2a28] dark:text-[#f4f4f5]">
+          <h1 className="text-xl font-bold tracking-tight text-[#E5E5E5]">
             {isLogin ? 'Sign in to Shelfspace' : 'Create your workspace'}
           </h1>
-          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1">
+          <p className="text-xs text-neutral-400 mt-1">
             {isLogin
               ? 'Access your private developer resource library'
               : 'Collect, organize, and reuse your developer tools and ideas'}
           </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] rounded-2xl shadow-2xs p-6 sm:p-7">
+        {/* Sharp Framed Card */}
+        <div className="bg-[#121316] border border-white/[0.08] rounded-none shadow-2xl p-6 sm:p-7 relative">
           {forgotPasswordOpen ? (
             <div>
-              <h2 className="text-sm font-semibold mb-1">Reset Password</h2>
-              <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mb-5">
+              <h2 className="text-sm font-semibold mb-1 text-[#E5E5E5]">Reset Password</h2>
+              <p className="text-xs text-neutral-400 mb-5">
                 Enter your account email to receive a password recovery token.
               </p>
 
               {resetSent ? (
                 <div className="text-center py-4">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
-                  <p className="text-xs font-medium text-[#2b2a28] dark:text-[#f4f4f5]">
+                  <CheckCircle2 className="w-8 h-8 text-[#09AE5B] mx-auto mb-2" />
+                  <p className="text-xs font-medium text-[#E5E5E5]">
                     Reset link generated
                   </p>
-                  <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1 mb-5">
+                  <p className="text-xs text-neutral-400 mt-1 mb-5">
                     If an account exists with this email, the token has been processed.
                   </p>
-                  <Button
-                    variant="outline"
-                    className="w-full text-xs"
+                  <button
+                    type="button"
+                    className="w-full py-2 rounded-none bg-[#242424] text-[#E5E5E5] text-xs font-medium hover:bg-[#2e2e2e] transition-colors"
                     onClick={() => {
                       setForgotPasswordOpen(false);
                       setResetSent(false);
                     }}
                   >
                     Back to Sign In
-                  </Button>
+                  </button>
                 </div>
               ) : (
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   {errorMessage && (
-                    <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 text-xs text-rose-700 dark:text-rose-400">
+                    <div className="p-3 rounded-none bg-rose-950/30 border border-rose-900/50 text-xs text-rose-400">
                       {errorMessage}
                     </div>
                   )}
@@ -134,18 +145,22 @@ export const AuthPage: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    leftIcon={<Mail className="w-4 h-4" />}
+                    leftIcon={<Mail className="w-4 h-4 text-[#09AE5B]" />}
                     placeholder="developer@domain.com"
                   />
 
-                  <Button type="submit" variant="primary" pill className="w-full text-xs" isLoading={isLoading}>
-                    Send Reset Token
-                  </Button>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full py-2.5 rounded-none bg-[#09AE5B] hover:bg-[#07914b] text-black font-semibold text-xs transition-colors"
+                  >
+                    {isLoading ? 'Sending...' : 'Send Reset Token'}
+                  </button>
 
                   <button
                     type="button"
                     onClick={() => setForgotPasswordOpen(false)}
-                    className="w-full text-center text-xs text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white mt-2 cursor-pointer"
+                    className="w-full text-center text-xs text-neutral-400 hover:text-white mt-2 cursor-pointer font-sans"
                   >
                     Cancel and return
                   </button>
@@ -155,7 +170,7 @@ export const AuthPage: React.FC = () => {
           ) : (
             <div>
               {/* Tab Selector */}
-              <div className="flex rounded-lg bg-[#f0f0ee] dark:bg-[#202026] p-1 mb-5 border border-[#e5e5e3] dark:border-[#2a2a34]">
+              <div className="flex rounded-none bg-[#16171b] p-1 mb-5 border border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => {
@@ -163,10 +178,10 @@ export const AuthPage: React.FC = () => {
                     setErrorMessage('');
                   }}
                   className={cn(
-                    'flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer',
+                    'flex-1 py-1.5 text-xs font-medium rounded-none transition-all cursor-pointer',
                     isLogin
-                      ? 'bg-white dark:bg-[#2a2a34] text-[#191919] dark:text-white shadow-xs font-semibold'
-                      : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
+                      ? 'bg-[#E5E5E5] text-black font-semibold shadow-sm'
+                      : 'text-neutral-400 hover:text-white'
                   )}
                 >
                   Log In
@@ -178,10 +193,10 @@ export const AuthPage: React.FC = () => {
                     setErrorMessage('');
                   }}
                   className={cn(
-                    'flex-1 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer',
+                    'flex-1 py-1.5 text-xs font-medium rounded-none transition-all cursor-pointer',
                     !isLogin
-                      ? 'bg-white dark:bg-[#2a2a34] text-[#191919] dark:text-white shadow-xs font-semibold'
-                      : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
+                      ? 'bg-[#E5E5E5] text-black font-semibold shadow-sm'
+                      : 'text-neutral-400 hover:text-white'
                   )}
                 >
                   Create Account
@@ -189,7 +204,7 @@ export const AuthPage: React.FC = () => {
               </div>
 
               {errorMessage && (
-                <div className="mb-4 p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 text-xs text-rose-700 dark:text-rose-400">
+                <div className="mb-4 p-3 rounded-none bg-rose-950/20 border border-rose-900/50 text-xs text-rose-400">
                   {errorMessage}
                 </div>
               )}
@@ -204,7 +219,7 @@ export const AuthPage: React.FC = () => {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
-                      leftIcon={<UserIcon className="w-4 h-4" />}
+                      leftIcon={<UserIcon className="w-4 h-4 text-[#09AE5B]" />}
                     />
                   </div>
                 )}
@@ -217,13 +232,13 @@ export const AuthPage: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    leftIcon={<Mail className="w-4 h-4" />}
+                    leftIcon={<Mail className="w-4 h-4 text-[#09AE5B]" />}
                   />
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                    <label className="text-xs font-medium text-[#E5E5E5]">
                       Password
                     </label>
                     {isLogin && (
@@ -233,7 +248,7 @@ export const AuthPage: React.FC = () => {
                           setForgotPasswordOpen(true);
                           setErrorMessage('');
                         }}
-                        className="text-[11px] text-[#787774] dark:text-[#a1a1aa] hover:text-[#2b2a28] dark:hover:text-white cursor-pointer"
+                        className="text-[11px] text-neutral-400 hover:text-[#09AE5B] cursor-pointer transition-colors"
                       >
                         Forgot password?
                       </button>
@@ -246,12 +261,12 @@ export const AuthPage: React.FC = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      leftIcon={<Lock className="w-4 h-4" />}
+                      leftIcon={<Lock className="w-4 h-4 text-[#09AE5B]" />}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white p-1 cursor-pointer"
+                      className="absolute right-3 text-neutral-400 hover:text-white p-1 cursor-pointer transition-colors"
                       title={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -259,21 +274,19 @@ export const AuthPage: React.FC = () => {
                   </div>
                 </div>
 
-                <Button
+                <button
                   type="submit"
-                  variant="primary"
-                  pill
-                  className="w-full text-xs h-9 mt-2"
-                  isLoading={isLoading}
-                  rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
+                  disabled={isLoading}
+                  className="w-full inline-flex items-center justify-center gap-1.5 rounded-none bg-[#09AE5B] hover:bg-[#07914b] text-black font-semibold text-xs h-9 mt-2 transition-colors cursor-pointer shadow-sm"
                 >
-                  {isLogin ? 'Sign In to Workspace' : 'Get Started Free'}
-                </Button>
+                  <span>{isLoading ? 'Processing...' : isLogin ? 'Sign In to Workspace' : 'Get Started Free'}</span>
+                  {!isLoading && <ArrowRight className="w-3.5 h-3.5 ml-1" />}
+                </button>
               </form>
 
               {/* Demo Hint */}
-              <div className="mt-4 pt-3 border-t border-[#ececeb] dark:border-[#26262c] text-center text-[11px] text-[#8e8d8a] font-mono">
-                Demo access: <span className="text-[#2b2a28] dark:text-[#f4f4f5]">demo@shelfspace.dev</span> / <span className="text-[#2b2a28] dark:text-[#f4f4f5]">Password123!</span>
+              <div className="mt-5 pt-3 border-t border-white/[0.06] text-center text-[11px] text-neutral-400 font-mono">
+                Demo access: <span className="text-[#E5E5E5]">demo@shelfspace.dev</span> / <span className="text-[#E5E5E5]">Password123!</span>
               </div>
             </div>
           )}
@@ -282,3 +295,5 @@ export const AuthPage: React.FC = () => {
     </div>
   );
 };
+
+export default AuthPage;

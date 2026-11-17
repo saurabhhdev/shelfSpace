@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { Trash2, RotateCcw, AlertTriangle } from 'lucide-react';
 import { apiClient } from '../api/client';
 import type { Resource } from '../types';
@@ -83,7 +83,7 @@ export const TrashPage: React.FC = () => {
             <span>•</span>
             <span>{trashedResources.length} items</span>
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5">
+          <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#fafafa] mt-0.5">
             Recycle Bin
           </h1>
           <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1">
@@ -105,10 +105,10 @@ export const TrashPage: React.FC = () => {
       </div>
 
       {/* 30-Day Retention Notice Banner */}
-      <div className="p-3.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/40 flex items-start gap-3">
-        <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-        <div className="text-xs text-amber-900 dark:text-amber-300 leading-relaxed">
-          <span className="font-semibold block mb-0.5">30-Day Auto Purge Policy</span>
+      <div className="p-3.5 rounded-none bg-[#121316] border border-white/10 flex items-start gap-3">
+        <AlertTriangle className="w-4 h-4 text-[#09AE5B] shrink-0 mt-0.5" />
+        <div className="text-xs text-neutral-400 leading-relaxed">
+          <span className="font-semibold block mb-0.5 text-[#E5E5E5]">30-Day Auto Purge Policy</span>
           Resources residing in trash are permanently purged after 30 days. You can restore them to
           your active library anytime before the period expires.
         </div>
@@ -120,7 +120,7 @@ export const TrashPage: React.FC = () => {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-16 rounded-xl bg-[#f7f7f5] dark:bg-[#18181c] animate-pulse border border-[#ececeb] dark:border-[#26262c]"
+              className="h-16 rounded-none bg-[#121316] animate-pulse border border-white/[0.08]"
             />
           ))}
         </div>
@@ -129,11 +129,11 @@ export const TrashPage: React.FC = () => {
           {trashedResources.map((item) => (
             <div
               key={item._id}
-              className="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] hover:border-[#cfcfcc] dark:hover:border-[#383842] transition-all shadow-2xs"
+              className="flex items-center justify-between p-3.5 rounded-none bg-[#121316] border border-white/[0.08] hover:border-[#09AE5B]/60 transition-all"
             >
               <div className="min-w-0 flex-1 pr-4">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-xs sm:text-sm text-[#2b2a28] dark:text-[#f4f4f5] truncate">
+                  <span className="font-semibold text-xs sm:text-sm text-[#E5E5E5] truncate">
                     {item.title}
                   </span>
                   <Badge type={item.type} size="sm">
@@ -141,7 +141,7 @@ export const TrashPage: React.FC = () => {
                   </Badge>
                 </div>
 
-                <div className="flex items-center gap-3 text-xs text-[#8e8d8a] dark:text-[#71717a] mt-1 font-mono">
+                <div className="flex items-center gap-3 text-xs text-neutral-400 mt-1 font-mono">
                   {item.trashedAt && (
                     <span>Trashed {formatRelativeTime(item.trashedAt)}</span>
                   )}
@@ -164,7 +164,7 @@ export const TrashPage: React.FC = () => {
                   variant="ghost"
                   size="xs"
                   onClick={() => setDeletingItem(item)}
-                  className="text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                  className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 text-xs font-mono"
                 >
                   Purge
                 </Button>
@@ -173,12 +173,12 @@ export const TrashPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ececeb] dark:border-[#26262c] p-8 bg-white dark:bg-[#18181c]">
-          <Trash2 className="w-8 h-8 text-[#8e8d8a] mx-auto mb-3" />
-          <h3 className="text-sm font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mb-1">
+        <div className="py-16 text-center rounded-none border border-dashed border-white/10 p-8 bg-[#121316]">
+          <Trash2 className="w-8 h-8 text-[#09AE5B] mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-[#E5E5E5] mb-1">
             Trash is empty
           </h3>
-          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] max-w-sm mx-auto">
+          <p className="text-xs text-neutral-400 max-w-sm mx-auto">
             No items are currently in your trash. Deleted resources will appear here.
           </p>
         </div>
@@ -210,3 +210,4 @@ export const TrashPage: React.FC = () => {
     </div>
   );
 };
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { Star, LayoutGrid, List } from 'lucide-react';
 import { apiClient } from '../api/client';
 import type { Resource } from '../types';
@@ -64,7 +64,7 @@ export const FavouritesPage: React.FC = () => {
             <span>•</span>
             <span>{resources.length} starred</span>
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5">
+          <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#fafafa] mt-0.5">
             Starred Resources
           </h1>
           <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1">
@@ -72,14 +72,14 @@ export const FavouritesPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex rounded-lg border border-[#ececeb] dark:border-[#26262c] bg-white dark:bg-[#18181c] p-0.5 self-start sm:self-auto">
+        <div className="flex rounded-none border border-white/10 bg-[#0E0F10] p-0.5 self-start sm:self-auto">
           <button
             onClick={() => setViewMode('grid')}
             className={cn(
-              'p-1.5 rounded transition-colors cursor-pointer',
+              'p-1.5 rounded-none transition-colors cursor-pointer',
               viewMode === 'grid'
-                ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white'
-                : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
+                ? 'bg-[#09AE5B] text-black font-semibold'
+                : 'text-neutral-400 hover:text-white'
             )}
             title="Grid view"
           >
@@ -88,10 +88,10 @@ export const FavouritesPage: React.FC = () => {
           <button
             onClick={() => setViewMode('list')}
             className={cn(
-              'p-1.5 rounded transition-colors cursor-pointer',
+              'p-1.5 rounded-none transition-colors cursor-pointer',
               viewMode === 'list'
-                ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white'
-                : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
+                ? 'bg-[#09AE5B] text-black font-semibold'
+                : 'text-neutral-400 hover:text-white'
             )}
             title="List view"
           >
@@ -105,7 +105,7 @@ export const FavouritesPage: React.FC = () => {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-36 rounded-xl bg-[#f7f7f5] dark:bg-[#18181c] animate-pulse border border-[#ececeb] dark:border-[#26262c]"
+              className="h-36 rounded-none bg-[#121316] animate-pulse border border-white/[0.08]"
             />
           ))}
         </div>
@@ -129,12 +129,12 @@ export const FavouritesPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ececeb] dark:border-[#26262c] p-8 bg-white dark:bg-[#18181c]">
-          <Star className="w-8 h-8 text-amber-500 fill-amber-500/20 mx-auto mb-3" />
-          <h3 className="text-sm font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mb-1">
+        <div className="py-16 text-center rounded-none border border-dashed border-white/10 p-8 bg-[#121316]">
+          <Star className="w-8 h-8 text-[#09AE5B] fill-[#09AE5B] mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-[#E5E5E5] mb-1">
             No favorites yet
           </h3>
-          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] max-w-sm mx-auto">
+          <p className="text-xs text-neutral-400 max-w-sm mx-auto">
             Click the star icon on any resource card to pin it here for rapid access.
           </p>
         </div>
@@ -159,3 +159,4 @@ export const FavouritesPage: React.FC = () => {
     </div>
   );
 };
+

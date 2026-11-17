@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FolderKanban, ChevronLeft, LayoutGrid, List, Plus } from 'lucide-react';
 import { apiClient } from '../api/client';
@@ -84,35 +84,35 @@ export const ProjectDetailPage: React.FC = () => {
       </div>
 
       {/* Project Banner Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] shadow-2xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-none bg-[#121316] border border-white/[0.08]">
         <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 flex items-center justify-center border border-blue-200 dark:border-blue-800/60">
+          <div className="w-10 h-10 rounded-none bg-[#0E0F10] text-[#09AE5B] flex items-center justify-center border border-white/10">
             <FolderKanban className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-lg font-semibold text-[#2b2a28] dark:text-[#f4f4f5]">
+            <h1 className="text-lg font-semibold text-[#E5E5E5]">
               {project.name}
             </h1>
             {project.description && (
-              <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-0.5">
+              <p className="text-xs text-neutral-400 mt-0.5">
                 {project.description}
               </p>
             )}
-            <div className="text-[11px] font-mono text-[#8e8d8a] dark:text-[#71717a] mt-1">
+            <div className="text-[11px] font-mono text-neutral-500 mt-1">
               {resources.length} associated {resources.length === 1 ? 'resource' : 'resources'}
             </div>
           </div>
         </div>
 
         {/* View mode toggle */}
-        <div className="flex rounded-lg border border-[#ececeb] dark:border-[#26262c] bg-white dark:bg-[#18181c] p-0.5 shrink-0 self-start sm:self-auto">
+        <div className="flex rounded-none border border-white/10 bg-[#0E0F10] p-0.5 shrink-0 self-start sm:self-auto">
           <button
             onClick={() => setViewMode('grid')}
             className={cn(
-              'p-1.5 rounded transition-colors cursor-pointer',
+              'p-1.5 rounded-none transition-colors cursor-pointer',
               viewMode === 'grid'
-                ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white'
-                : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
+                ? 'bg-[#09AE5B] text-black font-semibold'
+                : 'text-neutral-400 hover:text-white'
             )}
             title="Grid view"
           >
@@ -121,10 +121,10 @@ export const ProjectDetailPage: React.FC = () => {
           <button
             onClick={() => setViewMode('list')}
             className={cn(
-              'p-1.5 rounded transition-colors cursor-pointer',
+              'p-1.5 rounded-none transition-colors cursor-pointer',
               viewMode === 'list'
-                ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white'
-                : 'text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white'
+                ? 'bg-[#09AE5B] text-black font-semibold'
+                : 'text-neutral-400 hover:text-white'
             )}
             title="List view"
           >
@@ -154,13 +154,12 @@ export const ProjectDetailPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-2xl border border-dashed border-[#ececeb] dark:border-[#26262c] p-8 bg-white dark:bg-[#18181c]">
-          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mb-4">
+        <div className="py-16 text-center rounded-none border border-dashed border-white/10 p-8 bg-[#121316]">
+          <p className="text-xs text-neutral-400 mb-4">
             No resources associated with this project yet.
           </p>
           <Button
             variant="primary"
-            pill
             size="xs"
             leftIcon={<Plus className="w-3.5 h-3.5" />}
             onClick={() => window.dispatchEvent(new CustomEvent('open-quick-add'))}
@@ -191,3 +190,4 @@ export const ProjectDetailPage: React.FC = () => {
     </div>
   );
 };
+
