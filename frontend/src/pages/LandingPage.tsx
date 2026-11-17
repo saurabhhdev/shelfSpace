@@ -8,13 +8,13 @@ import { OssiumFooter } from '../components/landing/OssiumFooter';
 
 export const LandingPage: React.FC = () => {
   return (
-    <div style={{ minHeight: "100vh", width: "100%", position: "relative" }} className="text-[#E5E5E5] selection:bg-[#09AE5B] selection:text-black">
+    <div style={{ minHeight: "100vh", width: "100%", position: "relative" }} className="bg-[#0E0F10] text-[#E5E5E5] selection:bg-[#09AE5B] selection:text-black">
       <div
         style={{
           position: "absolute",
           inset: "0",
           zIndex: 0,
-          backgroundColor: "#000",
+          backgroundColor: "#0E0F10",
           backgroundImage: "repeating-linear-gradient(60deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 30px), repeating-linear-gradient(120deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 30px), repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 30px)",
           pointerEvents: "none",
         }}
