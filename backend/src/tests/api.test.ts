@@ -9,6 +9,7 @@ import { Project } from '../modules/projects/project.model';
 import { Collection } from '../modules/collections/collection.model';
 import { validateSafeUrl, isPrivateIP } from '../utils/ssrf';
 import { normalizeUrl } from '../modules/resources/metadata.service';
+import { ClassificationService } from '../modules/resources/classification.service';
 
 describe('Shelfspace Backend Core Integration Tests', () => {
   beforeAll(async () => {
@@ -332,6 +333,65 @@ describe('Shelfspace Backend Core Integration Tests', () => {
         .set('Cookie', authCookieUserA);
       expect(globalResourceCheck.status).toBe(200);
       expect(globalResourceCheck.body.data.title).toBe('TEST_Standalone_Tool');
+    });
+
+    it('classifies resources into the 6 types and generates relevant auto tags', () => {
+      // Test 1: Component library with user category matching
+      const userCategories = [
+        { _id: 'cat-1', name: 'UI & Components' },
+        { _id: 'cat-2', name: 'Backend Tools' },
+      ];
+      const parsedComp = new URL('https://ui.shadcn.com/docs/components/button');
+      const compResult = ClassificationService.classify(
+        'https://ui.shadcn.com/docs/components/button',
+        parsedComp,
+        'Shadcn UI - Accessible and customizable components',
+        'Radix UI and Tailwind CSS components for React apps',
+        ['react', 'components', 'tailwind', 'ui'],
+        null,
+        { userCategories, userExistingTags: ['react', 'ui'] }
+      );
+
+      expect(compResult.type).toBe('components');
+      expect(compResult.typeConfidence).toBe('high');
+      expect(compResult.suggestedTags).toContain('components');
+      expect(compResult.suggestedTags).toContain('ui');
+      expect(compResult.suggestedCategory?.isExisting).toBe(true);
+      expect(compResult.suggestedCategory?.categoryId).toBe('cat-1');
+
+      // Test 2: Documentation / Reference
+      const parsedDocs = new URL('https://developer.mozilla.org/en-US/docs/Web/JavaScript');
+      const docsResult = ClassificationService.classify(
+        'https://developer.mozilla.org/en-US/docs/Web/JavaScript',
+        parsedDocs,
+        'JavaScript Reference - MDN Web Docs',
+        'Standard JavaScript language documentation and guides',
+        ['javascript', 'reference', 'documentation'],
+        null,
+        { userCategories: [] }
+      );
+
+      expect(docsResult.type).toBe('references');
+      expect(docsResult.suggestedTags).toContain('docs');
+      expect(docsResult.suggestedTags).toContain('javascript');
+      expect(docsResult.suggestedCategory?.name).toBe('Documentation');
+      expect(docsResult.suggestedCategory?.isExisting).toBe(false);
+
+      // Test 3: Design resource
+      const parsedDesign = new URL('https://www.figma.com/community/file/12345');
+      const designResult = ClassificationService.classify(
+        'https://www.figma.com/community/file/12345',
+        parsedDesign,
+        'Mobile Design System & Typography Kit',
+        'Color palettes, typography scales, and UI assets',
+        ['figma', 'design', 'typography'],
+        null,
+        { userCategories: [] }
+      );
+
+      expect(designResult.type).toBe('design');
+      expect(designResult.suggestedTags).toContain('figma');
+      expect(designResult.suggestedCategory?.name).toBe('Design Resources');
     });
   });
 });

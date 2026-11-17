@@ -3,6 +3,7 @@ import { URL } from 'url';
 import { validateSafeUrl } from '../../utils/ssrf';
 import { ResourceType } from './resource.model';
 import { logger } from '../../utils/logger';
+import { ClassificationService, ClassificationContext } from './classification.service';
 
 export function normalizeUrl(rawUrl: string): string {
   if (!rawUrl || typeof rawUrl !== 'string') return '';
@@ -55,58 +56,19 @@ export interface ExtractedMetadata {
   previewImage?: string;
   favicon?: string;
   type: ResourceType;
+  typeConfidence: 'high' | 'medium' | 'low';
   domain: string;
   siteName?: string;
   suggestedTags: string[];
-  suggestedCategory?: string;
-  confidence: 'high' | 'medium' | 'low';
+  suggestedCategory: {
+    name: string;
+    isExisting: boolean;
+    categoryId?: string;
+    confidence: 'high' | 'medium' | 'low';
+    reason?: string;
+  } | null;
   metadata?: Record<string, any>;
 }
-
-const COMMON_TECH_KEYWORDS = [
-  'react',
-  'vue',
-  'angular',
-  'svelte',
-  'nextjs',
-  'astro',
-  'remix',
-  'typescript',
-  'javascript',
-  'python',
-  'rust',
-  'golang',
-  'node',
-  'deno',
-  'bun',
-  'tailwind',
-  'css',
-  'html',
-  'graphql',
-  'rest',
-  'api',
-  'docker',
-  'kubernetes',
-  'aws',
-  'gcp',
-  'database',
-  'postgres',
-  'mongodb',
-  'redis',
-  'prisma',
-  'supabase',
-  'firebase',
-  'auth',
-  'icons',
-  'ui',
-  'design',
-  'cli',
-  'ai',
-  'llm',
-  'vite',
-  'testing',
-  'security',
-];
 
 export class MetadataService {
   /**
@@ -132,6 +94,7 @@ export class MetadataService {
 
       return {
         repository: `${owner}/${repo}`,
+        description: data.description,
         stars: data.stargazers_count,
         forks: data.forks_count,
         language: data.language,
@@ -147,155 +110,10 @@ export class MetadataService {
   }
 
   /**
-   * Intelligent Classification into the 6 Core Resource Types
+   * Safe URL metadata extraction using SSRF verification, timeouts, size limits,
+   * coupled with deterministic classification and auto tag generation.
    */
-  static classify(
-    url: string,
-    parsed: URL,
-    title: string,
-    description: string
-  ): {
-    type: ResourceType;
-    confidence: 'high' | 'medium' | 'low';
-    suggestedCategory?: string;
-    suggestedTags: string[];
-  } {
-    const host = parsed.hostname.toLowerCase();
-    const path = parsed.pathname.toLowerCase();
-    const fullText = `${title} ${description} ${host} ${path}`.toLowerCase();
-
-    // 1. Repositories
-    if (
-      (host === 'github.com' && !path.startsWith('/pricing') && !path.startsWith('/features')) ||
-      host === 'gitlab.com' ||
-      host === 'bitbucket.org' ||
-      host === 'codeberg.org'
-    ) {
-      return {
-        type: 'repositories',
-        confidence: 'high',
-        suggestedCategory: 'Repositories',
-        suggestedTags: this.extractTechTags(fullText),
-      };
-    }
-
-    // 2. Code Snippets
-    if (
-      host === 'gist.github.com' ||
-      host.includes('codepen.io') ||
-      host.includes('codesandbox.io') ||
-      host.includes('jsfiddle.net') ||
-      host.includes('replit.com') ||
-      host.includes('carbon.now.sh') ||
-      host.includes('stackblitz.com') ||
-      fullText.includes('code snippet') ||
-      fullText.includes('code sample')
-    ) {
-      return {
-        type: 'snippets',
-        confidence: host.includes('gist') || host.includes('codepen') ? 'high' : 'medium',
-        suggestedCategory: 'Snippets',
-        suggestedTags: this.extractTechTags(fullText),
-      };
-    }
-
-    // 3. Components
-    if (
-      host.includes('shadcn') ||
-      host.includes('radix-ui') ||
-      host.includes('lucide.dev') ||
-      host.includes('heroicons') ||
-      host.includes('chakra-ui') ||
-      host.includes('mui.com') ||
-      host.includes('daisyui') ||
-      host.includes('21st.dev') ||
-      host.includes('aceternity') ||
-      host.includes('magicui') ||
-      host.includes('headlessui') ||
-      host.includes('mantine') ||
-      fullText.includes('component library') ||
-      fullText.includes('ui components') ||
-      fullText.includes('react components') ||
-      fullText.includes('icon library')
-    ) {
-      return {
-        type: 'components',
-        confidence: 'high',
-        suggestedCategory: 'Components',
-        suggestedTags: this.extractTechTags(fullText, ['ui', 'components']),
-      };
-    }
-
-    // 4. Design Resources
-    if (
-      host.includes('figma.com') ||
-      host.includes('dribbble.com') ||
-      host.includes('behance.net') ||
-      host.includes('coolors.co') ||
-      host.includes('fontshare') ||
-      host.includes('fonts.google') ||
-      host.includes('typewolf') ||
-      host.includes('svgrepo') ||
-      host.includes('mobbin') ||
-      fullText.includes('design system') ||
-      fullText.includes('color palette') ||
-      fullText.includes('typography') ||
-      fullText.includes('vector icons')
-    ) {
-      return {
-        type: 'design',
-        confidence: 'high',
-        suggestedCategory: 'Design Resources',
-        suggestedTags: this.extractTechTags(fullText, ['design']),
-      };
-    }
-
-    // 5. References / Documentation
-    if (
-      host.includes('developer.mozilla.org') ||
-      host.includes('devdocs.io') ||
-      host.startsWith('docs.') ||
-      path.startsWith('/docs') ||
-      path.startsWith('/documentation') ||
-      path.startsWith('/reference') ||
-      path.startsWith('/api') ||
-      fullText.includes('api reference') ||
-      fullText.includes('documentation') ||
-      fullText.includes('cheatsheet') ||
-      fullText.includes('developer guide')
-    ) {
-      return {
-        type: 'references',
-        confidence: host.startsWith('docs.') || host.includes('mozilla.org') ? 'high' : 'medium',
-        suggestedCategory: 'Documentation',
-        suggestedTags: this.extractTechTags(fullText, ['docs']),
-      };
-    }
-
-    // 6. Tools (Default / SaaS / CLI / Utilities)
-    return {
-      type: 'tools',
-      confidence: fullText.includes('tool') || fullText.includes('cli') || fullText.includes('platform') ? 'medium' : 'low',
-      suggestedCategory: 'Developer Tools',
-      suggestedTags: this.extractTechTags(fullText, ['tools']),
-    };
-  }
-
-  private static extractTechTags(text: string, baseTags: string[] = []): string[] {
-    const found = new Set<string>(baseTags);
-    for (const kw of COMMON_TECH_KEYWORDS) {
-      if (text.includes(kw)) {
-        found.add(kw);
-      }
-      if (found.size >= 5) break;
-    }
-    return Array.from(found);
-  }
-
-  /**
-   * Safe URL metadata extraction using SSRF verification, timeouts, and size limits
-   */
-  static async extract(rawUrl: string): Promise<ExtractedMetadata> {
+  static async extract(rawUrl: string, context: ClassificationContext = {}): Promise<ExtractedMetadata> {
     const normalized = normalizeUrl(rawUrl);
     const parsed = new URL(normalized);
     const domain = parsed.hostname.replace(/^www\./, '');
@@ -306,11 +124,16 @@ export class MetadataService {
       previewImage: '',
       favicon: `https://www.google.com/s2/favicons?domain=${parsed.hostname}&sz=128`,
       type: 'tools',
+      typeConfidence: 'low',
       domain,
       siteName: domain,
-      suggestedTags: [],
-      suggestedCategory: 'Developer Tools',
-      confidence: 'low',
+      suggestedTags: ['tools'],
+      suggestedCategory: {
+        name: 'Developer Tools',
+        isExisting: false,
+        confidence: 'low',
+        reason: 'Default suggestion',
+      },
       metadata: {},
     };
 
@@ -321,23 +144,27 @@ export class MetadataService {
       const repo = ghMatch[2].replace(/\.git$/, '');
       if (owner && repo && owner !== 'settings' && owner !== 'explore' && owner !== 'topics') {
         const ghData = await this.fetchGitHubRepo(owner, repo);
-        const tags = Array.from(
-          new Set(
-            [ghData?.language?.toLowerCase(), ...(ghData?.topics || [])].filter(Boolean)
-          )
-        ).slice(0, 5);
+        const classification = ClassificationService.classify(
+          normalized,
+          parsed,
+          `${owner}/${repo}`,
+          ghData?.description || '',
+          [],
+          ghData,
+          context
+        );
 
         return {
           title: `${owner}/${repo}`,
           description: ghData?.description || (ghData?.topics?.length ? `GitHub repository: ${ghData.topics.join(', ')}` : `GitHub repository by ${owner}`),
           previewImage: `https://opengraph.githubassets.com/1/${owner}/${repo}`,
           favicon: 'https://github.githubassets.com/favicons/favicon.png',
-          type: 'repositories',
+          type: classification.type,
+          typeConfidence: classification.typeConfidence,
           domain: 'github.com',
           siteName: 'GitHub',
-          suggestedTags: tags,
-          suggestedCategory: 'Repositories',
-          confidence: 'high',
+          suggestedTags: classification.suggestedTags,
+          suggestedCategory: classification.suggestedCategory,
           metadata: ghData || {},
         };
       }
@@ -411,7 +238,7 @@ export class MetadataService {
         $('meta[name="application-name"]').attr('content') ||
         domain;
 
-      // Extract Image
+      // Extract Preview Image
       let previewImage =
         $('meta[property="og:image"]').attr('content') ||
         $('meta[name="twitter:image"]').attr('content') ||
@@ -442,18 +269,22 @@ export class MetadataService {
       }
 
       // Extract Meta Keywords
-      const rawKeywords = $('meta[name="keywords"]').attr('content') || '';
-      const metaTags = rawKeywords
+      const rawKeywordsStr = $('meta[name="keywords"]').attr('content') || '';
+      const rawKeywords = rawKeywordsStr
         .split(',')
-        .map((k) => k.trim().toLowerCase())
-        .filter((k) => k.length > 1 && k.length < 25)
-        .slice(0, 4);
+        .map((k) => k.trim())
+        .filter(Boolean);
 
-      // Classify resource
-      const classification = this.classify(normalized, parsed, title, description);
-      const combinedTags = Array.from(
-        new Set([...classification.suggestedTags, ...metaTags])
-      ).slice(0, 5);
+      // Classify and generate tags & category suggestions
+      const classification = ClassificationService.classify(
+        normalized,
+        parsed,
+        title,
+        description,
+        rawKeywords,
+        null,
+        context
+      );
 
       return {
         title,
@@ -461,11 +292,11 @@ export class MetadataService {
         previewImage,
         favicon,
         type: classification.type,
+        typeConfidence: classification.typeConfidence,
         domain,
         siteName,
-        suggestedTags: combinedTags,
+        suggestedTags: classification.suggestedTags,
         suggestedCategory: classification.suggestedCategory,
-        confidence: classification.confidence,
         metadata: {},
       };
     } catch (err) {

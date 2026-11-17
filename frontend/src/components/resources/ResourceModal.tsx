@@ -86,7 +86,14 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
   const [hasFetchedMeta, setHasFetchedMeta] = useState(false);
   const [fetchMetaError, setFetchMetaError] = useState('');
   const [suggestedType, setSuggestedType] = useState<ResourceType | null>(null);
-  const [suggestedCategoryName, setSuggestedCategoryName] = useState<string | null>(null);
+  const [typeConfidence, setTypeConfidence] = useState<'high' | 'medium' | 'low'>('medium');
+  const [suggestedCategory, setSuggestedCategory] = useState<{
+    name: string;
+    isExisting: boolean;
+    categoryId?: string;
+    confidence: 'high' | 'medium' | 'low';
+    reason?: string;
+  } | null>(null);
 
   // Duplicate Check State
   const [duplicateWarning, setDuplicateWarning] = useState<{ isDuplicate: boolean; title?: string } | null>(null);
@@ -158,7 +165,8 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
       setFormError('');
       setFetchMetaError('');
       setSuggestedType(null);
-      setSuggestedCategoryName(null);
+      setTypeConfidence('medium');
+      setSuggestedCategory(null);
       setDuplicateWarning(null);
       setAllowDuplicate(false);
       setIsCreatingCategory(false);
@@ -243,24 +251,23 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
           const normType = normalizeResourceType(data.type);
           setType(normType);
           setSuggestedType(normType);
+          if (data.typeConfidence) {
+            setTypeConfidence(data.typeConfidence);
+          }
         }
 
-        // Tags suggestion
+        // Tags suggestion (3-5 relevant auto tags)
         if (data.suggestedTags && Array.isArray(data.suggestedTags) && data.suggestedTags.length > 0) {
-          setTags(Array.from(new Set([...tags, ...data.suggestedTags])));
+          setTags(data.suggestedTags);
         }
 
         // Category suggestion
         if (data.suggestedCategory) {
-          setSuggestedCategoryName(data.suggestedCategory);
-          // Try to match existing category
-          const match = categories.find(
-            (c) =>
-              c.name.toLowerCase() === data.suggestedCategory.toLowerCase() ||
-              data.suggestedCategory.toLowerCase().includes(c.name.toLowerCase())
-          );
-          if (match) {
-            setCategoryId(match._id);
+          setSuggestedCategory(data.suggestedCategory);
+          if (data.suggestedCategory.isExisting && data.suggestedCategory.categoryId) {
+            setCategoryId(data.suggestedCategory.categoryId);
+          } else {
+            setCategoryId('');
           }
         }
 
@@ -318,7 +325,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
         setCategoryId(created._id);
         setIsCreatingCategory(false);
         setNewCategoryName('');
-        setSuggestedCategoryName(null);
+        setSuggestedCategory(null);
         notify(`Category "${created.name}" created and assigned`, 'success');
       }
     } catch (err: any) {
@@ -355,7 +362,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
     setHasFetchedMeta(false);
     setFetchMetaError('');
     setSuggestedType(null);
-    setSuggestedCategoryName(null);
+    setSuggestedCategory(null);
     setName('');
     setDescription('');
     setPreviewImage('');
@@ -801,18 +808,30 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                   </select>
                 )}
 
-                {/* Suggested Category Quick Action Banner */}
-                {suggestedCategoryName && !categoryId && !isCreatingCategory && (
-                  <div className="mt-1.5 flex items-center justify-between text-[11px] p-2 rounded bg-white/[0.02] border border-white/[0.06]">
-                    <span className="text-neutral-400">
-                      Suggested Category: <strong className="text-white">{suggestedCategoryName}</strong>
+                {/* Suggested Category Matching / Creation Banner */}
+                {suggestedCategory?.isExisting && categoryId === suggestedCategory.categoryId && (
+                  <div className="mt-1.5 flex items-center gap-1.5 text-[11px] p-2 rounded bg-[#09AE5B]/10 border border-[#09AE5B]/20 text-[#09AE5B]">
+                    <Check className="w-3.5 h-3.5 shrink-0" />
+                    <span>
+                      Recommended: <strong>{suggestedCategory.name}</strong> ({suggestedCategory.reason || 'matched existing category'})
                     </span>
+                  </div>
+                )}
+
+                {suggestedCategory && !suggestedCategory.isExisting && !categoryId && !isCreatingCategory && (
+                  <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] p-2 rounded bg-white/[0.02] border border-white/[0.08]">
+                    <div className="flex items-center gap-1.5 text-neutral-300 truncate">
+                      <Sparkles className="w-3.5 h-3.5 text-[#09AE5B] shrink-0" />
+                      <span className="truncate">
+                        Suggested Category: <strong className="text-white">{suggestedCategory.name}</strong>
+                      </span>
+                    </div>
                     <button
                       type="button"
-                      onClick={() => handleQuickCreateCategory(suggestedCategoryName)}
-                      className="text-[#09AE5B] hover:underline font-medium cursor-pointer"
+                      onClick={() => handleQuickCreateCategory(suggestedCategory.name)}
+                      className="text-[#09AE5B] hover:underline font-medium shrink-0 cursor-pointer"
                     >
-                      + Create "{suggestedCategoryName}"
+                      + Create & Assign
                     </button>
                   </div>
                 )}
@@ -820,9 +839,30 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
 
               {/* Tags Section */}
               <div>
-                <label className="text-xs font-medium text-neutral-300 block mb-1">
-                  Tags (optional)
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-medium text-neutral-300">
+                    Tags (optional)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    {tags.length > 0 && mode === 'auto' && (
+                      <span className="text-[10px] text-neutral-500 font-mono">
+                        {tags.length} auto-generated
+                      </span>
+                    )}
+                    {mode === 'auto' && !isEdit && (
+                      <button
+                        type="button"
+                        onClick={handleFetchMetadata}
+                        className="text-[10px] text-neutral-400 hover:text-white flex items-center gap-1 cursor-pointer"
+                        title="Re-analyse and refresh suggestions"
+                      >
+                        <RotateCcw className="w-2.5 h-2.5" />
+                        <span>Refresh suggestions</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 <div className="flex flex-wrap gap-1.5 mb-2">
                   {tags.map((tag) => (
                     <span
@@ -833,7 +873,8 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveTag(tag)}
-                        className="text-neutral-500 hover:text-white"
+                        className="text-neutral-500 hover:text-white cursor-pointer"
+                        title={`Remove #${tag}`}
                       >
                         <X className="w-3 h-3" />
                       </button>

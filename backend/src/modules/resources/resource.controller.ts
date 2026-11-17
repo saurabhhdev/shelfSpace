@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ResourceService } from './resource.service';
 import { MetadataService, normalizeUrl } from './metadata.service';
 import { Resource } from './resource.model';
+import { Collection } from '../collections/collection.model';
 import { sendSuccess, sendError } from '../../utils/apiResponse';
 
 export class ResourceController {
@@ -85,7 +86,23 @@ export class ResourceController {
       if (!rawUrl) {
         return sendError(res, 'URL query parameter is required', 400);
       }
-      const extracted = await MetadataService.extract(rawUrl);
+      const userId = req.user!.userId;
+
+      // Fetch user's existing categories and established tags
+      const [userCategories, userTags] = await Promise.all([
+        Collection.find({ userId }).select('_id name color'),
+        Resource.distinct('tags', { userId, status: 'active' }),
+      ]);
+
+      const extracted = await MetadataService.extract(rawUrl, {
+        userCategories: userCategories.map((c) => ({
+          _id: c._id.toString(),
+          name: c.name,
+          color: c.color,
+        })),
+        userExistingTags: (userTags || []) as string[],
+      });
+
       return sendSuccess(res, extracted, 'Metadata extracted');
     } catch (err: any) {
       return sendError(res, err.message || 'Failed to extract metadata', 400);
