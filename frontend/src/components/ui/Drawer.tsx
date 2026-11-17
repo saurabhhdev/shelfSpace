@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -54,25 +54,25 @@ export const Drawer: React.FC<DrawerProps> = ({
       {/* Drawer content */}
       <div
         className={cn(
-          'relative w-full h-full bg-[#fbfbfa] dark:bg-[#131316] border-l border-[#ececeb] dark:border-[#222227] shadow-2xl flex flex-col z-10',
+          'relative w-full h-full bg-[#0E0F10] border-l border-white/10 shadow-2xl flex flex-col z-10 text-[#E5E5E5] rounded-none',
           'animate-in slide-in-from-right duration-200',
           widths[width]
         )}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#ececeb] dark:border-[#222227] bg-white dark:bg-[#18181c]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#121316]">
           <div>
             {title && (
-              <h2 className="text-base font-semibold text-[#2b2a28] dark:text-[#f4f4f5]">
+              <h2 className="text-base font-semibold text-[#E5E5E5]">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-0.5">{description}</p>
+              <p className="text-xs text-neutral-400 mt-0.5">{description}</p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white p-1.5 rounded-lg hover:bg-[#f2f2ef] dark:hover:bg-[#202026] transition-colors cursor-pointer"
+            className="text-neutral-400 hover:text-[#09AE5B] p-1.5 rounded-none hover:bg-white/[0.06] transition-colors cursor-pointer"
             aria-label="Close drawer"
           >
             <X className="w-4 h-4" />
@@ -84,3 +84,4 @@ export const Drawer: React.FC<DrawerProps> = ({
     </div>
   );
 };
+

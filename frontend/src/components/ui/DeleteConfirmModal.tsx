@@ -26,15 +26,15 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   return (
     <Dialog isOpen={isOpen} onClose={onCancel} maxWidth="sm">
       <div className="flex flex-col items-center text-center">
-        <div className="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 flex items-center justify-center mb-3">
+        <div className="w-10 h-10 rounded-none bg-rose-950/40 text-rose-400 border border-rose-800/40 flex items-center justify-center mb-3">
           <AlertTriangle className="w-4 h-4" />
         </div>
 
-        <h3 className="text-sm font-semibold text-[#2b2a28] dark:text-[#f4f4f5] mb-1">
+        <h3 className="text-sm font-semibold text-[#E5E5E5] mb-1">
           {title}
         </h3>
 
-        <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mb-5 leading-relaxed">
+        <p className="text-xs text-neutral-400 mb-5 leading-relaxed">
           {message}
         </p>
 
