@@ -22,17 +22,17 @@ export const OssiumHero: React.FC = () => {
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
           <Link
             to={isAuthenticated ? "/dashboard" : "/register"}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-md bg-[#09AE5B] hover:bg-[#089E52] px-5 py-2 sm:py-2 text-xs sm:text-sm font-medium text-white border border-emerald-400/30 shadow-xs transition-all duration-150 active:scale-[0.99]"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-md bg-[#EDEDED] hover:bg-white px-5 py-2 sm:py-2 text-xs sm:text-sm font-medium text-[#0E0F10] border border-white/40 hover:border-white shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.7)] transition-all duration-150 active:scale-[0.99]"
           >
             <span>{isAuthenticated ? 'Go to Dashboard' : 'Start Collecting'}</span>
-            <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/20 text-white text-[11px] font-mono">
+            <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#0E0F10] text-[11px] font-mono">
               ↗
             </span>
           </Link>
 
           <a
             href="#features"
-            className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-white/[0.06] hover:bg-white/[0.1] px-5 py-2 sm:py-2 text-xs sm:text-sm font-medium text-[#E5E5E5] hover:text-white border border-white/[0.08] hover:border-white/15 transition-all duration-150 active:scale-[0.99]"
+            className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-[#18191d] hover:bg-[#202127] px-5 py-2 sm:py-2 text-xs sm:text-sm font-medium text-[#EDEDED] hover:text-white border border-white/[0.12] hover:border-white/[0.22] shadow-[0_1px_2px_rgba(0,0,0,0.3)] transition-all duration-150 active:scale-[0.99]"
           >
             Explore Shelfspace
           </a>

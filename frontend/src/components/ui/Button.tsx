@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '../../lib/utils';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'subtle' | 'white';
+  variant?: 'primary' | 'secondary' | 'chrome' | 'outline' | 'ghost' | 'danger' | 'subtle' | 'emerald';
   size?: 'xs' | 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -25,23 +25,40 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium transition-all duration-150 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#09AE5B]/40 disabled:opacity-50 disabled:pointer-events-none cursor-pointer rounded-md';
+      'inline-flex items-center justify-center font-medium transition-all duration-150 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 disabled:opacity-50 disabled:pointer-events-none cursor-pointer rounded-md';
 
     const variants = {
+      // Primary: Tactile Chalk White with Charcoal Black typography & crisp micro-shadow
       primary:
-        'bg-[#09AE5B] hover:bg-[#089E52] text-white font-medium shadow-xs border border-emerald-400/30 hover:border-emerald-300/40 active:scale-[0.99]',
+        'bg-[#EDEDED] hover:bg-white text-[#0E0F10] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.7)] border border-white/40 hover:border-white active:scale-[0.99]',
+
+      // Secondary: Chrome Grey with Charcoal depth & Chalk White typography
       secondary:
-        'bg-white/[0.06] hover:bg-white/[0.1] text-[#E5E5E5] hover:text-white border border-white/[0.08] hover:border-white/15 active:scale-[0.99]',
+        'bg-[#18191d] hover:bg-[#202127] text-[#EDEDED] hover:text-white font-medium border border-white/[0.12] hover:border-white/[0.22] shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)] active:scale-[0.99]',
+
+      // Chrome: Explicit metallic Chrome Grey with gradient bevel
+      chrome:
+        'bg-gradient-to-b from-[#25272e] to-[#18191d] hover:from-[#2c2e36] hover:to-[#1f2126] text-[#EDEDED] hover:text-white font-medium border border-white/[0.16] hover:border-white/[0.28] shadow-[0_1px_2px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.08)] active:scale-[0.99]',
+
+      // Outline: Matte Charcoal outline with subtle chrome border
       outline:
-        'bg-transparent hover:bg-white/[0.04] text-neutral-300 hover:text-white border border-white/[0.08] hover:border-white/20 active:scale-[0.99]',
+        'bg-transparent hover:bg-white/[0.04] text-[#A1A1AA] hover:text-[#EDEDED] border border-white/[0.08] hover:border-white/[0.18] active:scale-[0.99]',
+
+      // Ghost: Visually quiet text-only button with soft charcoal hover
       ghost:
-        'bg-transparent hover:bg-white/[0.06] text-neutral-400 hover:text-white',
+        'bg-transparent hover:bg-white/[0.05] text-[#8E8E93] hover:text-[#EDEDED]',
+
+      // Danger: Charcoal Black with soft Crimson accent
       danger:
-        'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 border border-rose-500/20 hover:border-rose-500/35 active:scale-[0.99]',
+        'bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 border border-rose-500/20 hover:border-rose-500/35 active:scale-[0.99]',
+
+      // Subtle: Charcoal surface with muted chrome text
       subtle:
-        'bg-white/[0.04] hover:bg-white/[0.08] text-neutral-300 hover:text-white border border-white/[0.06] active:scale-[0.99]',
-      white:
-        'bg-[#EDEDED] hover:bg-white text-black font-medium border border-white/20 shadow-xs active:scale-[0.99]',
+        'bg-[#141518] hover:bg-[#1a1b20] text-[#A1A1AA] hover:text-[#EDEDED] border border-white/[0.06] hover:border-white/[0.12] active:scale-[0.99]',
+
+      // Emerald: Preserved for specific green actions if requested
+      emerald:
+        'bg-[#09AE5B] hover:bg-[#089E52] text-white font-medium shadow-xs border border-emerald-400/30 active:scale-[0.99]',
     };
 
     const sizes = {
