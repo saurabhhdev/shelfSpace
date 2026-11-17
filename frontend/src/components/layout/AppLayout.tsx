@@ -115,18 +115,18 @@ export const AppLayout: React.FC = () => {
   return (
     <div
       style={{ minHeight: "100vh", width: "100%", position: "relative" }}
-      className="flex bg-[#0E0F10] text-[#E5E5E5] font-sans selection:bg-[#09AE5B] selection:text-black overflow-x-hidden"
+      className="flex text-[#E5E5E5] font-sans selection:bg-[#09AE5B] selection:text-black overflow-x-hidden"
     >
       <div
         style={{
           position: "fixed",
           inset: "0",
           zIndex: 0,
-          background: "#0E0F10",
-          opacity: "1",
-          filter: "blur(0px)",
-          transform: "translate(0px, 0px) rotate(0deg) scale(1)",
-          backgroundBlendMode: "overlay",
+          backgroundColor: "#050505",
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E\")",
+          backgroundRepeat: "repeat",
+          backgroundSize: "200px 200px",
           pointerEvents: "none",
         }}
       />
@@ -400,7 +400,7 @@ export const AppLayout: React.FC = () => {
       {/* ==================== MAIN VIEW AREA ==================== */}
       <div className="relative z-10 flex-1 flex flex-col min-w-0 bg-transparent">
         {/* Top Header: Compact Global Search */}
-        <header className="h-14 border-b border-white/[0.08] bg-[#0E0F10]/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
+        <header className="h-14 border-b border-white/[0.08] bg-[#050505]/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
