@@ -44,7 +44,9 @@ export const AddResourcesModal: React.FC<AddResourcesModalProps> = ({
       try {
         const res = await apiClient.get('/resources?limit=100');
         if (res.data?.success && res.data.data) {
-          const list: Resource[] = res.data.data.resources || [];
+          const list: Resource[] = Array.isArray(res.data.data)
+            ? res.data.data
+            : res.data.data.resources || [];
           // Filter out resources already in this project
           const existingSet = new Set(existingResourceIds);
           const filtered = list.filter((r) => !existingSet.has(r._id));
