@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+﻿import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, ArrowRight, BookOpen, Code2, Database, Layout, Palette, FileText, X } from 'lucide-react';
 import { apiClient } from '../../api/client';
@@ -90,16 +90,16 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
       />
 
       <div
-        className="relative w-full max-w-xl bg-white dark:bg-[#18181c] border border-[#ececeb] dark:border-[#26262c] rounded-2xl shadow-2xl overflow-hidden z-10 animate-in zoom-in-95 duration-150"
+        className="relative w-full max-w-xl bg-[#121316] border border-white/10 rounded-none shadow-[0_20px_60px_rgba(0,0,0,0.95)] overflow-hidden z-10 animate-in zoom-in-95 duration-150"
         onKeyDown={handleKeyDown}
       >
         {/* Search Input */}
-        <div className="flex items-center px-4 py-3 border-b border-[#ececeb] dark:border-[#26262c] bg-[#fbfbfa]/70 dark:bg-[#131316]">
-          <Search className="w-4 h-4 text-[#8e8d8a] shrink-0 mr-3" />
+        <div className="flex items-center px-4 py-3 border-b border-white/10 bg-[#0E0F10]">
+          <Search className="w-4 h-4 text-[#09AE5B] shrink-0 mr-3" />
           <input
             ref={inputRef}
             type="text"
-            className="w-full bg-transparent text-sm text-[#2b2a28] dark:text-[#f4f4f5] placeholder:text-[#9b9a97] dark:placeholder:text-[#63636e] focus:outline-none"
+            className="w-full bg-transparent text-sm text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none font-mono"
             placeholder="Search resources, tags, projects..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -107,12 +107,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white p-1 cursor-pointer"
+              className="text-neutral-400 hover:text-white p-1 cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           )}
-          <kbd className="hidden sm:inline-block ml-2 px-1.5 py-0.5 text-[10px] font-mono bg-[#f0f0ee] dark:bg-[#22222a] text-[#8e8d8a] rounded border border-[#e5e5e3] dark:border-[#2a2a34]">
+          <kbd className="hidden sm:inline-block ml-2 px-1.5 py-0.5 text-[10px] font-mono bg-[#141519] text-[#09AE5B] rounded-none border border-white/10">
             ESC
           </kbd>
         </div>
@@ -120,7 +120,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         {/* Results List */}
         <div className="max-h-80 overflow-y-auto p-2">
           {isSearching ? (
-            <div className="py-8 text-center text-xs text-[#8e8d8a] font-mono">Searching workspace...</div>
+            <div className="py-8 text-center text-xs text-neutral-400 font-mono">Searching workspace...</div>
           ) : results.length > 0 ? (
             <div className="space-y-1">
               {results.map((item, idx) => {
@@ -134,22 +134,22 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                     }}
                     onMouseEnter={() => setSelectedIndex(idx)}
                     className={cn(
-                      'w-full flex items-center justify-between p-2.5 rounded-lg text-left text-xs transition-colors cursor-pointer',
+                      'w-full flex items-center justify-between p-2.5 rounded-none text-left text-xs transition-colors cursor-pointer',
                       isSelected
-                        ? 'bg-[#f0f0ee] dark:bg-[#25252d] text-[#191919] dark:text-white font-medium'
-                        : 'hover:bg-[#f7f7f5] dark:hover:bg-[#1f1f26] text-[#5f5e5b] dark:text-[#a1a1aa]'
+                        ? 'bg-[#09AE5B]/10 text-[#09AE5B] font-medium border-l-2 border-[#09AE5B]'
+                        : 'hover:bg-white/[0.04] text-neutral-400 hover:text-white'
                     )}
                   >
                     <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                      <span className={cn('p-1 rounded-md shrink-0', isSelected ? 'bg-white dark:bg-[#18181c] text-[#191919] dark:text-white' : 'bg-[#f0f0ee] dark:bg-[#22222a] text-[#8e8d8a]')}>
+                      <span className={cn('p-1 rounded-none shrink-0', isSelected ? 'bg-white/[0.08] text-[#09AE5B]' : 'bg-white/[0.04] text-neutral-400')}>
                         {typeIcons[item.type]}
                       </span>
                       <div className="min-w-0">
-                        <div className="font-semibold text-xs truncate text-[#2b2a28] dark:text-[#f4f4f5]">
+                        <div className="font-semibold text-xs truncate text-[#E5E5E5]">
                           {item.title}
                         </div>
                         {item.description && (
-                          <div className="text-[11px] text-[#8e8d8a] dark:text-[#71717a] truncate">
+                          <div className="text-[11px] text-neutral-400 truncate">
                             {item.description}
                           </div>
                         )}
@@ -157,22 +157,22 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#f0f0ee] dark:bg-[#22222a] text-[#8e8d8a]">
+                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded-none bg-[#141519] text-[#09AE5B] border border-white/10">
                         {item.type}
                       </span>
-                      <ArrowRight className="w-3.5 h-3.5 text-[#8e8d8a]" />
+                      <ArrowRight className="w-3.5 h-3.5 text-neutral-500" />
                     </div>
                   </button>
                 );
               })}
             </div>
           ) : query.trim() ? (
-            <div className="py-8 text-center text-xs text-[#8e8d8a]">
+            <div className="py-8 text-center text-xs text-neutral-400">
               No resources found matching "{query}"
             </div>
           ) : (
-            <div className="py-2 px-2 text-xs text-[#8e8d8a] space-y-1">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-[#9b9a97] dark:text-[#71717a] mb-1.5 px-2">
+            <div className="py-2 px-2 text-xs text-neutral-400 space-y-1">
+              <div className="text-[10px] font-mono uppercase tracking-wider text-[#09AE5B] mb-1.5 px-2 font-semibold">
                 Quick Navigation
               </div>
               <div
@@ -180,54 +180,55 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                   navigate('/library');
                   onClose();
                 }}
-                className="flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-[#f2f2ef] dark:hover:bg-[#22222a] cursor-pointer text-[#5f5e5b] dark:text-[#a1a1aa] hover:text-[#2b2a28] dark:hover:text-white"
+                className="flex items-center justify-between px-2.5 py-1.5 rounded-none hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-[#09AE5B] transition-colors"
               >
                 <span>Browse All Resources</span>
-                <kbd className="font-mono text-[10px] text-[#8e8d8a]">/library</kbd>
+                <kbd className="font-mono text-[10px] text-neutral-500">/library</kbd>
               </div>
               <div
                 onClick={() => {
                   navigate('/collections');
                   onClose();
                 }}
-                className="flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-[#f2f2ef] dark:hover:bg-[#22222a] cursor-pointer text-[#5f5e5b] dark:text-[#a1a1aa] hover:text-[#2b2a28] dark:hover:text-white"
+                className="flex items-center justify-between px-2.5 py-1.5 rounded-none hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-[#09AE5B] transition-colors"
               >
                 <span>Thematic Collections</span>
-                <kbd className="font-mono text-[10px] text-[#8e8d8a]">/collections</kbd>
+                <kbd className="font-mono text-[10px] text-neutral-500">/collections</kbd>
               </div>
               <div
                 onClick={() => {
                   navigate('/projects');
                   onClose();
                 }}
-                className="flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-[#f2f2ef] dark:hover:bg-[#22222a] cursor-pointer text-[#5f5e5b] dark:text-[#a1a1aa] hover:text-[#2b2a28] dark:hover:text-white"
+                className="flex items-center justify-between px-2.5 py-1.5 rounded-none hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-[#09AE5B] transition-colors"
               >
                 <span>Active Projects</span>
-                <kbd className="font-mono text-[10px] text-[#8e8d8a]">/projects</kbd>
+                <kbd className="font-mono text-[10px] text-neutral-500">/projects</kbd>
               </div>
               <div
                 onClick={() => {
                   navigate('/favourites');
                   onClose();
                 }}
-                className="flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-[#f2f2ef] dark:hover:bg-[#22222a] cursor-pointer text-[#5f5e5b] dark:text-[#a1a1aa] hover:text-[#2b2a28] dark:hover:text-white"
+                className="flex items-center justify-between px-2.5 py-1.5 rounded-none hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-[#09AE5B] transition-colors"
               >
                 <span>Starred Favorites</span>
-                <kbd className="font-mono text-[10px] text-[#8e8d8a]">/favourites</kbd>
+                <kbd className="font-mono text-[10px] text-neutral-500">/favourites</kbd>
               </div>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2 border-t border-[#ececeb] dark:border-[#26262c] flex items-center justify-between text-[11px] text-[#8e8d8a] bg-[#fbfbfa]/70 dark:bg-[#131316]">
+        <div className="px-4 py-2 border-t border-white/10 flex items-center justify-between text-[11px] text-neutral-500 bg-[#0E0F10]">
           <div className="flex items-center gap-2">
-            <span>Select: <kbd className="font-mono text-[10px] bg-[#f0f0ee] dark:bg-[#22222a] px-1 py-0.5 rounded">↵</kbd></span>
-            <span>Navigate: <kbd className="font-mono text-[10px] bg-[#f0f0ee] dark:bg-[#22222a] px-1 py-0.5 rounded">↑↓</kbd></span>
+            <span>Select: <kbd className="font-mono text-[10px] bg-[#141519] text-[#09AE5B] px-1 py-0.5 rounded-none border border-white/10">↵</kbd></span>
+            <span>Navigate: <kbd className="font-mono text-[10px] bg-[#16161a] text-[#059669] px-1 py-0.5 rounded border border-[#272730]">↑↓</kbd></span>
           </div>
-          <span className="font-mono text-[10px]">Shelfspace</span>
+          <span className="font-mono text-[10px] text-[#059669]">Shelfspace</span>
         </div>
       </div>
     </div>
   );
 };
+
