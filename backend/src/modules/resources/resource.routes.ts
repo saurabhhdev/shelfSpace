@@ -14,6 +14,7 @@ const router = Router();
 router.use(requireAuth);
 
 router.get('/', validateQuery(listResourcesQuerySchema), ResourceController.list);
+router.get('/preview/meta', ResourceController.fetchMetadata);
 router.post('/', validateBody(createResourceSchema), ResourceController.create);
 router.post('/import', validateBody(importResourceSchema), ResourceController.import);
 

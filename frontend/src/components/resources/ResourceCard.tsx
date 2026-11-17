@@ -1,94 +1,33 @@
-﻿import React, { useState } from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Star,
   ExternalLink,
   Trash2,
   Edit2,
-  Copy,
-  Check,
-  GitFork,
-  BookOpen,
-  Code2,
-  Database,
-  Palette,
-  Layout,
-  FileText,
-  Type as TypeIcon,
   Globe,
 } from 'lucide-react';
-import type { Resource, ResourceType } from '../../types';
+import type { Resource } from '../../types';
 import { Badge } from '../ui/Badge';
+import { getResourceTypeLabel, getResourceTypeIcon } from '../../lib/resourceTypes';
 import { cn, formatRelativeTime } from '../../lib/utils';
 
 export interface ResourceCardProps {
   resource: Resource;
   viewMode?: 'grid' | 'list';
   onToggleFavourite: (id: string) => void;
-  onArchive?: (id: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string, name: string) => void;
   onEdit: (resource: Resource) => void;
 }
 
-const typeIcons: Record<ResourceType, React.ReactNode> = {
-  design: <Palette className="w-3.5 h-3.5" />,
-  ui: <Layout className="w-3.5 h-3.5" />,
-  development: <Code2 className="w-3.5 h-3.5" />,
-  data: <Database className="w-3.5 h-3.5" />,
-  learning: <BookOpen className="w-3.5 h-3.5" />,
-  personal: <FileText className="w-3.5 h-3.5" />,
-};
-
-const languageColors: Record<string, string> = {
-  TypeScript: '#3178c6',
-  JavaScript: '#eab308',
-  Python: '#3572A5',
-  Rust: '#dea584',
-  Go: '#00ADD8',
-  Java: '#b07219',
-  HTML: '#e34c26',
-  CSS: '#563d7c',
-  Vue: '#41b883',
-  Swift: '#F05138',
-  Kotlin: '#A97BFF',
-};
-
 export const ResourceCard: React.FC<ResourceCardProps> = ({
   resource,
-  viewMode = 'grid',
+  viewMode = 'list',
   onToggleFavourite,
   onDelete,
   onEdit,
 }) => {
-  const [copied, setCopied] = useState(false);
-  const [copiedColor, setCopiedColor] = useState<string | null>(null);
-
-  const handleCopyUrl = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (resource.url) {
-      navigator.clipboard.writeText(resource.url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  const handleCopyColor = (e: React.MouseEvent, hex: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    navigator.clipboard.writeText(hex);
-    setCopiedColor(hex);
-    setTimeout(() => setCopiedColor(null), 1500);
-  };
-
-  const projectList = (resource.projectIds || []).filter(
-    (p): p is any => typeof p === 'object' && p !== null
-  );
-  const collectionList = (resource.collectionIds || []).filter(
-    (c): c is any => typeof c === 'object' && c !== null
-  );
-
-  // Extract domain name cleanly
+  // Extract domain cleanly
   const domain = resource.url
     ? (() => {
         try {
@@ -99,168 +38,61 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
       })()
     : null;
 
-  // Type-specific preview snippet
-  const renderTypeSpecificPreview = () => {
-    // 1. Design with color swatches
-    if (
-      resource.type === 'design' &&
-      resource.metadata?.colors &&
-      Array.isArray(resource.metadata.colors)
-    ) {
-      return (
-        <div className="my-2 p-2 rounded-md bg-[#0E0F10] border border-white/[0.06]">
-          <div className="text-[10px] uppercase font-mono tracking-wider text-neutral-400 mb-1.5 flex items-center justify-between">
-            <span>Color Swatches</span>
-            {copiedColor && <span className="text-[#09AE5B] font-semibold font-mono">Copied {copiedColor}</span>}
-          </div>
-          <div className="flex items-center gap-1.5">
-            {resource.metadata.colors.slice(0, 5).map((color: string, idx: number) => (
-              <button
-                key={idx}
-                type="button"
-                title={`Click to copy ${color}`}
-                onClick={(e) => handleCopyColor(e, color)}
-                className="group/color relative flex-1 h-5 rounded-xs border border-white/10 hover:opacity-90 transition-opacity flex items-center justify-center cursor-pointer"
-                style={{ backgroundColor: color }}
-              >
-                {copiedColor === color && (
-                  <Check className="w-2.5 h-2.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]" />
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      );
-    }
+  const TypeIcon = getResourceTypeIcon(resource.type);
+  const typeLabel = getResourceTypeLabel(resource.type);
 
-    // 2. Font / Typography Preview
-    if (resource.type === 'ui' && resource.tags?.includes('font')) {
-      return (
-        <div className="my-2 p-2 rounded-none bg-[#0E0F10] border border-white/[0.06]">
-          <div className="flex items-center gap-1 text-[10px] uppercase font-mono text-neutral-400 mb-0.5">
-            <TypeIcon className="w-3 h-3 text-[#09AE5B]" />
-            <span>Sample Typography</span>
-          </div>
-          <p className="text-xs font-serif italic text-[#E5E5E5]">
-            Sphinx of black quartz, judge my vow.
-          </p>
-        </div>
-      );
-    }
+  // Category name if assigned
+  const category = (resource.collectionIds || [])[0];
+  const categoryName = typeof category === 'object' && category !== null ? category.name : null;
+  const categoryColor = typeof category === 'object' && category !== null ? category.color : null;
 
-    // 3. Development repository stats
-    if (
-      resource.type === 'development' &&
-      (resource.metadata?.stars !== undefined || resource.metadata?.language)
-    ) {
-      const lang = resource.metadata?.language;
-      const langColor = lang ? languageColors[lang] || '#8b949e' : null;
-
-      return (
-        <div className="flex flex-wrap items-center gap-2.5 my-2 text-xs text-neutral-400">
-          {lang && (
-            <span className="inline-flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-none" style={{ backgroundColor: langColor || '#8b949e' }} />
-              <span className="font-medium text-[#E5E5E5] text-[11px] font-mono">{lang}</span>
-            </span>
-          )}
-          {resource.metadata?.stars !== undefined && (
-            <span className="inline-flex items-center gap-1 font-mono text-[11px]" title="GitHub Stars">
-              <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-              <span>{resource.metadata.stars.toLocaleString()}</span>
-            </span>
-          )}
-          {resource.metadata?.forks !== undefined && (
-            <span className="inline-flex items-center gap-1 font-mono text-[11px]" title="Forks">
-              <GitFork className="w-3 h-3 text-neutral-400" />
-              <span>{resource.metadata.forks.toLocaleString()}</span>
-            </span>
-          )}
-          {resource.metadata?.license && (
-            <span className="px-1.5 py-0.5 rounded-none text-[10px] font-mono bg-white/[0.05] text-[#09AE5B] border border-white/[0.06]">
-              {resource.metadata.license}
-            </span>
-          )}
-        </div>
-      );
-    }
-
-    // 4. Data / API
-    if (resource.type === 'data') {
-      return (
-        <div className="flex items-center gap-2 my-2 text-xs">
-          <span className="px-1.5 py-0.5 rounded-none font-mono text-[10px] bg-white/[0.05] text-[#09AE5B] border border-white/[0.06]">
-            {resource.metadata?.format?.toUpperCase() || 'REST / JSON'}
-          </span>
-          {resource.metadata?.authRequired !== undefined && (
-            <span className="text-[10px] text-neutral-400 font-mono">
-              {resource.metadata.authRequired ? '🔒 Auth Required' : '🔓 Public'}
-            </span>
-          )}
-        </div>
-      );
-    }
-
-    // 5. Learning
-    if (resource.type === 'learning' && (resource.metadata?.estimatedTime || resource.metadata?.platform)) {
-      return (
-        <div className="flex items-center gap-2 my-1.5 text-xs text-neutral-400">
-          {resource.metadata.platform && (
-            <span className="font-medium text-[#E5E5E5] text-[11px]">
-              {resource.metadata.platform}
-            </span>
-          )}
-          {resource.metadata.estimatedTime && <span className="text-[11px] font-mono">• {resource.metadata.estimatedTime}</span>}
-        </div>
-      );
-    }
-
-    // 6. Personal / Notes
-    if (resource.type === 'personal' && resource.notes) {
-      return (
-        <div className="my-2 p-2 rounded-none bg-[#0E0F10] border border-white/[0.06] text-[11px] font-mono text-neutral-300 line-clamp-2 leading-relaxed">
-          {resource.notes}
-        </div>
-      );
-    }
-
-    return null;
-  };
-
-  // LIST VIEW LAYOUT
+  // LIST VIEW LAYOUT (Default)
   if (viewMode === 'list') {
     return (
-      <div className="group relative flex items-center justify-between p-3 bg-[#121316] border border-white/[0.08] rounded-md hover:border-white/20 transition-colors">
-        <div className="flex items-center gap-3 min-w-0 flex-1 pr-4">
+      <div className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors gap-2.5 sm:gap-4 font-sans">
+        <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
           {/* Favicon or Type Icon */}
-          <div className="w-8 h-8 rounded-md bg-[#141519] flex items-center justify-center shrink-0 border border-white/[0.08] overflow-hidden">
+          <div className="w-7 h-7 rounded-md bg-[#16171b] flex items-center justify-center shrink-0 border border-white/[0.06] text-neutral-400 mt-0.5 sm:mt-0">
             {resource.favicon ? (
               <img
                 src={resource.favicon}
                 alt=""
-                className="w-4 h-4 object-contain"
+                className="w-3.5 h-3.5 object-contain"
                 onError={(e) => {
                   (e.target as HTMLElement).style.display = 'none';
                 }}
               />
             ) : (
-              <span className="text-neutral-400">{typeIcons[resource.type]}</span>
+              <TypeIcon className="w-3.5 h-3.5" />
             )}
           </div>
 
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Link
                 to={`/library/${resource._id}`}
-                className="font-medium text-xs sm:text-sm text-[#EDEDED] hover:text-[#09AE5B] truncate transition-colors"
+                className="font-medium text-xs sm:text-sm text-[#EDEDED] hover:text-white truncate transition-colors"
               >
                 {resource.title}
               </Link>
-              <Badge type={resource.type} size="sm">
-                {resource.type}
+
+              <Badge size="sm">
+                <TypeIcon className="w-3 h-3 text-neutral-400" />
+                <span>{typeLabel}</span>
               </Badge>
+
+              {categoryName && (
+                <span className="inline-flex items-center gap-1 text-[11px] text-neutral-400 bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/[0.06]">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full shrink-0"
+                    style={{ backgroundColor: categoryColor || '#09AE5B' }}
+                  />
+                  <span className="truncate max-w-[100px]">{categoryName}</span>
+                </span>
+              )}
+
               {domain && (
-                <span className="text-[11px] font-mono text-neutral-500 hidden sm:inline">
+                <span className="text-[11px] text-neutral-500 hidden md:inline truncate">
                   {domain}
                 </span>
               )}
@@ -274,60 +106,52 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           </div>
         </div>
 
-        {/* List Action Buttons */}
-        <div className="flex items-center gap-1 shrink-0">
-          <span className="text-[11px] text-neutral-500 mr-2 hidden md:inline font-mono">
+        {/* Compact Actions */}
+        <div className="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/[0.04]">
+          <span className="text-[11px] text-neutral-500 mr-1 font-mono">
             {formatRelativeTime(resource.createdAt)}
           </span>
 
-          <button
-            onClick={() => onToggleFavourite(resource._id)}
-            className={cn(
-              'p-1.5 rounded-md hover:bg-white/[0.06] transition-colors cursor-pointer',
-              resource.isFavourite ? 'text-amber-400' : 'text-neutral-400 hover:text-white'
-            )}
-            title={resource.isFavourite ? 'Favorited' : 'Add to favorites'}
-          >
-            <Star className={cn('w-3.5 h-3.5', resource.isFavourite && 'fill-amber-400 text-amber-400')} />
-          </button>
-
-          {resource.url && (
+          <div className="flex items-center gap-1">
             <button
-              onClick={handleCopyUrl}
-              className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
-              title="Copy URL"
+              onClick={() => onToggleFavourite(resource._id)}
+              className={cn(
+                'p-1.5 rounded-md hover:bg-white/[0.06] transition-colors cursor-pointer',
+                resource.isFavourite ? 'text-amber-400' : 'text-neutral-400 hover:text-white'
+              )}
+              title={resource.isFavourite ? 'Remove favorite' : 'Add to favorites'}
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-[#09AE5B]" /> : <Copy className="w-3.5 h-3.5" />}
+              <Star className={cn('w-3.5 h-3.5', resource.isFavourite && 'fill-amber-400')} />
             </button>
-          )}
 
-          {resource.url && (
-            <a
-              href={resource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
-              title="Visit link"
+            {resource.url && (
+              <a
+                href={resource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+                title="Open website in new tab"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
+
+            <button
+              onClick={() => onEdit(resource)}
+              className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+              title="Edit resource"
             >
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          )}
+              <Edit2 className="w-3.5 h-3.5" />
+            </button>
 
-          <button
-            onClick={() => onEdit(resource)}
-            className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
-            title="Edit"
-          >
-            <Edit2 className="w-3.5 h-3.5" />
-          </button>
-
-          <button
-            onClick={() => onDelete(resource._id)}
-            className="p-1.5 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
-            title="Move to trash"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
+            <button
+              onClick={() => onDelete(resource._id, resource.title)}
+              className="p-1.5 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
+              title="Delete resource"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -335,13 +159,13 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
 
   // GRID VIEW LAYOUT
   return (
-    <div className="group relative flex flex-col justify-between p-4 bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors">
+    <div className="group flex flex-col justify-between p-4 bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors font-sans">
       <div>
-        {/* Top Header: Badge + Actions */}
+        {/* Top: Badge + Action buttons */}
         <div className="flex items-center justify-between gap-2 mb-2">
-          <Badge type={resource.type} size="sm">
-            {typeIcons[resource.type]}
-            {resource.type}
+          <Badge size="sm">
+            <TypeIcon className="w-3 h-3 text-neutral-400" />
+            <span>{typeLabel}</span>
           </Badge>
 
           <div className="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
@@ -351,20 +175,10 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
                 'p-1 rounded-md hover:bg-white/[0.06] transition-colors cursor-pointer',
                 resource.isFavourite ? 'text-amber-400' : 'text-neutral-400 hover:text-white'
               )}
-              title={resource.isFavourite ? 'Favorited' : 'Add to favorites'}
+              title={resource.isFavourite ? 'Remove favorite' : 'Add to favorites'}
             >
-              <Star className={cn('w-3.5 h-3.5', resource.isFavourite && 'fill-amber-400 text-amber-400')} />
+              <Star className={cn('w-3.5 h-3.5', resource.isFavourite && 'fill-amber-400')} />
             </button>
-
-            {resource.url && (
-              <button
-                onClick={handleCopyUrl}
-                className="p-1 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
-                title="Copy URL"
-              >
-                {copied ? <Check className="w-3.5 h-3.5 text-[#09AE5B]" /> : <Copy className="w-3.5 h-3.5" />}
-              </button>
-            )}
 
             {resource.url && (
               <a
@@ -372,7 +186,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
-                title="Open URL"
+                title="Open website"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
@@ -387,54 +201,28 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             </button>
 
             <button
-              onClick={() => onDelete(resource._id)}
+              onClick={() => onDelete(resource._id, resource.title)}
               className="p-1 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
-              title="Move to trash"
+              title="Delete"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Thumbnail Preview if available */}
-        {resource.previewImage && (
-          <div className="w-full h-28 mb-2.5 rounded-md overflow-hidden border border-white/[0.08] bg-[#0E0F10]">
-            <img
-              src={resource.previewImage}
-              alt=""
-              className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-150"
-              loading="lazy"
-              onError={(e) => {
-                (e.target as HTMLElement).parentElement!.style.display = 'none';
-              }}
-            />
-          </div>
-        )}
-
         {/* Title */}
         <Link
           to={`/library/${resource._id}`}
-          className="font-medium text-xs sm:text-sm text-[#EDEDED] hover:text-[#09AE5B] line-clamp-1 block transition-colors mt-1"
+          className="font-medium text-sm text-[#EDEDED] hover:text-white line-clamp-1 block transition-colors"
         >
           {resource.title}
         </Link>
 
-        {/* Domain with clean favicon badge */}
+        {/* Source / Domain */}
         {domain && (
-          <div className="flex items-center gap-1.5 text-[11px] font-mono text-neutral-500 mt-1">
-            {resource.favicon ? (
-              <img
-                src={resource.favicon}
-                alt=""
-                className="w-3.5 h-3.5 object-contain rounded-xs"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
-                }}
-              />
-            ) : (
-              <Globe className="w-3.5 h-3.5 text-neutral-400" />
-            )}
-            <span>{domain}</span>
+          <div className="flex items-center gap-1.5 text-[11px] text-neutral-500 mt-1">
+            <Globe className="w-3 h-3 text-neutral-500" />
+            <span className="truncate">{domain}</span>
           </div>
         )}
 
@@ -445,52 +233,29 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           </p>
         )}
 
-        {/* Type-specific metadata preview */}
-        {renderTypeSpecificPreview()}
-
-        {/* Tags */}
-        {resource.tags && resource.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2.5">
-            {resource.tags.slice(0, 4).map((tag, idx) => (
+        {/* Category tag */}
+        {categoryName && (
+          <div className="mt-2.5">
+            <span className="inline-flex items-center gap-1 text-[10px] text-neutral-400 bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/[0.06]">
               <span
-                key={idx}
-                className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/[0.04] text-neutral-400 border border-white/[0.06]"
-              >
-                #{tag}
-              </span>
-            ))}
-            {resource.tags.length > 4 && (
-              <span className="text-[10px] text-neutral-500 self-center">
-                +{resource.tags.length - 4}
-              </span>
-            )}
+                className="w-1.5 h-1.5 rounded-full shrink-0"
+                style={{ backgroundColor: categoryColor || '#09AE5B' }}
+              />
+              <span className="truncate max-w-[120px]">{categoryName}</span>
+            </span>
           </div>
         )}
       </div>
 
-      {/* Card Footer: Collection / Project Pills + Date */}
+      {/* Footer: Date & Details link */}
       <div className="mt-3.5 pt-2.5 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-500">
-        <div className="flex items-center gap-1 truncate pr-2">
-          {collectionList.map((col: any) => (
-            <span
-              key={col._id}
-              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] border border-white/[0.06] bg-white/[0.03] text-neutral-400 truncate"
-            >
-              <span className="truncate max-w-[80px]">{col.name}</span>
-            </span>
-          ))}
-
-          {projectList.map((proj: any) => (
-            <span
-              key={proj._id}
-              className="px-1.5 py-0.5 rounded-md text-[10px] bg-white/[0.03] text-neutral-400 border border-white/[0.06] truncate max-w-[90px]"
-            >
-              📁 {proj.name}
-            </span>
-          ))}
-        </div>
-
-        <span className="shrink-0 text-[10px] text-neutral-500">{formatRelativeTime(resource.createdAt)}</span>
+        <span>{formatRelativeTime(resource.createdAt)}</span>
+        <Link
+          to={`/library/${resource._id}`}
+          className="text-neutral-400 hover:text-white transition-colors"
+        >
+          View details →
+        </Link>
       </div>
     </div>
   );

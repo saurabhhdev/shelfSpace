@@ -81,7 +81,8 @@ describe('Shelfspace Backend Core Integration Tests', () => {
       expect(res.body.data.user.email).toBe(testUser.email.toLowerCase());
       userId = res.body.data.user._id;
 
-      const cookies = res.headers['set-cookie'];
+      const rawCookies = res.headers['set-cookie'];
+      const cookies: string[] = Array.isArray(rawCookies) ? rawCookies : [rawCookies].filter(Boolean) as string[];
       expect(cookies).toBeDefined();
       expect(cookies.some((c: string) => c.includes('access_token='))).toBe(true);
       expect(cookies.some((c: string) => c.includes('refresh_token='))).toBe(true);
@@ -117,14 +118,16 @@ describe('Shelfspace Backend Core Integration Tests', () => {
         email: `usera-${Date.now()}@test-shelfspace.dev`,
         password: 'Password123!',
       });
-      authCookieUserA = userA.headers['set-cookie'].join('; ');
+      const cA = userA.headers['set-cookie'];
+      authCookieUserA = Array.isArray(cA) ? cA.join('; ') : String(cA || '');
 
       const userB = await request(app).post('/api/auth/register').send({
         name: 'User B',
         email: `userb-${Date.now()}@test-shelfspace.dev`,
         password: 'Password123!',
       });
-      authCookieUserB = userB.headers['set-cookie'].join('; ');
+      const cB = userB.headers['set-cookie'];
+      authCookieUserB = Array.isArray(cB) ? cB.join('; ') : String(cB || '');
     });
 
     it('creates a resource and enforces per-user duplicate detection', async () => {

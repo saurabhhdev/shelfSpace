@@ -5,33 +5,44 @@ import { apiClient } from '../api/client';
 import type { Collection, Resource } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
 import { Button } from '../components/ui/Button';
-import { EditResourceModal } from '../components/resources/EditResourceModal';
+import { ResourceModal } from '../components/resources/ResourceModal';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
+import { useNotification } from '../context/NotificationContext';
 import { cn } from '../lib/utils';
 
 export const CollectionDetailPage: React.FC = () => {
   const { collectionId } = useParams<{ collectionId: string }>();
   const navigate = useNavigate();
+  const { notify } = useNotification();
 
   const [collection, setCollection] = useState<Collection | null>(null);
+  const [allCategories, setAllCategories] = useState<Collection[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
 
+  const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingResource, setEditingResource] = useState<Resource | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingResource, setDeletingResource] = useState<{ id: string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchCollectionData = async () => {
     setIsLoading(true);
     try {
-      const res = await apiClient.get(`/collections/${collectionId}`);
+      const [res, catsRes] = await Promise.all([
+        apiClient.get(`/collections/${collectionId}`),
+        apiClient.get('/collections'),
+      ]);
       if (res.data?.success) {
         setCollection(res.data.data.collection);
         setResources(res.data.data.resources);
       }
+      if (catsRes.data?.success) {
+        setAllCategories(catsRes.data.data);
+      }
     } catch (err) {
-      console.error('Collection not found', err);
-      navigate('/collections');
+      console.error('Category not found', err);
+      navigate('/categories');
     } finally {
       setIsLoading(false);
     }
@@ -44,101 +55,112 @@ export const CollectionDetailPage: React.FC = () => {
   }, [collectionId]);
 
   const handleToggleFavourite = async (id: string) => {
-    setResources((prev) =>
-      prev.map((r) => (r._id === id ? { ...r, isFavourite: !r.isFavourite } : r))
-    );
-    await apiClient.patch(`/resources/${id}/favourite`);
-  };
-
-  const handleDelete = async () => {
-    if (!deletingId) return;
     try {
-      await apiClient.delete(`/resources/${deletingId}`);
-      setDeletingId(null);
-      fetchCollectionData();
-    } catch (err) {
-      console.error(err);
+      const res = await apiClient.patch(`/resources/${id}/favourite`);
+      const isFav = res.data?.data?.isFavourite;
+      setResources((prev) =>
+        prev.map((r) => (r._id === id ? { ...r, isFavourite: isFav } : r))
+      );
+      notify(isFav ? 'Added to favorites' : 'Removed from favorites', 'success');
+    } catch {
+      notify('Failed to update favorite', 'error');
     }
   };
 
-  if (isLoading || !collection) {
-    return (
-      <div className="py-20 text-center text-xs text-neutral-400">
-        Loading collection...
-      </div>
-    );
-  }
+  const handleDelete = async () => {
+    if (!deletingResource) return;
+    setIsDeleting(true);
+    try {
+      await apiClient.delete(`/resources/${deletingResource.id}`);
+      notify(`"${deletingResource.name}" moved to trash`, 'success');
+      setDeletingResource(null);
+      fetchCollectionData();
+    } catch (err) {
+      notify('Failed to delete resource', 'error');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-12">
-      {/* Top Breadcrumb */}
-      <div>
+    <div className="space-y-6 max-w-5xl mx-auto pb-12 font-sans">
+      {/* Header */}
+      <div className="space-y-4">
         <Link
-          to="/collections"
+          to="/categories"
           className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white transition-colors"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
-          <span>All Collections</span>
+          <span>All Categories</span>
         </Link>
-      </div>
 
-      {/* Collection Banner Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-md bg-[#121316] border border-white/[0.08]">
-        <div className="flex items-center gap-3.5">
-          <div
-            className="w-10 h-10 rounded-md flex items-center justify-center border border-white/10 bg-[#0E0F10]"
-          >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
+          <div className="flex items-center gap-3">
             <span
-              className="w-3.5 h-3.5 rounded-full"
-              style={{ backgroundColor: collection.color || '#09AE5B' }}
+              className="w-3.5 h-3.5 rounded-full shrink-0"
+              style={{ backgroundColor: collection?.color || '#09AE5B' }}
             />
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold text-[#EDEDED]">
-              {collection.name}
-            </h1>
-            {collection.description && (
+            <div>
+              <h1 className="text-xl font-semibold tracking-tight text-[#EDEDED]">
+                {collection?.name || 'Category'}
+              </h1>
               <p className="text-xs text-neutral-400 mt-0.5">
-                {collection.description}
+                {resources.length} {resources.length === 1 ? 'resource' : 'resources'} in this category
               </p>
-            )}
-            <div className="text-[11px] font-mono text-neutral-500 mt-1">
-              {resources.length} {resources.length === 1 ? 'item' : 'items'}
             </div>
           </div>
-        </div>
 
-        {/* View mode toggle */}
-        <div className="flex rounded-md border border-white/[0.08] bg-[#121316] p-0.5 shrink-0 self-start sm:self-auto">
-          <button
-            onClick={() => setViewMode('grid')}
-            className={cn(
-              'p-1.5 rounded-sm transition-colors cursor-pointer',
-              viewMode === 'grid'
-                ? 'bg-white/[0.1] text-white'
-                : 'text-neutral-400 hover:text-white'
-            )}
-            title="Grid view"
-          >
-            <LayoutGrid className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => setViewMode('list')}
-            className={cn(
-              'p-1.5 rounded-sm transition-colors cursor-pointer',
-              viewMode === 'list'
-                ? 'bg-white/[0.1] text-white'
-                : 'text-neutral-400 hover:text-white'
-            )}
-            title="List view"
-          >
-            <List className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {/* View mode toggle */}
+            <div className="flex rounded-md border border-white/[0.08] bg-[#121316] p-0.5">
+              <button
+                onClick={() => setViewMode('list')}
+                className={cn(
+                  'p-1.5 rounded-sm transition-colors cursor-pointer',
+                  viewMode === 'list'
+                    ? 'bg-white/[0.1] text-white'
+                    : 'text-neutral-400 hover:text-white'
+                )}
+                title="List view"
+              >
+                <List className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={cn(
+                  'p-1.5 rounded-sm transition-colors cursor-pointer',
+                  viewMode === 'grid'
+                    ? 'bg-white/[0.1] text-white'
+                    : 'text-neutral-400 hover:text-white'
+                )}
+                title="Grid view"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <Button
+              onClick={() => setIsAddOpen(true)}
+              leftIcon={<Plus className="w-3.5 h-3.5" />}
+              size="sm"
+            >
+              Add Resource
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Associated Resources List */}
-      {resources.length > 0 ? (
+      {/* Resources list / grid */}
+      {isLoading ? (
+        <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3' : 'space-y-2')}>
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="h-16 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
+            />
+          ))}
+        </div>
+      ) : resources.length > 0 ? (
         <div
           className={cn(
             viewMode === 'grid'
@@ -152,43 +174,58 @@ export const CollectionDetailPage: React.FC = () => {
               resource={resource}
               viewMode={viewMode}
               onToggleFavourite={handleToggleFavourite}
-              onDelete={(id) => setDeletingId(id)}
+              onDelete={(id, name) => setDeletingResource({ id, name })}
               onEdit={(r) => setEditingResource(r)}
             />
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
-          <p className="text-xs text-neutral-400 mb-4">
-            No resources in this collection yet.
+        <div className="py-14 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316] space-y-3">
+          <h3 className="text-sm font-medium text-[#EDEDED]">
+            No resources in this category
+          </h3>
+          <p className="text-xs text-neutral-400 max-w-sm mx-auto">
+            Save a resource and assign it to {collection?.name} to see it here.
           </p>
-          <Button
-            size="xs"
-            leftIcon={<Plus className="w-3.5 h-3.5" />}
-            onClick={() => window.dispatchEvent(new CustomEvent('open-quick-add'))}
-          >
+          <Button size="xs" leftIcon={<Plus className="w-3.5 h-3.5" />} onClick={() => setIsAddOpen(true)}>
             Add Resource
           </Button>
         </div>
       )}
 
-      {/* Edit modal */}
+      {/* Add Resource Modal */}
+      <ResourceModal
+        isOpen={isAddOpen}
+        categories={allCategories}
+        onClose={() => setIsAddOpen(false)}
+        onSuccess={() => fetchCollectionData()}
+        onCategoryCreated={(newCat) => setAllCategories((prev) => [...prev, newCat])}
+      />
+
+      {/* Edit Resource Modal */}
       {editingResource && (
-        <EditResourceModal
-          isOpen={editingResource !== null}
+        <ResourceModal
+          isOpen={true}
           resource={editingResource}
-          projects={[]}
-          collections={[collection]}
+          categories={allCategories}
           onClose={() => setEditingResource(null)}
-          onSuccess={() => fetchCollectionData()}
+          onSuccess={() => {
+            setEditingResource(null);
+            fetchCollectionData();
+          }}
+          onCategoryCreated={(newCat) => setAllCategories((prev) => [...prev, newCat])}
         />
       )}
 
-      {/* Delete modal */}
+      {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
-        isOpen={deletingId !== null}
-        onCancel={() => setDeletingId(null)}
+        isOpen={!!deletingResource}
+        title="Delete Resource?"
+        message={`Are you sure you want to delete "${deletingResource?.name}"? You can restore it from trash within 30 days.`}
+        confirmText="Delete"
+        onCancel={() => setDeletingResource(null)}
         onConfirm={handleDelete}
+        isLoading={isDeleting}
       />
     </div>
   );

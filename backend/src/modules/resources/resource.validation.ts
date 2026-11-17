@@ -1,7 +1,21 @@
 import { z } from 'zod';
 
+const resourceTypeEnum = z.enum([
+  'tools',
+  'repositories',
+  'components',
+  'snippets',
+  'design',
+  'references',
+  'ui',
+  'development',
+  'data',
+  'learning',
+  'personal',
+]);
+
 export const createResourceSchema = z.object({
-  type: z.enum(['design', 'ui', 'development', 'data', 'learning', 'personal']),
+  type: resourceTypeEnum,
   title: z.string().min(1, 'Title is required').max(300),
   url: z.string().url('Invalid URL format').optional().or(z.literal('')),
   description: z.string().max(2000).optional().default(''),
@@ -16,7 +30,7 @@ export const createResourceSchema = z.object({
 });
 
 export const updateResourceSchema = z.object({
-  type: z.enum(['design', 'ui', 'development', 'data', 'learning', 'personal']).optional(),
+  type: resourceTypeEnum.optional(),
   title: z.string().min(1).max(300).optional(),
   url: z.string().url().optional().or(z.literal('')),
   description: z.string().max(2000).optional(),
@@ -39,7 +53,7 @@ export const importResourceSchema = z.object({
 });
 
 export const listResourcesQuerySchema = z.object({
-  type: z.enum(['design', 'ui', 'development', 'data', 'learning', 'personal']).optional(),
+  type: resourceTypeEnum.optional(),
   status: z.enum(['active', 'archived', 'trashed']).optional().default('active'),
   isFavourite: z.string().transform((v) => v === 'true').optional(),
   projectId: z.string().optional(),

@@ -1,53 +1,45 @@
 ﻿import React, { useState, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import {
   Search,
   LayoutGrid,
   List,
   Plus,
   ArrowUpDown,
-  Code2,
-  Layout,
-  Palette,
-  Database,
-  BookOpen,
-  FileText,
+  Star,
   ChevronLeft,
   ChevronRight,
-  Layers,
+  X,
 } from 'lucide-react';
 import { apiClient } from '../api/client';
-import type { Resource, ResourceType, Project, Collection } from '../types';
+import type { Resource, ResourceType, Collection } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
-import { EditResourceModal } from '../components/resources/EditResourceModal';
+import { ResourceModal } from '../components/resources/ResourceModal';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { Button } from '../components/ui/Button';
+import { RESOURCE_TYPES } from '../lib/resourceTypes';
+import { useNotification } from '../context/NotificationContext';
 import { cn } from '../lib/utils';
 
-const categories: Array<{ id: string; label: string; type?: ResourceType; icon: React.ReactNode }> = [
-  { id: 'all', label: 'All', icon: <Layers className="w-3.5 h-3.5" /> },
-  { id: 'development', label: 'Development', type: 'development', icon: <Code2 className="w-3.5 h-3.5" /> },
-  { id: 'ui', label: 'UI & Components', type: 'ui', icon: <Layout className="w-3.5 h-3.5" /> },
-  { id: 'design', label: 'Design & Colors', type: 'design', icon: <Palette className="w-3.5 h-3.5" /> },
-  { id: 'data', label: 'Data & APIs', type: 'data', icon: <Database className="w-3.5 h-3.5" /> },
-  { id: 'learning', label: 'Documentation', type: 'learning', icon: <BookOpen className="w-3.5 h-3.5" /> },
-  { id: 'personal', label: 'Personal Notes', type: 'personal', icon: <FileText className="w-3.5 h-3.5" /> },
-];
-
 export const LibraryPage: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const initialType = searchParams.get('type') || 'all';
+  const { notify } = useNotification();
 
   const [resources, setResources] = useState<Resource[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [collections, setCollections] = useState<Collection[]>([]);
+  const [categories, setCategories] = useState<Collection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Filters & State
-  const [activeCategory, setActiveCategory] = useState<string>(initialType);
+  // Filters & State (with persistence)
   const [search, setSearch] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [sortBy, setSortBy] = useState<'recent' | 'oldest' | 'title_asc' | 'title_desc'>('recent');
+  const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [onlyFavorites, setOnlyFavorites] = useState<boolean>(false);
+
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
+    return (localStorage.getItem('shelfspace_view_mode') as 'grid' | 'list') || 'list';
+  });
+
+  const [sortBy, setSortBy] = useState<'recent' | 'oldest' | 'title_asc'>(() => {
+    return (localStorage.getItem('shelfspace_sort') as 'recent' | 'oldest' | 'title_asc') || 'recent';
+  });
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -55,24 +47,48 @@ export const LibraryPage: React.FC = () => {
   const [totalCount, setTotalCount] = useState(0);
 
   // Modals
+  const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingResource, setEditingResource] = useState<Resource | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingResource, setDeletingResource] = useState<{ id: string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Remember view mode preference
+  const handleViewModeChange = (mode: 'grid' | 'list') => {
+    setViewMode(mode);
+    localStorage.setItem('shelfspace_view_mode', mode);
+  };
+
+  // Remember sort preference
+  const handleSortChange = (newSort: 'recent' | 'oldest' | 'title_asc') => {
+    setSortBy(newSort);
+    localStorage.setItem('shelfspace_sort', newSort);
+    setPage(1);
+  };
 
   const fetchResources = useCallback(async () => {
     setIsLoading(true);
     try {
-      const selectedCat = categories.find((c) => c.id === activeCategory);
-      const res = await apiClient.get('/resources', {
-        params: {
-          type: selectedCat?.type,
-          search: search.trim() || undefined,
-          sortBy,
-          page,
-          limit: 18,
-          status: 'active',
-        },
-      });
+      const params: Record<string, any> = {
+        sortBy,
+        page,
+        limit: 15,
+        status: 'active',
+      };
 
+      if (typeFilter !== 'all') {
+        params.type = typeFilter;
+      }
+      if (categoryFilter !== 'all') {
+        params.collectionId = categoryFilter;
+      }
+      if (onlyFavorites) {
+        params.isFavourite = true;
+      }
+      if (search.trim()) {
+        params.search = search.trim();
+      }
+
+      const res = await apiClient.get('/resources', { params });
       if (res.data?.success) {
         setResources(res.data.data);
         if (res.data.meta) {
@@ -85,18 +101,14 @@ export const LibraryPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [activeCategory, search, sortBy, page]);
+  }, [typeFilter, categoryFilter, onlyFavorites, search, sortBy, page]);
 
-  const fetchWorkspaceAuxData = async () => {
+  const fetchCategories = async () => {
     try {
-      const [projRes, colRes] = await Promise.all([
-        apiClient.get('/projects'),
-        apiClient.get('/collections'),
-      ]);
-      if (projRes.data?.success) setProjects(projRes.data.data);
-      if (colRes.data?.success) setCollections(colRes.data.data);
+      const res = await apiClient.get('/collections');
+      if (res.data?.success) setCategories(res.data.data);
     } catch (e) {
-      console.error('Failed to fetch aux data', e);
+      console.error('Failed to fetch categories', e);
     }
   };
 
@@ -105,90 +117,71 @@ export const LibraryPage: React.FC = () => {
   }, [fetchResources]);
 
   useEffect(() => {
-    fetchWorkspaceAuxData();
+    fetchCategories();
   }, []);
-
-  useEffect(() => {
-    const handleResourceAdded = () => {
-      fetchResources();
-    };
-    window.addEventListener('resource-added', handleResourceAdded);
-    return () => window.removeEventListener('resource-added', handleResourceAdded);
-  }, [fetchResources]);
 
   const handleToggleFavourite = async (id: string) => {
     try {
-      setResources((prev) =>
-        prev.map((r) => (r._id === id ? { ...r, isFavourite: !r.isFavourite } : r))
-      );
-      await apiClient.patch(`/resources/${id}/favourite`);
-    } catch {
+      const res = await apiClient.patch(`/resources/${id}/favourite`);
+      const isFav = res.data?.data?.isFavourite;
+      notify(isFav ? 'Added to favorites' : 'Removed from favorites', 'success');
       fetchResources();
+    } catch {
+      notify('Failed to update favorite', 'error');
     }
   };
 
   const handleConfirmDelete = async () => {
-    if (!deletingId) return;
+    if (!deletingResource) return;
+    setIsDeleting(true);
     try {
-      await apiClient.delete(`/resources/${deletingId}`);
-      setDeletingId(null);
+      await apiClient.delete(`/resources/${deletingResource.id}`);
+      notify(`"${deletingResource.name}" moved to trash`, 'success');
+      setDeletingResource(null);
       fetchResources();
     } catch (err) {
-      console.error('Failed to trash resource', err);
+      notify('Failed to delete resource', 'error');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
+  const clearAllFilters = () => {
+    setSearch('');
+    setTypeFilter('all');
+    setCategoryFilter('all');
+    setOnlyFavorites(false);
+    setPage(1);
+  };
+
+  const hasActiveFilters = search || typeFilter !== 'all' || categoryFilter !== 'all' || onlyFavorites;
+
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-12">
-      {/* 1. Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-5 max-w-5xl mx-auto pb-12 font-sans">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#EDEDED]">
-            Resources
+          <h1 className="text-xl font-semibold tracking-tight text-[#EDEDED]">
+            All Resources
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-            Browse, search, and manage all your saved resources ({totalCount} total).
+          <p className="text-xs text-neutral-400 mt-1">
+            Browse, filter, and manage your saved resources ({totalCount} total).
           </p>
         </div>
 
         <Button
-          onClick={() => window.dispatchEvent(new CustomEvent('open-quick-add'))}
-          leftIcon={<Plus className="w-3.5 h-3.5 stroke-[2.5]" />}
+          onClick={() => setIsAddOpen(true)}
+          leftIcon={<Plus className="w-3.5 h-3.5" />}
           size="sm"
-          className="self-start sm:self-auto"
+          className="self-start sm:self-auto shrink-0"
         >
           Add Resource
         </Button>
       </div>
 
-      {/* 2. Unified Search & Filter Bar */}
+      {/* Search and Compact Filter Controls */}
       <div className="space-y-3">
-        {/* Category Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => {
-                  setActiveCategory(cat.id);
-                  setPage(1);
-                }}
-                className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors cursor-pointer',
-                  isActive
-                    ? 'bg-white/[0.1] text-white'
-                    : 'text-neutral-400 hover:text-white hover:bg-white/[0.04]'
-                )}
-              >
-                {cat.icon}
-                <span>{cat.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Search, Sort, and View Controls */}
+        {/* Search Bar + Controls */}
         <div className="flex flex-col sm:flex-row items-center gap-2.5">
           <div className="relative flex-1 w-full">
             <Search className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -199,7 +192,7 @@ export const LibraryPage: React.FC = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              placeholder="Search by title, description, domain, or tag..."
+              placeholder="Search by name, description, url, or tag..."
               className="w-full h-9 pl-9 pr-14 rounded-md text-xs sm:text-sm bg-[#121316] border border-white/[0.08] text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-white/20 transition-colors"
             />
             {search && (
@@ -213,40 +206,24 @@ export const LibraryPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-            {/* Sort selector */}
+            {/* Sorting */}
             <div className="flex items-center gap-1.5 h-9 px-2.5 rounded-md border border-white/[0.08] bg-[#121316] text-xs text-neutral-400">
               <ArrowUpDown className="w-3.5 h-3.5 text-neutral-500" />
               <select
                 value={sortBy}
-                onChange={(e) => {
-                  setSortBy(e.target.value as any);
-                  setPage(1);
-                }}
+                onChange={(e) => handleSortChange(e.target.value as any)}
                 className="bg-transparent focus:outline-none cursor-pointer text-xs text-[#E5E5E5]"
               >
                 <option value="recent" className="bg-[#121316]">Recently Added</option>
                 <option value="oldest" className="bg-[#121316]">Oldest First</option>
-                <option value="title_asc" className="bg-[#121316]">Title A–Z</option>
-                <option value="title_desc" className="bg-[#121316]">Title Z–A</option>
+                <option value="title_asc" className="bg-[#121316]">Alphabetical (A–Z)</option>
               </select>
             </div>
 
-            {/* View mode toggle */}
+            {/* List / Grid view switcher */}
             <div className="flex rounded-md border border-white/[0.08] bg-[#121316] p-0.5">
               <button
-                onClick={() => setViewMode('grid')}
-                className={cn(
-                  'p-1.5 rounded-sm transition-colors cursor-pointer',
-                  viewMode === 'grid'
-                    ? 'bg-white/[0.1] text-white'
-                    : 'text-neutral-400 hover:text-white'
-                )}
-                title="Grid view"
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
+                onClick={() => handleViewModeChange('list')}
                 className={cn(
                   'p-1.5 rounded-sm transition-colors cursor-pointer',
                   viewMode === 'list'
@@ -257,18 +234,98 @@ export const LibraryPage: React.FC = () => {
               >
                 <List className="w-3.5 h-3.5" />
               </button>
+              <button
+                onClick={() => handleViewModeChange('grid')}
+                className={cn(
+                  'p-1.5 rounded-sm transition-colors cursor-pointer',
+                  viewMode === 'grid'
+                    ? 'bg-white/[0.1] text-white'
+                    : 'text-neutral-400 hover:text-white'
+                )}
+                title="Grid view"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Compact Filters Row: Type Filter, Category Filter, Favorites toggle */}
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          {/* Resource Type Filter */}
+          <select
+            value={typeFilter}
+            onChange={(e) => {
+              setTypeFilter(e.target.value);
+              setPage(1);
+            }}
+            className="h-8 px-2.5 rounded-md border border-white/[0.08] bg-[#121316] text-neutral-300 text-xs focus:outline-none focus:border-white/20"
+          >
+            <option value="all">All Types</option>
+            {RESOURCE_TYPES.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.label}
+              </option>
+            ))}
+          </select>
+
+          {/* Category Filter */}
+          {categories.length > 0 && (
+            <select
+              value={categoryFilter}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value);
+                setPage(1);
+              }}
+              className="h-8 px-2.5 rounded-md border border-white/[0.08] bg-[#121316] text-neutral-300 text-xs focus:outline-none focus:border-white/20"
+            >
+              <option value="all">All Categories</option>
+              {categories.map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {/* Favorites Filter */}
+          <button
+            type="button"
+            onClick={() => {
+              setOnlyFavorites(!onlyFavorites);
+              setPage(1);
+            }}
+            className={cn(
+              'h-8 px-2.5 rounded-md border text-xs flex items-center gap-1.5 transition-colors cursor-pointer',
+              onlyFavorites
+                ? 'bg-amber-400/10 border-amber-400/40 text-amber-300'
+                : 'bg-[#121316] border-white/[0.08] text-neutral-400 hover:text-white'
+            )}
+          >
+            <Star className={cn('w-3 h-3', onlyFavorites && 'fill-amber-400')} />
+            <span>Favorites only</span>
+          </button>
+
+          {/* Clear Filters Button if any active */}
+          {hasActiveFilters && (
+            <button
+              onClick={clearAllFilters}
+              className="h-8 px-2 text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
+            >
+              <X className="w-3 h-3" />
+              <span>Clear filters</span>
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* 3. Resource Cards List / Grid */}
+      {/* Resource Collection */}
       {isLoading ? (
         <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3' : 'space-y-2')}>
-          {[...Array(6)].map((_, i) => (
+          {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="h-36 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
+              className="h-16 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
             />
           ))}
         </div>
@@ -286,53 +343,49 @@ export const LibraryPage: React.FC = () => {
               resource={resource}
               viewMode={viewMode}
               onToggleFavourite={handleToggleFavourite}
-              onDelete={(id) => setDeletingId(id)}
+              onDelete={(id, name) => setDeletingResource({ id, name })}
               onEdit={(r) => setEditingResource(r)}
             />
           ))}
         </div>
-      ) : (
-        <div className="py-16 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
-          <h3 className="text-sm font-medium text-[#EDEDED] mb-1">
+      ) : hasActiveFilters ? (
+        <div className="py-14 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316] space-y-3">
+          <h3 className="text-sm font-medium text-[#EDEDED]">
             No resources found
           </h3>
-          <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
-            {search
-              ? `No resources match "${search}". Try checking for typos or selecting another category.`
-              : 'Your library is currently empty. Start by saving a link or adding your first resource.'}
+          <p className="text-xs text-neutral-400 max-w-sm mx-auto">
+            No items matched your active search or filter criteria.
           </p>
-          {search ? (
-            <Button
-              variant="secondary"
-              size="xs"
-              onClick={() => setSearch('')}
-            >
-              Clear Search
-            </Button>
-          ) : (
-            <Button
-              size="xs"
-              onClick={() => window.dispatchEvent(new CustomEvent('open-quick-add'))}
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
-            >
-              Add Resource
-            </Button>
-          )}
+          <Button variant="secondary" size="xs" onClick={clearAllFilters}>
+            Clear Filters
+          </Button>
+        </div>
+      ) : (
+        <div className="py-14 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316] space-y-3">
+          <h3 className="text-sm font-medium text-[#EDEDED]">
+            Your library is empty
+          </h3>
+          <p className="text-xs text-neutral-400 max-w-sm mx-auto">
+            Start saving your essential developer tools, components, repositories, and notes.
+          </p>
+          <Button size="xs" leftIcon={<Plus className="w-3.5 h-3.5" />} onClick={() => setIsAddOpen(true)}>
+            Add Resource
+          </Button>
         </div>
       )}
 
-      {/* 4. Pagination */}
+      {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-4 border-t border-white/[0.06] text-xs text-neutral-400">
+        <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-neutral-400">
           <div>
-            Page {page} of {totalPages} ({totalCount} total)
+            Page {page} of {totalPages}
           </div>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="xs"
-              disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
               leftIcon={<ChevronLeft className="w-3.5 h-3.5" />}
             >
               Previous
@@ -340,8 +393,8 @@ export const LibraryPage: React.FC = () => {
             <Button
               variant="outline"
               size="xs"
-              disabled={page >= totalPages}
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page >= totalPages}
               rightIcon={<ChevronRight className="w-3.5 h-3.5" />}
             >
               Next
@@ -350,29 +403,39 @@ export const LibraryPage: React.FC = () => {
         </div>
       )}
 
-      {/* Edit Modal */}
+      {/* Add Resource Modal */}
+      <ResourceModal
+        isOpen={isAddOpen}
+        categories={categories}
+        onClose={() => setIsAddOpen(false)}
+        onSuccess={() => fetchResources()}
+        onCategoryCreated={(newCat) => setCategories((prev) => [...prev, newCat])}
+      />
+
+      {/* Edit Resource Modal */}
       {editingResource && (
-        <EditResourceModal
-          resource={editingResource}
+        <ResourceModal
           isOpen={true}
-          projects={projects}
-          collections={collections}
+          resource={editingResource}
+          categories={categories}
           onClose={() => setEditingResource(null)}
           onSuccess={() => {
             setEditingResource(null);
             fetchResources();
           }}
+          onCategoryCreated={(newCat) => setCategories((prev) => [...prev, newCat])}
         />
       )}
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
-        isOpen={!!deletingId}
-        title="Move Resource to Trash?"
-        message="This resource will be moved to Trash. You can restore it anytime within 30 days."
-        confirmText="Move to Trash"
-        onCancel={() => setDeletingId(null)}
+        isOpen={!!deletingResource}
+        title="Delete Resource?"
+        message={`Are you sure you want to delete "${deletingResource?.name}"? You can restore it from trash within 30 days.`}
+        confirmText="Delete"
+        onCancel={() => setDeletingResource(null)}
         onConfirm={handleConfirmDelete}
+        isLoading={isDeleting}
       />
     </div>
   );

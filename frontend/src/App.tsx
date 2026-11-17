@@ -96,6 +96,8 @@ export const App: React.FC = () => {
         <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
         <Route path="/collections" element={<CollectionsPage />} />
         <Route path="/collections/:collectionId" element={<CollectionDetailPage />} />
+        <Route path="/categories" element={<CollectionsPage />} />
+        <Route path="/categories/:collectionId" element={<CollectionDetailPage />} />
         <Route path="/favourites" element={<FavouritesPage />} />
         <Route path="/recently-added" element={<RecentlyAddedPage />} />
         <Route path="/trash" element={<TrashPage />} />

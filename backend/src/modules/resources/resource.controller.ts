@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ResourceService } from './resource.service';
+import { MetadataService } from './metadata.service';
 import { sendSuccess, sendError } from '../../utils/apiResponse';
 
 export class ResourceController {
@@ -44,6 +45,19 @@ export class ResourceController {
       return sendError(res, err.message || 'Failed to import resource', err.statusCode || 400, {
         existingId: err.existingId,
       });
+    }
+  }
+
+  static async fetchMetadata(req: Request, res: Response) {
+    try {
+      const rawUrl = req.query.url as string;
+      if (!rawUrl) {
+        return sendError(res, 'URL query parameter is required', 400);
+      }
+      const extracted = await MetadataService.extract(rawUrl);
+      return sendSuccess(res, extracted, 'Metadata extracted');
+    } catch (err: any) {
+      return sendError(res, err.message || 'Failed to extract metadata', 400);
     }
   }
 

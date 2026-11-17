@@ -1,6 +1,17 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-export type ResourceType = 'design' | 'ui' | 'development' | 'data' | 'learning' | 'personal';
+export type ResourceType =
+  | 'tools'
+  | 'repositories'
+  | 'components'
+  | 'snippets'
+  | 'design'
+  | 'references'
+  | 'ui'
+  | 'development'
+  | 'data'
+  | 'learning'
+  | 'personal';
 export type ResourceStatus = 'active' | 'archived' | 'trashed';
 
 export interface IResource extends Document {
@@ -35,7 +46,19 @@ const ResourceSchema = new Schema<IResource>(
     type: {
       type: String,
       required: true,
-      enum: ['design', 'ui', 'development', 'data', 'learning', 'personal'],
+      enum: [
+        'tools',
+        'repositories',
+        'components',
+        'snippets',
+        'design',
+        'references',
+        'ui',
+        'development',
+        'data',
+        'learning',
+        'personal',
+      ],
       index: true,
     },
     title: {

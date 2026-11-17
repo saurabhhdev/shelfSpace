@@ -1,4 +1,15 @@
-export type ResourceType = 'design' | 'ui' | 'development' | 'data' | 'learning' | 'personal';
+export type ResourceType =
+  | 'tools'
+  | 'repositories'
+  | 'components'
+  | 'snippets'
+  | 'design'
+  | 'references'
+  | 'ui'
+  | 'development'
+  | 'data'
+  | 'learning'
+  | 'personal';
 export type ResourceStatus = 'active' | 'archived' | 'trashed';
 
 export interface User {
