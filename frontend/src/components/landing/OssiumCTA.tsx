@@ -15,8 +15,11 @@ export const OssiumCTA: React.FC = () => {
           <span className="absolute -bottom-2.5 -left-2.5 text-neutral-600 font-mono text-xs">+</span>
           <span className="absolute -bottom-2.5 -right-2.5 text-neutral-600 font-mono text-xs">+</span>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#E5E5E5] leading-tight">
-            Give every useful resource a <span className="text-[#09AE5B]">proper home</span>.
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
+            <span>Give every useful resource a</span>{' '}
+            <span className="block sm:inline text-transparent [-webkit-text-stroke:1px_#ffffff] sm:[-webkit-text-stroke:1.5px_#ffffff]">
+              proper home.
+            </span>
           </h2>
 
           <p className="mt-4 text-base sm:text-lg text-[#8E8E93] max-w-xl mx-auto leading-relaxed">

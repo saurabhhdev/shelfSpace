@@ -9,8 +9,11 @@ export const OssiumHero: React.FC = () => {
     <section className="relative pt-24 pb-14 sm:pt-28 sm:pb-16 lg:pt-32 lg:pb-20 overflow-hidden bg-transparent">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
         {/* Main Headline - Controlled width for balanced line wrapping */}
-        <h1 className="text-balance text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#E5E5E5] leading-[1.12] max-w-3xl mx-auto">
-          Your central hub for <span className="text-[#09AE5B]">everything you build with</span>.
+        <h1 className="text-balance text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15] max-w-3xl mx-auto">
+          <span className="text-white">Your central hub for</span>{' '}
+          <span className="block text-transparent [-webkit-text-stroke:1px_#ffffff] sm:[-webkit-text-stroke:1.5px_#ffffff] tracking-tight mt-1">
+            everything you build with.
+          </span>
         </h1>
 
         {/* Subtitle - Moderate width to prevent long, stretched lines */}

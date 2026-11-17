@@ -8,16 +8,17 @@ import { OssiumFooter } from '../components/landing/OssiumFooter';
 
 export const LandingPage: React.FC = () => {
   return (
-    <div style={{ minHeight: "100vh", width: "100%", position: "relative" }} className="text-[#E5E5E5] selection:bg-[#09AE5B] selection:text-black">
+    <div style={{ minHeight: "100vh", width: "100%", position: "relative" }} className="bg-[#000] text-[#E5E5E5] selection:bg-[#09AE5B] selection:text-black">
       <div
         style={{
           position: "absolute",
           inset: "0",
           zIndex: 0,
-          backgroundColor: "#050505",
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E\")",
-          backgroundRepeat: "repeat",
-          backgroundSize: "200px 200px",
+          background: "#000",
+          opacity: "1",
+          filter: "blur(0px)",
+          transform: "translate(0px, 0px) rotate(0deg) scale(1)",
+          backgroundBlendMode: "overlay",
           pointerEvents: "none",
         }}
       />
