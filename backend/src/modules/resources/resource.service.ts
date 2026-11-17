@@ -17,6 +17,7 @@ export interface CreateResourceDTO {
   previewImage?: string;
   favicon?: string;
   isFavourite?: boolean;
+  allowDuplicate?: boolean;
 }
 
 export interface ListResourcesParams {
@@ -63,7 +64,7 @@ export class ResourceService {
     const normalized = data.url ? normalizeUrl(data.url) : '';
 
     // Per-user duplicate check
-    if (normalized) {
+    if (normalized && !data.allowDuplicate) {
       const existing = await Resource.findOne({
         userId,
         normalizedUrl: normalized,

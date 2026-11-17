@@ -27,6 +27,7 @@ export const createResourceSchema = z.object({
   previewImage: z.string().optional().default(''),
   favicon: z.string().optional().default(''),
   isFavourite: z.boolean().optional().default(false),
+  allowDuplicate: z.boolean().optional().default(false),
 });
 
 export const updateResourceSchema = z.object({

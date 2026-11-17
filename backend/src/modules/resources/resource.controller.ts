@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ResourceService } from './resource.service';
-import { MetadataService } from './metadata.service';
+import { MetadataService, normalizeUrl } from './metadata.service';
+import { Resource } from './resource.model';
 import { sendSuccess, sendError } from '../../utils/apiResponse';
 
 export class ResourceController {
@@ -45,6 +46,36 @@ export class ResourceController {
       return sendError(res, err.message || 'Failed to import resource', err.statusCode || 400, {
         existingId: err.existingId,
       });
+    }
+  }
+
+  static async checkDuplicate(req: Request, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const rawUrl = req.query.url as string;
+      if (!rawUrl || typeof rawUrl !== 'string') {
+        return sendSuccess(res, { isDuplicate: false });
+      }
+      const normalized = normalizeUrl(rawUrl);
+      const existing = await Resource.findOne({
+        userId,
+        normalizedUrl: normalized,
+        status: { $ne: 'trashed' },
+      });
+      if (existing) {
+        return sendSuccess(res, {
+          isDuplicate: true,
+          existing: {
+            _id: existing._id,
+            title: existing.title,
+            type: existing.type,
+            createdAt: existing.createdAt,
+          },
+        });
+      }
+      return sendSuccess(res, { isDuplicate: false });
+    } catch (err: any) {
+      return sendError(res, err.message || 'Error checking duplicate URL', 500);
     }
   }
 
