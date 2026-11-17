@@ -7,14 +7,6 @@ export const OssiumCTA: React.FC = () => {
 
   return (
     <section className="py-20 sm:py-28 bg-transparent border-t border-white/[0.06] relative overflow-hidden">
-      {/* Radial green glow */}
-      <div 
-        className="pointer-events-none absolute inset-0 opacity-25"
-        style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(9, 174, 91, 0.25), transparent 60%)'
-        }}
-      />
-
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <div className="p-8 sm:p-14 rounded-none border border-dashed border-neutral-800 bg-[#121316] relative shadow-2xl">
           {/* Crosshair corners */}
