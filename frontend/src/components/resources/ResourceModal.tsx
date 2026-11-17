@@ -25,6 +25,7 @@ export interface ResourceModalProps {
   isOpen: boolean;
   resource?: Resource | null; // If provided, modal is in Edit mode
   categories: Collection[];
+  initialProjectId?: string;
   onClose: () => void;
   onSuccess: () => void;
   onCategoryCreated?: (newCategory: Collection) => void;
@@ -45,6 +46,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
   isOpen,
   resource = null,
   categories,
+  initialProjectId,
   onClose,
   onSuccess,
   onCategoryCreated,
@@ -228,7 +230,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
     setIsSubmitting(true);
     setError('');
 
-    const payload = {
+    const payload: any = {
       title: name.trim(),
       url: url.trim(),
       type,
@@ -237,6 +239,10 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
       tags,
       notes: notes.trim(),
     };
+
+    if (!isEdit && initialProjectId) {
+      payload.projectIds = [initialProjectId];
+    }
 
     try {
       if (isEdit) {

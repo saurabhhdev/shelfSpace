@@ -264,5 +264,74 @@ describe('Shelfspace Backend Core Integration Tests', () => {
       expect(checkResource.status).toBe(200);
       expect(checkResource.body.data.projectIds.length).toBe(0);
     });
+
+    it('supports archiving, adding existing resources, and removing resources from a project', async () => {
+      // 1. Create a project
+      const projRes = await request(app)
+        .post('/api/projects')
+        .set('Cookie', authCookieUserA)
+        .send({
+          name: 'TEST_Workflow_Project',
+          description: 'Testing add/remove/archive endpoints',
+        });
+      expect(projRes.status).toBe(201);
+      const projectId = projRes.body.data._id;
+      expect(projRes.body.data.isArchived).toBe(false);
+
+      // 2. Create standalone global resource
+      const resCreate = await request(app)
+        .post('/api/resources')
+        .set('Cookie', authCookieUserA)
+        .send({
+          type: 'tools',
+          title: 'TEST_Standalone_Tool',
+          url: 'https://example-test-tool.com',
+        });
+      expect(resCreate.status).toBe(201);
+      const resourceId = resCreate.body.data._id;
+
+      // 3. Add existing resource to project
+      const addRes = await request(app)
+        .post(`/api/projects/${projectId}/resources`)
+        .set('Cookie', authCookieUserA)
+        .send({
+          resourceIds: [resourceId],
+        });
+      expect(addRes.status).toBe(200);
+
+      // 4. Verify resource is now in project
+      const projectDetails = await request(app)
+        .get(`/api/projects/${projectId}`)
+        .set('Cookie', authCookieUserA);
+      expect(projectDetails.status).toBe(200);
+      expect(projectDetails.body.data.resourceCount).toBe(1);
+      expect(projectDetails.body.data.resources[0]._id).toBe(resourceId);
+
+      // 5. Toggle archive
+      const archiveRes = await request(app)
+        .patch(`/api/projects/${projectId}/archive`)
+        .set('Cookie', authCookieUserA);
+      expect(archiveRes.status).toBe(200);
+      expect(archiveRes.body.data.isArchived).toBe(true);
+
+      // 6. Remove resource from project without deleting original resource
+      const removeRes = await request(app)
+        .delete(`/api/projects/${projectId}/resources/${resourceId}`)
+        .set('Cookie', authCookieUserA);
+      expect(removeRes.status).toBe(200);
+
+      // 7. Verify project has 0 resources now
+      const projCheck = await request(app)
+        .get(`/api/projects/${projectId}`)
+        .set('Cookie', authCookieUserA);
+      expect(projCheck.body.data.resourceCount).toBe(0);
+
+      // 8. Verify the resource itself still exists in library
+      const globalResourceCheck = await request(app)
+        .get(`/api/resources/${resourceId}`)
+        .set('Cookie', authCookieUserA);
+      expect(globalResourceCheck.status).toBe(200);
+      expect(globalResourceCheck.body.data.title).toBe('TEST_Standalone_Tool');
+    });
   });
 });

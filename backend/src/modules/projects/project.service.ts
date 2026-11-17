@@ -2,9 +2,30 @@ import mongoose from 'mongoose';
 import { Project, IProject } from './project.model';
 import { Resource } from '../resources/resource.model';
 
+export interface ListProjectsFilter {
+  search?: string;
+  status?: 'active' | 'archived' | 'all';
+}
+
 export class ProjectService {
-  static async list(userId: string) {
-    const projects = await Project.find({ userId }).sort({ createdAt: -1 });
+  static async list(userId: string, filter?: ListProjectsFilter) {
+    const query: any = { userId: new mongoose.Types.ObjectId(userId) };
+
+    if (filter?.status === 'archived') {
+      query.isArchived = true;
+    } else if (filter?.status === 'active') {
+      query.isArchived = { $ne: true };
+    }
+
+    if (filter?.search && filter.search.trim()) {
+      const q = filter.search.trim();
+      query.$or = [
+        { name: { $regex: q, $options: 'i' } },
+        { description: { $regex: q, $options: 'i' } },
+      ];
+    }
+
+    const projects = await Project.find(query).sort({ updatedAt: -1, createdAt: -1 });
 
     // Aggregate resource count per project for this user
     const counts = await Resource.aggregate([
@@ -29,10 +50,16 @@ export class ProjectService {
       userId,
       projectIds: projectId,
       status: 'active',
-    }).sort({ createdAt: -1 });
+    })
+      .populate('collectionIds', 'name color')
+      .populate('projectIds', 'name imageUrl')
+      .sort({ createdAt: -1 });
 
     return {
-      project,
+      project: {
+        ...project.toObject(),
+        resourceCount: resources.length,
+      },
       resources,
       resourceCount: resources.length,
     };
@@ -44,17 +71,32 @@ export class ProjectService {
       name: data.name.trim(),
       description: data.description || '',
       imageUrl: data.imageUrl || '',
+      isArchived: false,
     });
   }
 
-  static async update(userId: string, projectId: string, data: { name?: string; description?: string; imageUrl?: string }) {
+  static async update(
+    userId: string,
+    projectId: string,
+    data: { name?: string; description?: string; imageUrl?: string; isArchived?: boolean }
+  ) {
     const project = await Project.findOne({ _id: projectId, userId });
     if (!project) throw new Error('Project not found.');
 
     if (data.name !== undefined) project.name = data.name.trim();
     if (data.description !== undefined) project.description = data.description.trim();
     if (data.imageUrl !== undefined) project.imageUrl = data.imageUrl.trim();
+    if (data.isArchived !== undefined) project.isArchived = Boolean(data.isArchived);
 
+    await project.save();
+    return project;
+  }
+
+  static async toggleArchive(userId: string, projectId: string) {
+    const project = await Project.findOne({ _id: projectId, userId });
+    if (!project) throw new Error('Project not found.');
+
+    project.isArchived = !project.isArchived;
     await project.save();
     return project;
   }
@@ -70,5 +112,48 @@ export class ProjectService {
     );
 
     return project;
+  }
+
+  static async addResources(userId: string, projectId: string, resourceIds: string[]) {
+    const project = await Project.findOne({ _id: projectId, userId });
+    if (!project) throw new Error('Project not found.');
+
+    const objectIds = resourceIds
+      .filter((id) => mongoose.Types.ObjectId.isValid(id))
+      .map((id) => new mongoose.Types.ObjectId(id));
+
+    if (objectIds.length === 0) {
+      throw new Error('No valid resource IDs provided.');
+    }
+
+    const result = await Resource.updateMany(
+      { _id: { $in: objectIds }, userId },
+      { $addToSet: { projectIds: project._id } }
+    );
+
+    return {
+      modifiedCount: result.modifiedCount,
+      projectId,
+    };
+  }
+
+  static async removeResource(userId: string, projectId: string, resourceId: string) {
+    const project = await Project.findOne({ _id: projectId, userId });
+    if (!project) throw new Error('Project not found.');
+
+    if (!mongoose.Types.ObjectId.isValid(resourceId)) {
+      throw new Error('Invalid resource ID.');
+    }
+
+    await Resource.updateOne(
+      { _id: resourceId, userId },
+      { $pull: { projectIds: project._id } }
+    );
+
+    return {
+      removed: true,
+      resourceId,
+      projectId,
+    };
   }
 }

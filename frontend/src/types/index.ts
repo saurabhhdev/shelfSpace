@@ -35,6 +35,7 @@ export interface Project {
   name: string;
   description: string;
   imageUrl?: string;
+  isArchived?: boolean;
   resourceCount?: number;
   createdAt: string;
   updatedAt: string;

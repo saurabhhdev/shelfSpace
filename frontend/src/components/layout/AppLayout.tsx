@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
   Layers,
+  FolderKanban,
   BookmarkCheck,
   Star,
   Settings,
@@ -88,10 +89,11 @@ export const AppLayout: React.FC = () => {
     };
   }, []);
 
-  // Exactly the 4 specified navigation items
+  // Navigation items with Projects between All Resources and Categories
   const navItems = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/library', label: 'All Resources', icon: Layers },
+    { to: '/projects', label: 'Projects', icon: FolderKanban },
     { to: '/categories', label: 'Categories', icon: BookmarkCheck },
     { to: '/favourites', label: 'Favorites', icon: Star },
   ];

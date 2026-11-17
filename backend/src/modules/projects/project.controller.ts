@@ -6,7 +6,11 @@ export class ProjectController {
   static async list(req: Request, res: Response) {
     try {
       const userId = req.user!.userId;
-      const projects = await ProjectService.list(userId);
+      const { search, status } = req.query;
+      const projects = await ProjectService.list(userId, {
+        search: typeof search === 'string' ? search : undefined,
+        status: status === 'archived' || status === 'active' || status === 'all' ? status : undefined,
+      });
       return sendSuccess(res, projects, 'Projects retrieved');
     } catch (err: any) {
       return sendError(res, err.message || 'Error listing projects', 500);
@@ -45,6 +49,18 @@ export class ProjectController {
     }
   }
 
+  static async toggleArchive(req: Request, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const { projectId } = req.params;
+      const project = await ProjectService.toggleArchive(userId, projectId);
+      const msg = project.isArchived ? 'Project archived' : 'Project unarchived';
+      return sendSuccess(res, project, msg);
+    } catch (err: any) {
+      return sendError(res, err.message || 'Error toggling project archive status', 400);
+    }
+  }
+
   static async delete(req: Request, res: Response) {
     try {
       const userId = req.user!.userId;
@@ -53,6 +69,29 @@ export class ProjectController {
       return sendSuccess(res, null, 'Project deleted successfully. Associated resources have been retained.');
     } catch (err: any) {
       return sendError(res, err.message || 'Error deleting project', 400);
+    }
+  }
+
+  static async addResources(req: Request, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const { projectId } = req.params;
+      const { resourceIds } = req.body;
+      const result = await ProjectService.addResources(userId, projectId, resourceIds);
+      return sendSuccess(res, result, 'Resources added to project successfully');
+    } catch (err: any) {
+      return sendError(res, err.message || 'Error adding resources to project', 400);
+    }
+  }
+
+  static async removeResource(req: Request, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const { projectId, resourceId } = req.params;
+      const result = await ProjectService.removeResource(userId, projectId, resourceId);
+      return sendSuccess(res, result, 'Resource removed from project');
+    } catch (err: any) {
+      return sendError(res, err.message || 'Error removing resource from project', 400);
     }
   }
 }

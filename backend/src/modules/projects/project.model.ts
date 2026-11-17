@@ -5,6 +5,7 @@ export interface IProject extends Document {
   name: string;
   description: string;
   imageUrl?: string;
+  isArchived: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,6 +34,11 @@ const ProjectSchema = new Schema<IProject>(
       type: String,
       default: '',
       trim: true,
+    },
+    isArchived: {
+      type: Boolean,
+      default: false,
+      index: true,
     },
   },
   {

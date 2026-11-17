@@ -6,6 +6,7 @@ import {
   Trash2,
   Edit2,
   Globe,
+  FolderMinus,
 } from 'lucide-react';
 import type { Resource } from '../../types';
 import { Badge } from '../ui/Badge';
@@ -18,6 +19,7 @@ export interface ResourceCardProps {
   onToggleFavourite: (id: string) => void;
   onDelete: (id: string, name: string) => void;
   onEdit: (resource: Resource) => void;
+  onRemoveFromProject?: (id: string, name: string) => void;
 }
 
 export const ResourceCard: React.FC<ResourceCardProps> = ({
@@ -26,6 +28,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   onToggleFavourite,
   onDelete,
   onEdit,
+  onRemoveFromProject,
 }) => {
   const [imageError, setImageError] = useState(false);
 
@@ -162,6 +165,16 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             >
               <Edit2 className="w-3.5 h-3.5" />
             </button>
+
+            {onRemoveFromProject && (
+              <button
+                onClick={() => onRemoveFromProject(resource._id, resource.title)}
+                className="p-1.5 rounded-md text-neutral-400 hover:text-amber-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
+                title="Remove from project"
+              >
+                <FolderMinus className="w-3.5 h-3.5" />
+              </button>
+            )}
 
             <button
               onClick={() => onDelete(resource._id, resource.title)}
@@ -304,6 +317,16 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           >
             <Edit2 className="w-3.5 h-3.5" />
           </button>
+
+          {onRemoveFromProject && (
+            <button
+              onClick={() => onRemoveFromProject(resource._id, resource.title)}
+              className="p-1 rounded text-neutral-400 hover:text-amber-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
+              title="Remove from project"
+            >
+              <FolderMinus className="w-3.5 h-3.5" />
+            </button>
+          )}
 
           <button
             onClick={() => onDelete(resource._id, resource.title)}
