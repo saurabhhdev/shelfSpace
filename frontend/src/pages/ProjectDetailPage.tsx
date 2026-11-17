@@ -63,9 +63,8 @@ export const ProjectDetailPage: React.FC = () => {
 
   if (isLoading || !project) {
     return (
-      <div className="py-20 text-center">
-        <div className="w-6 h-6 border-2 border-zinc-900 dark:border-white border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <span className="text-xs text-[#8e8d8a]">Loading project...</span>
+      <div className="py-20 text-center text-xs text-neutral-400">
+        Loading project...
       </div>
     );
   }
@@ -76,7 +75,7 @@ export const ProjectDetailPage: React.FC = () => {
       <div>
         <Link
           to="/projects"
-          className="inline-flex items-center gap-1.5 text-xs text-[#8e8d8a] hover:text-[#2b2a28] dark:hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white transition-colors"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           <span>All Projects</span>
@@ -84,13 +83,13 @@ export const ProjectDetailPage: React.FC = () => {
       </div>
 
       {/* Project Banner Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-none bg-[#121316] border border-white/[0.08]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-md bg-[#121316] border border-white/[0.08]">
         <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-none bg-[#0E0F10] text-[#09AE5B] flex items-center justify-center border border-white/10">
+          <div className="w-10 h-10 rounded-md bg-[#0E0F10] text-neutral-400 flex items-center justify-center border border-white/10 shrink-0">
             <FolderKanban className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-lg font-semibold text-[#E5E5E5]">
+            <h1 className="text-lg font-semibold text-[#EDEDED]">
               {project.name}
             </h1>
             {project.description && (
@@ -99,19 +98,19 @@ export const ProjectDetailPage: React.FC = () => {
               </p>
             )}
             <div className="text-[11px] font-mono text-neutral-500 mt-1">
-              {resources.length} associated {resources.length === 1 ? 'resource' : 'resources'}
+              {resources.length} {resources.length === 1 ? 'resource' : 'resources'}
             </div>
           </div>
         </div>
 
         {/* View mode toggle */}
-        <div className="flex rounded-none border border-white/10 bg-[#0E0F10] p-0.5 shrink-0 self-start sm:self-auto">
+        <div className="flex rounded-md border border-white/[0.08] bg-[#121316] p-0.5 shrink-0 self-start sm:self-auto">
           <button
             onClick={() => setViewMode('grid')}
             className={cn(
-              'p-1.5 rounded-none transition-colors cursor-pointer',
+              'p-1.5 rounded-sm transition-colors cursor-pointer',
               viewMode === 'grid'
-                ? 'bg-[#09AE5B] text-black font-semibold'
+                ? 'bg-white/[0.1] text-white'
                 : 'text-neutral-400 hover:text-white'
             )}
             title="Grid view"
@@ -121,9 +120,9 @@ export const ProjectDetailPage: React.FC = () => {
           <button
             onClick={() => setViewMode('list')}
             className={cn(
-              'p-1.5 rounded-none transition-colors cursor-pointer',
+              'p-1.5 rounded-sm transition-colors cursor-pointer',
               viewMode === 'list'
-                ? 'bg-[#09AE5B] text-black font-semibold'
+                ? 'bg-white/[0.1] text-white'
                 : 'text-neutral-400 hover:text-white'
             )}
             title="List view"
@@ -138,7 +137,7 @@ export const ProjectDetailPage: React.FC = () => {
         <div
           className={cn(
             viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'
               : 'space-y-2'
           )}
         >
@@ -154,17 +153,16 @@ export const ProjectDetailPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-none border border-dashed border-white/10 p-8 bg-[#121316]">
+        <div className="py-16 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
           <p className="text-xs text-neutral-400 mb-4">
             No resources associated with this project yet.
           </p>
           <Button
-            variant="primary"
             size="xs"
             leftIcon={<Plus className="w-3.5 h-3.5" />}
             onClick={() => window.dispatchEvent(new CustomEvent('open-quick-add'))}
           >
-            Add Resource to Project
+            Add Resource
           </Button>
         </div>
       )}
@@ -191,3 +189,4 @@ export const ProjectDetailPage: React.FC = () => {
   );
 };
 
+export default ProjectDetailPage;

@@ -123,32 +123,32 @@ export const AppLayout: React.FC = () => {
         />
       )}
 
-      {/* OSSIUM EDITORIAL SIDEBAR */}
+      {/* MINIMAL LINEAR-STYLE SIDEBAR */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex flex-col justify-between border-r border-white/[0.08] bg-[#0E0F10] transition-all duration-200 ease-in-out md:static select-none',
-          isCollapsed ? 'w-16' : 'w-64',
+          'fixed inset-y-0 left-0 z-40 flex flex-col justify-between border-r border-white/[0.08] bg-[#0E0F10] transition-all duration-150 ease-in-out md:static select-none',
+          isCollapsed ? 'w-16' : 'w-60',
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
         <div className="flex flex-col h-full overflow-hidden">
-          {/* 1. Workspace Switcher Header */}
+          {/* 1. Header / Logo */}
           <div className="flex items-center justify-between h-14 px-4 border-b border-white/[0.08] shrink-0 bg-[#0E0F10]">
             {!isCollapsed ? (
               <div className="flex items-center justify-between w-full">
                 <Link
                   to="/dashboard"
-                  className="flex items-center gap-2.5 px-1 py-1 rounded-none hover:bg-white/[0.04] transition-colors truncate group"
+                  className="flex items-center gap-2.5 px-1 py-1 rounded-md hover:bg-white/[0.04] transition-colors truncate group"
                 >
-                  <div className="w-6 h-6 rounded-none bg-neutral-800 border border-white/10 flex items-center justify-center shrink-0 group-hover:border-[#09AE5B]/50 transition-colors">
-                    <span className="w-2 h-2 rounded-none bg-[#09AE5B] shadow-[0_0_8px_#09AE5B]"></span>
+                  <div className="w-5 h-5 rounded-md bg-neutral-800 border border-white/10 flex items-center justify-center shrink-0">
+                    <span className="w-2 h-2 rounded-full bg-[#09AE5B]"></span>
                   </div>
                   <div className="truncate text-left">
                     <span className="text-xs font-semibold text-[#E5E5E5] tracking-tight truncate block group-hover:text-white transition-colors">
                       {user?.name ? `${user.name.split(' ')[0]}'s Shelf` : 'Shelfspace'}
                     </span>
-                    <span className="text-[10px] text-neutral-400 block leading-none font-mono">
-                      Personal Workspace
+                    <span className="text-[10px] text-neutral-500 block leading-none">
+                      Library
                     </span>
                   </div>
                 </Link>
@@ -156,7 +156,7 @@ export const AppLayout: React.FC = () => {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="hidden md:flex text-neutral-400 hover:text-white p-1 rounded-none hover:bg-white/[0.06] cursor-pointer transition-colors"
+                    className="hidden md:flex text-neutral-400 hover:text-white p-1 rounded-md hover:bg-white/[0.06] cursor-pointer transition-colors"
                     title="Collapse sidebar"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
@@ -173,7 +173,7 @@ export const AppLayout: React.FC = () => {
               <div className="w-full flex items-center justify-center">
                 <button
                   onClick={() => setIsCollapsed(false)}
-                  className="text-neutral-400 hover:text-[#09AE5B] p-1.5 rounded-none hover:bg-white/[0.06] cursor-pointer transition-colors"
+                  className="text-neutral-400 hover:text-white p-1.5 rounded-md hover:bg-white/[0.06] cursor-pointer transition-colors"
                   title="Expand sidebar"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -187,16 +187,16 @@ export const AppLayout: React.FC = () => {
             <button
               onClick={() => setIsCommandOpen(true)}
               className={cn(
-                'w-full flex items-center gap-2 px-3 py-1.5 rounded-none text-xs text-neutral-400 bg-[#141519] hover:bg-[#18191e] hover:text-neutral-200 transition-colors cursor-pointer border border-white/[0.06]',
+                'w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-xs text-neutral-400 bg-[#141519] hover:bg-[#18191e] hover:text-neutral-200 transition-colors cursor-pointer border border-white/[0.06]',
                 isCollapsed && 'justify-center px-0'
               )}
               title="Search (⌘K)"
             >
-              <Search className="w-3.5 h-3.5 text-[#09AE5B] shrink-0" />
+              <Search className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
               {!isCollapsed && (
                 <>
                   <span className="flex-1 text-left text-xs">Search...</span>
-                  <kbd className="text-[10px] font-mono px-1 py-0.5 rounded-none bg-black/40 text-neutral-400 border border-white/[0.08]">
+                  <kbd className="text-[10px] font-mono px-1 py-0.5 rounded-md bg-black/40 text-neutral-500 border border-white/[0.08]">
                     ⌘K
                   </kbd>
                 </>
@@ -206,22 +206,22 @@ export const AppLayout: React.FC = () => {
             <button
               onClick={() => setIsQuickAddOpen(true)}
               className={cn(
-                'w-full inline-flex items-center justify-center gap-1.5 rounded-none bg-[#09AE5B] hover:bg-[#07914b] text-black font-semibold text-xs h-8 px-3 transition-colors shadow-sm cursor-pointer',
-                isCollapsed && 'px-0 rounded-none'
+                'w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-[#09AE5B] hover:bg-[#07914b] text-black font-semibold text-xs h-8 px-3 transition-colors cursor-pointer',
+                isCollapsed && 'px-0'
               )}
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-              {!isCollapsed && <span>Quick Add</span>}
+              {!isCollapsed && <span>Add Resource</span>}
             </button>
           </div>
 
           {/* 3. Navigation Sections (Scrollable) */}
-          <div className="flex-1 overflow-y-auto px-3 py-1 space-y-4">
-            {/* WORKSPACE GROUP */}
+          <div className="flex-1 overflow-y-auto px-2 py-1 space-y-4">
+            {/* MAIN NAVIGATION */}
             <div className="space-y-0.5">
               {!isCollapsed && (
-                <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 font-mono">
-                  Workspace
+                <div className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+                  Navigation
                 </div>
               )}
               <NavLink
@@ -229,14 +229,14 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      ? 'bg-white/[0.08] text-white'
                       : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
                 }
-                title={isCollapsed ? 'Home' : undefined}
+                title={isCollapsed ? 'Overview' : undefined}
               >
                 <Home className="w-4 h-4 shrink-0" />
                 {!isCollapsed && <span>Overview</span>}
@@ -247,30 +247,30 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      ? 'bg-white/[0.08] text-white'
                       : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
                 }
-                title={isCollapsed ? 'All Resources' : undefined}
+                title={isCollapsed ? 'Resources' : undefined}
               >
                 <Layers className="w-4 h-4 shrink-0" />
-                {!isCollapsed && <span>All Resources</span>}
+                {!isCollapsed && <span>Resources</span>}
               </NavLink>
             </div>
 
-            {/* COLLECTIONS & PROJECTS GROUP */}
+            {/* ORGANIZATION GROUP */}
             <div className="space-y-0.5">
               {!isCollapsed && (
-                <div className="flex items-center justify-between px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 font-mono">
+                <div className="flex items-center justify-between px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-neutral-500">
                   <span>Organization</span>
                   <Link
                     to="/collections"
-                    className="hover:text-[#09AE5B] transition-colors text-[10px]"
+                    className="hover:text-white transition-colors text-[10px] lowercase"
                   >
-                    View All
+                    all
                   </Link>
                 </div>
               )}
@@ -280,9 +280,9 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      ? 'bg-white/[0.08] text-white'
                       : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
@@ -298,9 +298,9 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      ? 'bg-white/[0.08] text-white'
                       : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
@@ -320,22 +320,22 @@ export const AppLayout: React.FC = () => {
                       to={`/collections/${col._id}`}
                       className={({ isActive }) =>
                         cn(
-                          'flex items-center justify-between px-2 py-1 rounded-none text-xs transition-colors',
+                          'flex items-center justify-between px-2 py-1 rounded-md text-xs transition-colors',
                           isActive
-                            ? 'bg-white/[0.06] text-[#09AE5B] font-medium'
+                            ? 'bg-white/[0.06] text-white font-medium'
                             : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200'
                         )
                       }
                     >
                       <div className="flex items-center gap-2 truncate">
                         <span
-                          className="w-1.5 h-1.5 rounded-none shrink-0"
+                          className="w-1.5 h-1.5 rounded-full shrink-0"
                           style={{ backgroundColor: col.color || '#09AE5B' }}
                         />
                         <span className="truncate">{col.name}</span>
                       </div>
                       {col.resourceCount !== undefined && col.resourceCount > 0 && (
-                        <span className="text-[10px] font-mono text-neutral-400">
+                        <span className="text-[10px] font-mono text-neutral-500">
                           {col.resourceCount}
                         </span>
                       )}
@@ -348,7 +348,7 @@ export const AppLayout: React.FC = () => {
             {/* QUICK ACCESS GROUP */}
             <div className="space-y-0.5">
               {!isCollapsed && (
-                <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 font-mono">
+                <div className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-neutral-500">
                   Quick Access
                 </div>
               )}
@@ -357,9 +357,9 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      ? 'bg-white/[0.08] text-white'
                       : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
@@ -375,9 +375,9 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      ? 'bg-white/[0.08] text-white'
                       : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
@@ -393,9 +393,9 @@ export const AppLayout: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
+                    'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
                     isActive
-                      ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                      ? 'bg-white/[0.08] text-white'
                       : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                     isCollapsed && 'justify-center px-0'
                   )
@@ -414,9 +414,9 @@ export const AppLayout: React.FC = () => {
               to="/settings"
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors',
+                  'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
                   isActive
-                    ? 'bg-white/[0.08] text-white font-semibold border-l-2 border-[#09AE5B]'
+                    ? 'bg-white/[0.08] text-white'
                     : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200',
                   isCollapsed && 'justify-center px-0'
                 )
@@ -430,17 +430,17 @@ export const AppLayout: React.FC = () => {
             <button
               onClick={cycleTheme}
               className={cn(
-                'w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-none text-xs font-medium text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200 transition-colors cursor-pointer',
+                'w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200 transition-colors cursor-pointer',
                 isCollapsed && 'justify-center px-0'
               )}
               title={`Theme: ${theme}`}
             >
               {theme === 'dark' ? (
-                <Moon className="w-4 h-4 shrink-0 text-[#09AE5B]" />
+                <Moon className="w-4 h-4 shrink-0 text-neutral-400" />
               ) : theme === 'light' ? (
                 <Sun className="w-4 h-4 shrink-0 text-amber-400" />
               ) : (
-                <Laptop className="w-4 h-4 shrink-0 text-[#09AE5B]" />
+                <Laptop className="w-4 h-4 shrink-0 text-neutral-400" />
               )}
               {!isCollapsed && <span className="capitalize">{theme} Theme</span>}
             </button>
@@ -449,14 +449,14 @@ export const AppLayout: React.FC = () => {
             {!isCollapsed ? (
               <div className="pt-2 mt-1 border-t border-white/[0.06] flex items-center justify-between px-1">
                 <div className="flex items-center gap-2 truncate">
-                  <div className="w-6 h-6 rounded-none bg-neutral-800 border border-white/10 text-white font-semibold flex items-center justify-center text-xs shrink-0 font-mono">
+                  <div className="w-6 h-6 rounded-full bg-neutral-800 border border-white/10 text-white font-semibold flex items-center justify-center text-xs shrink-0 font-mono">
                     {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                   </div>
                   <div className="truncate text-left">
                     <span className="text-xs font-medium text-[#E5E5E5] truncate block leading-tight">
                       {user?.name || 'User'}
                     </span>
-                    <span className="text-[10px] text-neutral-400 truncate block leading-tight font-mono">
+                    <span className="text-[10px] text-neutral-500 truncate block leading-tight">
                       {user?.email}
                     </span>
                   </div>
@@ -467,7 +467,7 @@ export const AppLayout: React.FC = () => {
                     await logout();
                     navigate('/');
                   }}
-                  className="text-neutral-400 hover:text-rose-400 p-1 rounded-none hover:bg-white/[0.06] cursor-pointer transition-colors"
+                  className="text-neutral-400 hover:text-rose-400 p-1 rounded-md hover:bg-white/[0.06] cursor-pointer transition-colors"
                   title="Log out"
                 >
                   <LogOut className="w-3.5 h-3.5" />
@@ -479,7 +479,7 @@ export const AppLayout: React.FC = () => {
                   await logout();
                   navigate('/');
                 }}
-                className="w-full flex items-center justify-center p-1.5 rounded-none text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] cursor-pointer transition-colors"
+                className="w-full flex items-center justify-center p-1.5 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] cursor-pointer transition-colors"
                 title="Log out"
               >
                 <LogOut className="w-4 h-4" />
@@ -491,8 +491,8 @@ export const AppLayout: React.FC = () => {
 
       {/* MAIN VIEW AREA */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#0E0F10]">
-        {/* Ossium Minimal Top Header */}
-        <header className="h-14 border-b border-white/[0.08] bg-[#0E0F10]/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
+        {/* Clean Top Header */}
+        <header className="h-14 border-b border-white/[0.08] bg-[#0E0F10] sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
@@ -515,22 +515,21 @@ export const AppLayout: React.FC = () => {
 
           {/* Header Action Buttons */}
           <div className="flex items-center gap-2.5">
-            {/* Command search trigger button */}
             <button
               type="button"
               onClick={() => setIsCommandOpen(true)}
-              className="hidden sm:flex items-center gap-2 h-8 px-3 rounded-none bg-[#141519] border border-white/[0.08] text-xs text-neutral-400 hover:border-white/20 hover:text-white transition-colors cursor-pointer"
+              className="hidden sm:flex items-center gap-2 h-8 px-3 rounded-md bg-[#141519] border border-white/[0.08] text-xs text-neutral-400 hover:border-white/20 hover:text-white transition-colors cursor-pointer"
             >
-              <Search className="w-3.5 h-3.5 text-[#09AE5B]" />
-              <span>Search library...</span>
-              <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded-none bg-black/50 text-neutral-400 border border-white/[0.08]">
+              <Search className="w-3.5 h-3.5 text-neutral-400" />
+              <span>Search...</span>
+              <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-black/50 text-neutral-500 border border-white/[0.08]">
                 ⌘K
               </kbd>
             </button>
 
             <Link
               to="/"
-              className="text-xs text-neutral-400 hover:text-white hidden md:inline-flex items-center gap-1 font-medium px-2.5 py-1 rounded-none hover:bg-white/[0.04] transition-colors"
+              className="text-xs text-neutral-400 hover:text-white hidden md:inline-flex items-center gap-1 font-medium px-2.5 py-1 rounded-md hover:bg-white/[0.04] transition-colors"
               title="View public website"
             >
               <span>Landing Page</span>
@@ -539,11 +538,10 @@ export const AppLayout: React.FC = () => {
 
             <button
               onClick={() => setIsQuickAddOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-none bg-[#09AE5B] hover:bg-[#07914b] text-black font-semibold text-xs h-8 px-3.5 transition-colors shadow-sm cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-md bg-[#09AE5B] hover:bg-[#07914b] text-black font-semibold text-xs h-8 px-3.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Add Resource</span>
-              <kbd className="hidden lg:inline text-[10px] font-mono ml-0.5 text-black/70 font-bold">N</kbd>
             </button>
           </div>
         </header>

@@ -17,17 +17,17 @@ export const Badge: React.FC<BadgeProps> = ({
   ...props
 }) => {
   const baseStyle =
-    'bg-[#09AE5B]/10 text-[#09AE5B] border border-[#09AE5B]/25 rounded-none';
+    'bg-white/[0.05] text-neutral-300 border border-white/[0.08] rounded-md';
 
   const sizes = {
-    sm: 'text-[10px] font-mono px-2 py-0.5 font-medium leading-none',
-    md: 'text-xs font-mono px-2.5 py-1 font-medium leading-none',
+    sm: 'text-[11px] px-2 py-0.5 font-medium leading-none',
+    md: 'text-xs px-2.5 py-1 font-medium leading-none',
   };
 
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 font-sans transition-colors',
+        'inline-flex items-center gap-1.5 font-sans transition-colors',
         baseStyle,
         sizes[size],
         className

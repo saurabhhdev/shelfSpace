@@ -85,21 +85,21 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4">
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in"
+        className="fixed inset-0 bg-black/60 transition-opacity"
         onClick={onClose}
       />
 
       <div
-        className="relative w-full max-w-xl bg-[#121316] border border-white/10 rounded-none shadow-[0_20px_60px_rgba(0,0,0,0.95)] overflow-hidden z-10 animate-in zoom-in-95 duration-150"
+        className="relative w-full max-w-xl bg-[#121316] border border-white/[0.08] rounded-lg shadow-2xl overflow-hidden z-10"
         onKeyDown={handleKeyDown}
       >
         {/* Search Input */}
-        <div className="flex items-center px-4 py-3 border-b border-white/10 bg-[#0E0F10]">
-          <Search className="w-4 h-4 text-[#09AE5B] shrink-0 mr-3" />
+        <div className="flex items-center px-4 py-3 border-b border-white/[0.08] bg-[#0E0F10]">
+          <Search className="w-4 h-4 text-neutral-400 shrink-0 mr-3" />
           <input
             ref={inputRef}
             type="text"
-            className="w-full bg-transparent text-sm text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none font-mono"
+            className="w-full bg-transparent text-sm text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none"
             placeholder="Search resources, tags, projects..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -112,17 +112,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
               <X className="w-3.5 h-3.5" />
             </button>
           )}
-          <kbd className="hidden sm:inline-block ml-2 px-1.5 py-0.5 text-[10px] font-mono bg-[#141519] text-[#09AE5B] rounded-none border border-white/10">
+          <kbd className="hidden sm:inline-block ml-2 px-1.5 py-0.5 text-[10px] font-mono bg-white/[0.06] text-neutral-400 rounded border border-white/[0.08]">
             ESC
           </kbd>
         </div>
 
         {/* Results List */}
-        <div className="max-h-80 overflow-y-auto p-2">
+        <div className="max-h-80 overflow-y-auto p-1.5">
           {isSearching ? (
-            <div className="py-8 text-center text-xs text-neutral-400 font-mono">Searching workspace...</div>
+            <div className="py-8 text-center text-xs text-neutral-400">Searching...</div>
           ) : results.length > 0 ? (
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {results.map((item, idx) => {
                 const isSelected = idx === selectedIndex;
                 return (
@@ -134,18 +134,18 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                     }}
                     onMouseEnter={() => setSelectedIndex(idx)}
                     className={cn(
-                      'w-full flex items-center justify-between p-2.5 rounded-none text-left text-xs transition-colors cursor-pointer',
+                      'w-full flex items-center justify-between p-2 rounded-md text-left text-xs transition-colors cursor-pointer',
                       isSelected
-                        ? 'bg-[#09AE5B]/10 text-[#09AE5B] font-medium border-l-2 border-[#09AE5B]'
-                        : 'hover:bg-white/[0.04] text-neutral-400 hover:text-white'
+                        ? 'bg-white/[0.08] text-white'
+                        : 'text-neutral-400 hover:text-white hover:bg-white/[0.04]'
                     )}
                   >
                     <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                      <span className={cn('p-1 rounded-none shrink-0', isSelected ? 'bg-white/[0.08] text-[#09AE5B]' : 'bg-white/[0.04] text-neutral-400')}>
+                      <span className={cn('p-1 rounded shrink-0', isSelected ? 'bg-white/[0.08] text-[#09AE5B]' : 'bg-white/[0.04] text-neutral-400')}>
                         {typeIcons[item.type]}
                       </span>
                       <div className="min-w-0">
-                        <div className="font-semibold text-xs truncate text-[#E5E5E5]">
+                        <div className="font-medium text-xs truncate text-[#E5E5E5]">
                           {item.title}
                         </div>
                         {item.description && (
@@ -157,7 +157,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded-none bg-[#141519] text-[#09AE5B] border border-white/10">
+                      <span className="text-[10px] capitalize px-1.5 py-0.5 rounded bg-white/[0.05] text-neutral-400 border border-white/[0.08]">
                         {item.type}
                       </span>
                       <ArrowRight className="w-3.5 h-3.5 text-neutral-500" />
@@ -171,8 +171,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
               No resources found matching "{query}"
             </div>
           ) : (
-            <div className="py-2 px-2 text-xs text-neutral-400 space-y-1">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-[#09AE5B] mb-1.5 px-2 font-semibold">
+            <div className="py-2 px-1 text-xs text-neutral-400 space-y-0.5">
+              <div className="text-[11px] font-medium text-neutral-400 mb-1 px-2">
                 Quick Navigation
               </div>
               <div
@@ -180,7 +180,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                   navigate('/library');
                   onClose();
                 }}
-                className="flex items-center justify-between px-2.5 py-1.5 rounded-none hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-[#09AE5B] transition-colors"
+                className="flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-white transition-colors"
               >
                 <span>Browse All Resources</span>
                 <kbd className="font-mono text-[10px] text-neutral-500">/library</kbd>
@@ -190,9 +190,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                   navigate('/collections');
                   onClose();
                 }}
-                className="flex items-center justify-between px-2.5 py-1.5 rounded-none hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-[#09AE5B] transition-colors"
+                className="flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-white transition-colors"
               >
-                <span>Thematic Collections</span>
+                <span>Collections</span>
                 <kbd className="font-mono text-[10px] text-neutral-500">/collections</kbd>
               </div>
               <div
@@ -200,9 +200,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                   navigate('/projects');
                   onClose();
                 }}
-                className="flex items-center justify-between px-2.5 py-1.5 rounded-none hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-[#09AE5B] transition-colors"
+                className="flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-white transition-colors"
               >
-                <span>Active Projects</span>
+                <span>Projects</span>
                 <kbd className="font-mono text-[10px] text-neutral-500">/projects</kbd>
               </div>
               <div
@@ -210,9 +210,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                   navigate('/favourites');
                   onClose();
                 }}
-                className="flex items-center justify-between px-2.5 py-1.5 rounded-none hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-[#09AE5B] transition-colors"
+                className="flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-white/[0.04] cursor-pointer text-neutral-400 hover:text-white transition-colors"
               >
-                <span>Starred Favorites</span>
+                <span>Favorites</span>
                 <kbd className="font-mono text-[10px] text-neutral-500">/favourites</kbd>
               </div>
             </div>
@@ -220,15 +220,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2 border-t border-white/10 flex items-center justify-between text-[11px] text-neutral-500 bg-[#0E0F10]">
+        <div className="px-4 py-2 border-t border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-500 bg-[#0E0F10]">
           <div className="flex items-center gap-2">
-            <span>Select: <kbd className="font-mono text-[10px] bg-[#141519] text-[#09AE5B] px-1 py-0.5 rounded-none border border-white/10">↵</kbd></span>
-            <span>Navigate: <kbd className="font-mono text-[10px] bg-[#16161a] text-[#059669] px-1 py-0.5 rounded border border-[#272730]">↑↓</kbd></span>
+            <span>Select: <kbd className="font-mono text-[10px] bg-white/[0.06] text-neutral-400 px-1 py-0.5 rounded border border-white/[0.08]">↵</kbd></span>
+            <span>Navigate: <kbd className="font-mono text-[10px] bg-white/[0.06] text-neutral-400 px-1 py-0.5 rounded border border-white/[0.08]">↑↓</kbd></span>
           </div>
-          <span className="font-mono text-[10px] text-[#059669]">Shelfspace</span>
+          <span className="text-[11px] text-neutral-500">Shelfspace</span>
         </div>
       </div>
     </div>
   );
 };
-

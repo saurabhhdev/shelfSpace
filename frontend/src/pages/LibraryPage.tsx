@@ -5,32 +5,33 @@ import {
   LayoutGrid,
   List,
   Plus,
-  Sparkles,
   ArrowUpDown,
-  Palette,
-  Layout,
   Code2,
+  Layout,
+  Palette,
   Database,
   BookOpen,
   FileText,
   ChevronLeft,
   ChevronRight,
+  Layers,
 } from 'lucide-react';
 import { apiClient } from '../api/client';
 import type { Resource, ResourceType, Project, Collection } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
 import { EditResourceModal } from '../components/resources/EditResourceModal';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
+import { Button } from '../components/ui/Button';
 import { cn } from '../lib/utils';
 
 const categories: Array<{ id: string; label: string; type?: ResourceType; icon: React.ReactNode }> = [
-  { id: 'all', label: 'All Resources', icon: <Sparkles className="w-3.5 h-3.5" /> },
+  { id: 'all', label: 'All', icon: <Layers className="w-3.5 h-3.5" /> },
   { id: 'development', label: 'Development', type: 'development', icon: <Code2 className="w-3.5 h-3.5" /> },
-  { id: 'ui', label: 'UI / Components', type: 'ui', icon: <Layout className="w-3.5 h-3.5" /> },
+  { id: 'ui', label: 'UI & Components', type: 'ui', icon: <Layout className="w-3.5 h-3.5" /> },
   { id: 'design', label: 'Design & Colors', type: 'design', icon: <Palette className="w-3.5 h-3.5" /> },
   { id: 'data', label: 'Data & APIs', type: 'data', icon: <Database className="w-3.5 h-3.5" /> },
-  { id: 'learning', label: 'Learning & Docs', type: 'learning', icon: <BookOpen className="w-3.5 h-3.5" /> },
-  { id: 'personal', label: 'Personal Snippets', type: 'personal', icon: <FileText className="w-3.5 h-3.5" /> },
+  { id: 'learning', label: 'Documentation', type: 'learning', icon: <BookOpen className="w-3.5 h-3.5" /> },
+  { id: 'personal', label: 'Personal Notes', type: 'personal', icon: <FileText className="w-3.5 h-3.5" /> },
 ];
 
 export const LibraryPage: React.FC = () => {
@@ -56,7 +57,6 @@ export const LibraryPage: React.FC = () => {
   // Modals
   const [editingResource, setEditingResource] = useState<Resource | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [_isDeleting, setIsDeleting] = useState(false);
 
   const fetchResources = useCallback(async () => {
     setIsLoading(true);
@@ -122,50 +122,100 @@ export const LibraryPage: React.FC = () => {
         prev.map((r) => (r._id === id ? { ...r, isFavourite: !r.isFavourite } : r))
       );
       await apiClient.patch(`/resources/${id}/favourite`);
-    } catch (err) {
+    } catch {
       fetchResources();
     }
   };
 
   const handleConfirmDelete = async () => {
     if (!deletingId) return;
-    setIsDeleting(true);
     try {
       await apiClient.delete(`/resources/${deletingId}`);
       setDeletingId(null);
       fetchResources();
     } catch (err) {
       console.error('Failed to trash resource', err);
-    } finally {
-      setIsDeleting(false);
     }
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-16">
-      {/* 1. Page Header Frame */}
-      <div className="relative rounded-none border border-white/[0.08] bg-[#121316] p-6 sm:p-8 shadow-xl overflow-hidden">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-none bg-neutral-800/60 px-2 py-0.5 text-xs text-neutral-300 font-mono mb-2">
-              <span className="w-1.5 h-1.5 rounded-none bg-[#09AE5B]"></span>
-              <span>Library Index</span>
-              <span className="text-neutral-500">•</span>
-              <span>{totalCount} items saved</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#E5E5E5]">
-              Resource Catalog
-            </h1>
-            <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-              Search, filter, and reference all technical tools, links, color palettes, and code snippets.
-            </p>
+    <div className="space-y-6 max-w-6xl mx-auto pb-12">
+      {/* 1. Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#EDEDED]">
+            Resources
+          </h1>
+          <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+            Browse, search, and manage all your saved resources ({totalCount} total).
+          </p>
+        </div>
+
+        <Button
+          onClick={() => window.dispatchEvent(new CustomEvent('open-quick-add'))}
+          leftIcon={<Plus className="w-3.5 h-3.5 stroke-[2.5]" />}
+          size="sm"
+          className="self-start sm:self-auto"
+        >
+          Add Resource
+        </Button>
+      </div>
+
+      {/* 2. Unified Search & Filter Bar */}
+      <div className="space-y-3">
+        {/* Category Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  setActiveCategory(cat.id);
+                  setPage(1);
+                }}
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors cursor-pointer',
+                  isActive
+                    ? 'bg-white/[0.1] text-white'
+                    : 'text-neutral-400 hover:text-white hover:bg-white/[0.04]'
+                )}
+              >
+                {cat.icon}
+                <span>{cat.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Search, Sort, and View Controls */}
+        <div className="flex flex-col sm:flex-row items-center gap-2.5">
+          <div className="relative flex-1 w-full">
+            <Search className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Search by title, description, domain, or tag..."
+              className="w-full h-9 pl-9 pr-14 rounded-md text-xs sm:text-sm bg-[#121316] border border-white/[0.08] text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-white/20 transition-colors"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-400 hover:text-white cursor-pointer"
+              >
+                Clear
+              </button>
+            )}
           </div>
 
-          {/* View mode toggle & Sort */}
-          <div className="flex items-center gap-2.5">
-            {/* Sort dropdown */}
-            <div className="flex items-center gap-1.5 h-8.5 px-3 rounded-none border border-white/[0.08] bg-[#0E0F10] text-xs text-neutral-400">
-              <ArrowUpDown className="w-3.5 h-3.5 text-[#09AE5B]" />
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+            {/* Sort selector */}
+            <div className="flex items-center gap-1.5 h-9 px-2.5 rounded-md border border-white/[0.08] bg-[#121316] text-xs text-neutral-400">
+              <ArrowUpDown className="w-3.5 h-3.5 text-neutral-500" />
               <select
                 value={sortBy}
                 onChange={(e) => {
@@ -181,14 +231,14 @@ export const LibraryPage: React.FC = () => {
               </select>
             </div>
 
-            {/* View mode buttons */}
-            <div className="flex rounded-none border border-white/[0.08] bg-[#0E0F10] p-0.5">
+            {/* View mode toggle */}
+            <div className="flex rounded-md border border-white/[0.08] bg-[#121316] p-0.5">
               <button
                 onClick={() => setViewMode('grid')}
                 className={cn(
-                  'p-1.5 rounded-none transition-colors cursor-pointer',
+                  'p-1.5 rounded-sm transition-colors cursor-pointer',
                   viewMode === 'grid'
-                    ? 'bg-[#E5E5E5] text-black font-semibold'
+                    ? 'bg-white/[0.1] text-white'
                     : 'text-neutral-400 hover:text-white'
                 )}
                 title="Grid view"
@@ -198,9 +248,9 @@ export const LibraryPage: React.FC = () => {
               <button
                 onClick={() => setViewMode('list')}
                 className={cn(
-                  'p-1.5 rounded-none transition-colors cursor-pointer',
+                  'p-1.5 rounded-sm transition-colors cursor-pointer',
                   viewMode === 'list'
-                    ? 'bg-[#E5E5E5] text-black font-semibold'
+                    ? 'bg-white/[0.1] text-white'
                     : 'text-neutral-400 hover:text-white'
                 )}
                 title="List view"
@@ -212,61 +262,13 @@ export const LibraryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Category Filter Pills (Sharp) */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-        {categories.map((cat) => {
-          const isActive = activeCategory === cat.id;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => {
-                setActiveCategory(cat.id);
-                setPage(1);
-              }}
-              className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-none whitespace-nowrap transition-all cursor-pointer',
-                isActive
-                  ? 'bg-[#E5E5E5] text-black font-semibold shadow-sm'
-                  : 'text-neutral-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.08]'
-              )}
-            >
-              {cat.icon}
-              <span>{cat.label}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* 3. Search Input */}
-      <div className="relative">
-        <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setPage(1);
-          }}
-          placeholder="Filter resources in this view by name, tag, or domain..."
-          className="w-full h-10 pl-10 pr-16 rounded-none text-xs sm:text-sm bg-[#121316] border border-white/[0.08] text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-[#09AE5B]/70 transition-colors"
-        />
-        {search && (
-          <button
-            onClick={() => setSearch('')}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-neutral-400 hover:text-white cursor-pointer"
-          >
-            Clear
-          </button>
-        )}
-      </div>
-
-      {/* 4. Resource Cards */}
+      {/* 3. Resource Cards List / Grid */}
       {isLoading ? (
-        <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5' : 'space-y-2.5')}>
+        <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3' : 'space-y-2')}>
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="h-40 rounded-none bg-[#121316] animate-pulse border border-white/[0.06]"
+              className="h-36 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
             />
           ))}
         </div>
@@ -274,8 +276,8 @@ export const LibraryPage: React.FC = () => {
         <div
           className={cn(
             viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5'
-              : 'space-y-2.5'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'
+              : 'space-y-2'
           )}
         >
           {resources.map((resource) => (
@@ -290,60 +292,60 @@ export const LibraryPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-none border border-white/[0.08] p-8 bg-[#121316]">
-          <div className="w-10 h-10 rounded-none bg-white/[0.05] text-[#09AE5B] flex items-center justify-center mx-auto mb-3">
-            <Search className="w-5 h-5" />
-          </div>
-          <h3 className="text-sm font-semibold text-[#E5E5E5] mb-1">
+        <div className="py-16 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
+          <h3 className="text-sm font-medium text-[#EDEDED] mb-1">
             No resources found
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
             {search
-              ? `No resources match the query "${search}". Try clearing your search or switching categories.`
-              : 'Your workspace library is currently empty. Start by saving a link or creating your first resource.'}
+              ? `No resources match "${search}". Try checking for typos or selecting another category.`
+              : 'Your library is currently empty. Start by saving a link or adding your first resource.'}
           </p>
           {search ? (
-            <button
+            <Button
+              variant="secondary"
+              size="xs"
               onClick={() => setSearch('')}
-              className="px-4 py-1.5 rounded-none bg-[#242424] text-xs font-medium text-white hover:bg-[#2e2e2e] transition-colors"
             >
-              Clear Search Filter
-            </button>
+              Clear Search
+            </Button>
           ) : (
-            <button
+            <Button
+              size="xs"
               onClick={() => window.dispatchEvent(new CustomEvent('open-quick-add'))}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-none bg-[#09AE5B] text-xs font-semibold text-black hover:bg-[#07914b] transition-colors"
+              leftIcon={<Plus className="w-3.5 h-3.5" />}
             >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Add First Resource</span>
-            </button>
+              Add Resource
+            </Button>
           )}
         </div>
       )}
 
-      {/* 5. Pagination */}
+      {/* 4. Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-4 border-t border-white/[0.06] text-xs text-neutral-400">
           <div>
             Page {page} of {totalPages} ({totalCount} total)
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <Button
+              variant="outline"
+              size="xs"
               disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-none bg-[#121316] border border-white/[0.08] text-xs disabled:opacity-40 hover:bg-white/[0.06]"
+              leftIcon={<ChevronLeft className="w-3.5 h-3.5" />}
             >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Prev</span>
-            </button>
-            <button
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="xs"
               disabled={page >= totalPages}
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-none bg-[#121316] border border-white/[0.08] text-xs disabled:opacity-40 hover:bg-white/[0.06]"
+              rightIcon={<ChevronRight className="w-3.5 h-3.5" />}
             >
-              <span>Next</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+              Next
+            </Button>
           </div>
         </div>
       )}

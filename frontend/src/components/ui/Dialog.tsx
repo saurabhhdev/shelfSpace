@@ -49,23 +49,23 @@ export const Dialog: React.FC<DialogProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in"
+        className="fixed inset-0 bg-black/60 transition-opacity animate-in fade-in"
         onClick={onClose}
       />
 
-      {/* Dialog Card - Crisp Ossium Sharp Box */}
+      {/* Dialog Card - Clean Minimal Modal */}
       <div
         role="dialog"
         aria-modal="true"
         className={cn(
-          'relative w-full bg-[#121316] border border-white/10 rounded-none shadow-[0_20px_60px_rgba(0,0,0,0.95)] p-6 z-10 text-[#E5E5E5]',
+          'relative w-full bg-[#121316] border border-white/[0.08] rounded-lg shadow-2xl p-6 z-10 text-[#E5E5E5]',
           'animate-in zoom-in-95 duration-150',
           maxWidths[maxWidth]
         )}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-neutral-400 hover:text-[#09AE5B] p-1 rounded-none transition-colors cursor-pointer"
+          className="absolute top-4 right-4 text-neutral-400 hover:text-white p-1 rounded-md transition-colors cursor-pointer"
           aria-label="Close"
         >
           <X className="w-4 h-4" />

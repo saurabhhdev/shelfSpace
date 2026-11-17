@@ -10,7 +10,6 @@ import {
   Laptop,
   Smartphone,
   ShieldCheck,
-  AlertTriangle,
   Moon,
   Sun,
   User as UserIcon,
@@ -92,136 +91,131 @@ export const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+    <div className="max-w-3xl mx-auto space-y-6 pb-12">
       {/* Header */}
       <div>
-        <div className="flex items-center gap-2 text-xs text-[#8e8d8a] dark:text-[#71717a] font-mono">
-          <span>Preferences</span>
-          <span>•</span>
-          <span>Security</span>
-        </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#f4f4f5] mt-0.5">
-          Account Settings
+        <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#EDEDED]">
+          Settings
         </h1>
-        <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1">
-          Manage your account profile, visual appearance, active devices, and privacy.
+        <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+          Manage your account profile, theme preferences, and security sessions.
         </p>
       </div>
 
       {/* Account Profile Card */}
-      <div className="p-5 sm:p-6 rounded-none bg-[#121316] border border-white/10 space-y-5">
+      <div className="p-5 rounded-md bg-[#121316] border border-white/[0.08] space-y-4">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-none bg-[#0E0F10] text-[#09AE5B] flex items-center justify-center border border-white/10">
+          <div className="w-8 h-8 rounded-full bg-neutral-800 text-neutral-300 flex items-center justify-center border border-white/10">
             <UserIcon className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-[#E5E5E5]">
-              Profile Details
+            <h2 className="text-sm font-medium text-[#EDEDED]">
+              Profile
             </h2>
             <p className="text-xs text-neutral-400">
-              Primary credentials for your Shelfspace account.
+              Your personal account credentials.
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div className="p-3.5 rounded-none bg-[#0E0F10] border border-white/10">
-            <span className="text-[11px] font-medium text-neutral-400 block mb-1">
+          <div className="p-3 rounded-md bg-[#0E0F10] border border-white/[0.08]">
+            <span className="text-[11px] text-neutral-500 block mb-1">
               Full Name
             </span>
-            <span className="font-semibold text-[#E5E5E5] text-sm">
-              {user?.name || 'Shelfspace User'}
+            <span className="font-medium text-[#EDEDED]">
+              {user?.name || 'User'}
             </span>
           </div>
 
-          <div className="p-3.5 rounded-none bg-[#0E0F10] border border-white/10">
-            <span className="text-[11px] font-medium text-neutral-400 block mb-1">
+          <div className="p-3 rounded-md bg-[#0E0F10] border border-white/[0.08]">
+            <span className="text-[11px] text-neutral-500 block mb-1">
               Email Address
             </span>
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-[#E5E5E5] text-sm truncate">
+              <span className="font-medium text-[#EDEDED] truncate">
                 {user?.email}
               </span>
-              <span className="shrink-0 text-[10px] font-medium font-mono px-2 py-0.5 rounded-none bg-[#141519] text-[#09AE5B] border border-[#09AE5B]/30 flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3 text-[#09AE5B]" />
-                Active
+              <span className="shrink-0 text-[10px] font-medium text-emerald-400 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                Verified
               </span>
             </div>
           </div>
         </div>
 
-        <div className="text-[11px] text-neutral-500 pt-3 border-t border-white/[0.08] flex items-center gap-1.5 font-mono">
-          <Calendar className="w-3.5 h-3.5 text-[#09AE5B]" />
+        <div className="text-[11px] text-neutral-500 pt-2 border-t border-white/[0.06] flex items-center gap-1.5">
+          <Calendar className="w-3.5 h-3.5" />
           <span>Member since {user?.createdAt ? formatDate(user.createdAt) : 'Recently'}</span>
         </div>
       </div>
 
       {/* Appearance Card */}
-      <div className="p-5 sm:p-6 rounded-none bg-[#121316] border border-white/10 space-y-4">
+      <div className="p-5 rounded-md bg-[#121316] border border-white/[0.08] space-y-4">
         <div>
-          <h2 className="text-sm font-semibold text-[#E5E5E5]">
-            Interface Appearance
+          <h2 className="text-sm font-medium text-[#EDEDED]">
+            Theme
           </h2>
           <p className="text-xs text-neutral-400 mt-0.5">
-            Choose light workspace, deep dark mode, or system default.
+            Select your preferred interface color theme.
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 max-w-sm">
+        <div className="grid grid-cols-3 gap-2.5 max-w-xs">
           <button
             onClick={() => setTheme('light')}
             className={cn(
-              'flex flex-col items-center gap-2 p-3 rounded-none border text-xs font-medium transition-all cursor-pointer',
+              'flex items-center justify-center gap-2 py-2 px-3 rounded-md border text-xs font-medium transition-colors cursor-pointer',
               theme === 'light'
-                ? 'border-[#09AE5B] bg-[#09AE5B] text-black font-semibold'
-                : 'border-white/10 bg-[#0E0F10] hover:border-[#09AE5B]/60 text-neutral-400'
+                ? 'border-white/30 bg-white/[0.1] text-white'
+                : 'border-white/[0.08] bg-[#0E0F10] hover:bg-white/[0.04] text-neutral-400'
             )}
           >
-            <Sun className="w-4 h-4" />
+            <Sun className="w-3.5 h-3.5" />
             <span>Light</span>
           </button>
 
           <button
             onClick={() => setTheme('dark')}
             className={cn(
-              'flex flex-col items-center gap-2 p-3 rounded-none border text-xs font-medium transition-all cursor-pointer',
+              'flex items-center justify-center gap-2 py-2 px-3 rounded-md border text-xs font-medium transition-colors cursor-pointer',
               theme === 'dark'
-                ? 'border-[#09AE5B] bg-[#09AE5B] text-black font-semibold'
-                : 'border-white/10 bg-[#0E0F10] hover:border-[#09AE5B]/60 text-neutral-400'
+                ? 'border-white/30 bg-white/[0.1] text-white'
+                : 'border-white/[0.08] bg-[#0E0F10] hover:bg-white/[0.04] text-neutral-400'
             )}
           >
-            <Moon className="w-4 h-4" />
+            <Moon className="w-3.5 h-3.5" />
             <span>Dark</span>
           </button>
 
           <button
             onClick={() => setTheme('system')}
             className={cn(
-              'flex flex-col items-center gap-2 p-3 rounded-none border text-xs font-medium transition-all cursor-pointer',
+              'flex items-center justify-center gap-2 py-2 px-3 rounded-md border text-xs font-medium transition-colors cursor-pointer',
               theme === 'system'
-                ? 'border-[#09AE5B] bg-[#09AE5B] text-black font-semibold'
-                : 'border-white/10 bg-[#0E0F10] hover:border-[#09AE5B]/60 text-neutral-400'
+                ? 'border-white/30 bg-white/[0.1] text-white'
+                : 'border-white/[0.08] bg-[#0E0F10] hover:bg-white/[0.04] text-neutral-400'
             )}
           >
-            <Laptop className="w-4 h-4" />
+            <Laptop className="w-3.5 h-3.5" />
             <span>System</span>
           </button>
         </div>
       </div>
 
-      {/* Active Sessions Card */}
-      <div className="p-5 sm:p-6 rounded-none bg-[#121316] border border-white/10 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* Security Sessions Card */}
+      <div className="p-5 rounded-md bg-[#121316] border border-white/[0.08] space-y-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-none bg-[#0E0F10] text-[#09AE5B] flex items-center justify-center border border-white/10">
+            <div className="w-8 h-8 rounded-full bg-neutral-800 text-neutral-300 flex items-center justify-center border border-white/10">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-[#E5E5E5]">
-                Active Device Sessions
+              <h2 className="text-sm font-medium text-[#EDEDED]">
+                Active Sessions
               </h2>
               <p className="text-xs text-neutral-400">
-                Authenticated browsers and devices holding access to your library.
+                Devices currently signed in to your account.
               </p>
             </div>
           </div>
@@ -232,47 +226,46 @@ export const SettingsPage: React.FC = () => {
               size="xs"
               onClick={handleRevokeAllOtherSessions}
               isLoading={isRevokingAll}
-              className="text-xs"
             >
-              Revoke Other Devices
+              Sign Out Others
             </Button>
           )}
         </div>
 
         {isLoadingSessions ? (
-          <div className="py-6 text-center text-xs text-neutral-400 font-mono">
-            Loading session security details...
+          <div className="py-6 text-center text-xs text-neutral-500">
+            Loading sessions...
           </div>
         ) : (
           <div className="space-y-2">
-            {sessions.map((sess) => {
-              const isCurrent = sess._id === currentSessionId;
-              const isMobile = /mobile|android|iphone/i.test(sess.userAgent);
-
+            {sessions.map((session) => {
+              const isCurrent = session._id === currentSessionId;
               return (
                 <div
-                  key={sess._id}
-                  className="flex items-center justify-between p-3.5 rounded-none border border-white/10 bg-[#0E0F10] text-xs transition-colors hover:border-[#09AE5B]/60"
+                  key={session._id}
+                  className="flex items-center justify-between p-3 rounded-md bg-[#0E0F10] border border-white/[0.06] text-xs"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 shrink-0 rounded-none bg-[#141519] border border-white/10 flex items-center justify-center text-[#E5E5E5]">
-                      {isMobile ? <Smartphone className="w-4 h-4 text-[#09AE5B]" /> : <Laptop className="w-4 h-4 text-[#09AE5B]" />}
+                  <div className="flex items-center gap-3">
+                    <div className="text-neutral-400">
+                      {/mobile|android|iphone|ipad/i.test(session.userAgent || '') ? (
+                        <Smartphone className="w-4 h-4" />
+                      ) : (
+                        <Laptop className="w-4 h-4" />
+                      )}
                     </div>
-
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 font-medium text-[#E5E5E5]">
-                        <span className="truncate max-w-xs text-xs font-mono">{sess.userAgent}</span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-[#EDEDED]">
+                          {session.userAgent || 'Web Browser'}
+                        </span>
                         {isCurrent && (
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-none bg-[#141519] text-[#09AE5B] font-semibold border border-[#09AE5B]/30">
-                            Current Device
+                          <span className="text-[10px] text-emerald-400 font-medium">
+                            (This device)
                           </span>
                         )}
                       </div>
-
-                      <div className="text-[11px] text-neutral-500 flex items-center gap-2 mt-0.5 font-mono">
-                        <span>IP: {sess.ipAddress}</span>
-                        <span>•</span>
-                        <span>Active {formatRelativeTime(sess.lastActiveAt)}</span>
+                      <div className="text-[11px] text-neutral-500">
+                        {session.ipAddress} • Last active {formatRelativeTime(session.lastActiveAt)}
                       </div>
                     </div>
                   </div>
@@ -281,8 +274,8 @@ export const SettingsPage: React.FC = () => {
                     <Button
                       variant="ghost"
                       size="xs"
-                      onClick={() => handleRevokeSession(sess._id)}
-                      className="text-neutral-400 hover:text-rose-400 hover:bg-rose-950/20 text-xs font-mono"
+                      onClick={() => handleRevokeSession(session._id)}
+                      className="text-rose-400 hover:text-rose-300"
                     >
                       Revoke
                     </Button>
@@ -294,44 +287,33 @@ export const SettingsPage: React.FC = () => {
         )}
       </div>
 
-      {/* Danger Zone: Account Deletion */}
-      <div className="p-5 sm:p-6 rounded-none bg-rose-950/15 border border-rose-900/40 space-y-4">
-        <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-none bg-rose-950/40 border border-rose-800/40 flex items-center justify-center text-rose-400 shrink-0">
-            <AlertTriangle className="w-4 h-4" />
-          </div>
-          <div className="space-y-1">
-            <h2 className="text-sm font-semibold text-[#E5E5E5]">
-              Danger Zone: Account Deletion
-            </h2>
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              Deleting your account terminates all active sessions immediately. With the built-in{' '}
-              <strong className="text-[#E5E5E5] font-semibold">30-day grace period</strong>,
-              you can recover your library anytime by signing back in within 30 days. After that period,
-              all stored resources, projects, and collections will be wiped forever.
-            </p>
-          </div>
+      {/* Danger Zone */}
+      <div className="p-5 rounded-md bg-[#121316] border border-rose-500/20 space-y-3">
+        <div>
+          <h2 className="text-sm font-medium text-rose-400">
+            Danger Zone
+          </h2>
+          <p className="text-xs text-neutral-400 mt-0.5">
+            Permanently delete your account and all associated resources, collections, and projects.
+          </p>
         </div>
 
-        <div className="pt-2">
-          <Button
-            variant="danger"
-            size="xs"
-            onClick={() => setIsDeleteAccountOpen(true)}
-            className="flex items-center gap-2 text-xs"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-            Request Account Deletion
-          </Button>
-        </div>
+        <Button
+          variant="danger"
+          size="xs"
+          onClick={() => setIsDeleteAccountOpen(true)}
+          leftIcon={<Trash2 className="w-3.5 h-3.5" />}
+        >
+          Delete Account
+        </Button>
       </div>
 
-      {/* Account Deletion Confirmation Modal */}
+      {/* Delete Account Modal */}
       <DeleteConfirmModal
         isOpen={isDeleteAccountOpen}
-        title="Schedule Account Deletion?"
-        message="Your account will enter a 30-day grace period. If you log back in within 30 days, your account will be immediately restored. Otherwise, all resources will be permanently removed."
-        confirmText="Schedule Deletion"
+        title="Delete Your Account?"
+        message="This will permanently delete your account, saved resources, collections, and projects. This cannot be undone."
+        confirmText="Delete Account"
         isPermanent
         isLoading={isDeletingAccount}
         onCancel={() => setIsDeleteAccountOpen(false)}
@@ -341,3 +323,4 @@ export const SettingsPage: React.FC = () => {
   );
 };
 
+export default SettingsPage;

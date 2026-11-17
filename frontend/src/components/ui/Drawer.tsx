@@ -47,19 +47,19 @@ export const Drawer: React.FC<DrawerProps> = ({
     <div className="fixed inset-0 z-50 flex justify-end">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in"
+        className="fixed inset-0 bg-black/60 transition-opacity animate-in fade-in"
         onClick={onClose}
       />
 
       {/* Drawer content */}
       <div
         className={cn(
-          'relative w-full h-full bg-[#0E0F10] border-l border-white/10 shadow-2xl flex flex-col z-10 text-[#E5E5E5] rounded-none',
+          'relative w-full h-full bg-[#121316] border-l border-white/[0.08] shadow-2xl flex flex-col z-10 text-[#E5E5E5]',
           'animate-in slide-in-from-right duration-200',
           widths[width]
         )}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#121316]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08] bg-[#121316]">
           <div>
             {title && (
               <h2 className="text-base font-semibold text-[#E5E5E5]">
@@ -72,7 +72,7 @@ export const Drawer: React.FC<DrawerProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-[#09AE5B] p-1.5 rounded-none hover:bg-white/[0.06] transition-colors cursor-pointer"
+            className="text-neutral-400 hover:text-white p-1.5 rounded-md hover:bg-white/[0.05] transition-colors cursor-pointer"
             aria-label="Close drawer"
           >
             <X className="w-4 h-4" />

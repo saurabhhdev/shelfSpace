@@ -26,7 +26,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   return (
     <Dialog isOpen={isOpen} onClose={onCancel} maxWidth="sm">
       <div className="flex flex-col items-center text-center">
-        <div className="w-10 h-10 rounded-none bg-rose-950/40 text-rose-400 border border-rose-800/40 flex items-center justify-center mb-3">
+        <div className="w-10 h-10 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center mb-3">
           <AlertTriangle className="w-4 h-4" />
         </div>
 

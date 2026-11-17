@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useCallback } from 'react';
-import { Trash2, RotateCcw, AlertTriangle } from 'lucide-react';
+import { Trash2, RotateCcw } from 'lucide-react';
 import { apiClient } from '../api/client';
 import type { Resource } from '../types';
 import { Button } from '../components/ui/Button';
@@ -78,16 +78,11 @@ export const TrashPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs text-[#8e8d8a] dark:text-[#71717a] font-mono">
-            <span>Trash</span>
-            <span>•</span>
-            <span>{trashedResources.length} items</span>
-          </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-[#2b2a28] dark:text-[#fafafa] mt-0.5">
-            Recycle Bin
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#EDEDED]">
+            Trash
           </h1>
-          <p className="text-xs text-[#787774] dark:text-[#a1a1aa] mt-1">
-            Items moved to trash can be restored anytime within the 30-day grace period.
+          <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+            Items in trash are automatically permanently removed after 30 days ({trashedResources.length} total).
           </p>
         </div>
 
@@ -95,7 +90,6 @@ export const TrashPage: React.FC = () => {
           <Button
             variant="danger"
             size="xs"
-            pill
             onClick={() => setIsEmptyTrashOpen(true)}
             leftIcon={<Trash2 className="w-3.5 h-3.5" />}
           >
@@ -104,23 +98,13 @@ export const TrashPage: React.FC = () => {
         )}
       </div>
 
-      {/* 30-Day Retention Notice Banner */}
-      <div className="p-3.5 rounded-none bg-[#121316] border border-white/10 flex items-start gap-3">
-        <AlertTriangle className="w-4 h-4 text-[#09AE5B] shrink-0 mt-0.5" />
-        <div className="text-xs text-neutral-400 leading-relaxed">
-          <span className="font-semibold block mb-0.5 text-[#E5E5E5]">30-Day Auto Purge Policy</span>
-          Resources residing in trash are permanently purged after 30 days. You can restore them to
-          your active library anytime before the period expires.
-        </div>
-      </div>
-
       {/* Trash Items List */}
       {isLoading ? (
         <div className="space-y-2">
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-16 rounded-none bg-[#121316] animate-pulse border border-white/[0.08]"
+              className="h-16 rounded-md bg-[#121316] animate-pulse border border-white/[0.08]"
             />
           ))}
         </div>
@@ -129,11 +113,11 @@ export const TrashPage: React.FC = () => {
           {trashedResources.map((item) => (
             <div
               key={item._id}
-              className="flex items-center justify-between p-3.5 rounded-none bg-[#121316] border border-white/[0.08] hover:border-[#09AE5B]/60 transition-all"
+              className="flex items-center justify-between p-3.5 rounded-md bg-[#121316] border border-white/[0.08] hover:border-white/20 transition-colors"
             >
               <div className="min-w-0 flex-1 pr-4">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-xs sm:text-sm text-[#E5E5E5] truncate">
+                  <span className="font-medium text-xs sm:text-sm text-[#EDEDED] truncate">
                     {item.title}
                   </span>
                   <Badge type={item.type} size="sm">
@@ -141,9 +125,9 @@ export const TrashPage: React.FC = () => {
                   </Badge>
                 </div>
 
-                <div className="flex items-center gap-3 text-xs text-neutral-400 mt-1 font-mono">
+                <div className="flex items-center gap-3 text-xs text-neutral-500 mt-1 font-mono">
                   {item.trashedAt && (
-                    <span>Trashed {formatRelativeTime(item.trashedAt)}</span>
+                    <span>Deleted {formatRelativeTime(item.trashedAt)}</span>
                   )}
                   {item.url && <span className="truncate max-w-xs">{item.url}</span>}
                 </div>
@@ -164,22 +148,22 @@ export const TrashPage: React.FC = () => {
                   variant="ghost"
                   size="xs"
                   onClick={() => setDeletingItem(item)}
-                  className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 text-xs font-mono"
+                  className="text-rose-400 hover:text-rose-300 hover:bg-rose-950/20 text-xs"
                 >
-                  Purge
+                  Delete Permanently
                 </Button>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-none border border-dashed border-white/10 p-8 bg-[#121316]">
-          <Trash2 className="w-8 h-8 text-[#09AE5B] mx-auto mb-3" />
-          <h3 className="text-sm font-semibold text-[#E5E5E5] mb-1">
+        <div className="py-16 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
+          <Trash2 className="w-8 h-8 text-neutral-500 mx-auto mb-3" />
+          <h3 className="text-sm font-medium text-[#EDEDED] mb-1">
             Trash is empty
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto">
-            No items are currently in your trash. Deleted resources will appear here.
+            Deleted resources will be kept here for 30 days before being permanently removed.
           </p>
         </div>
       )}
@@ -187,9 +171,9 @@ export const TrashPage: React.FC = () => {
       {/* Empty Trash Confirmation Modal */}
       <DeleteConfirmModal
         isOpen={isEmptyTrashOpen}
-        title="Empty Entire Trash?"
-        message="This will permanently delete all resources currently in the trash bin. This action cannot be undone."
-        confirmText="Empty Trash Forever"
+        title="Empty Trash?"
+        message="This will permanently delete all items currently in your trash. This action cannot be undone."
+        confirmText="Empty Trash"
         isPermanent
         isLoading={isEmptying}
         onCancel={() => setIsEmptyTrashOpen(false)}
@@ -200,8 +184,8 @@ export const TrashPage: React.FC = () => {
       <DeleteConfirmModal
         isOpen={deletingItem !== null}
         title="Permanently Delete Resource?"
-        message={`"${deletingItem?.title}" will be wiped permanently from the database. This cannot be recovered.`}
-        confirmText="Purge Forever"
+        message={`"${deletingItem?.title}" will be permanently removed. This action cannot be undone.`}
+        confirmText="Delete Permanently"
         isPermanent
         isLoading={isDeletingPermanent}
         onCancel={() => setDeletingItem(null)}
@@ -211,3 +195,4 @@ export const TrashPage: React.FC = () => {
   );
 };
 
+export default TrashPage;
