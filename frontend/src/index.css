@@ -1,93 +1,185 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --color-ossium-bg: #0E0F10;
+  --color-ossium-card: #121316;
+  --color-ossium-card-hover: #17181c;
+  --color-ossium-surface: #18191d;
+  --color-ossium-border: rgba(255, 255, 255, 0.08);
+  --color-ossium-green: #09AE5B;
+  --color-ossium-green-hover: #07914b;
+  --color-ossium-text: #E5E5E5;
+  --color-ossium-muted: #8E8E93;
+  --color-ossium-darkbtn: #242424;
+  --color-ossium-lightbtn: #D6D6D6;
+}
+
 @layer base {
   :root {
-    /* Notion & LinkNest Light Palette */
-    --workspace-bg: #fbfbfa;
-    --workspace-sidebar: #f7f7f5;
+    /* Light Mode: Clean high-contrast studio style */
+    --workspace-bg: #f7f7f8;
+    --workspace-sidebar: #efeff1;
     --workspace-card: #ffffff;
-    --workspace-card-hover: #fafaf8;
-    --workspace-subtle: #f1f1ef;
-    --workspace-border: #e9e9e7;
-    --workspace-border-hover: #d3d3d0;
+    --workspace-card-hover: #f3f4f6;
+    --workspace-subtle: #f0f1f4;
+    --workspace-border: rgba(0, 0, 0, 0.08);
+    --workspace-border-hover: #09AE5B;
+    --workspace-dotted: #d1d5db;
     
-    /* Typography */
-    --workspace-text: #2b2a28;
-    --workspace-secondary: #5f5e5b;
-    --workspace-muted: #8e8d8a;
+    --workspace-text: #0E0F10;
+    --workspace-secondary: #4b5563;
+    --workspace-muted: #6b7280;
 
-    /* Accents (LinkNest & Notion) */
-    --accent-primary: #191919;
+    --palette-black: #ffffff;
+    --palette-chrome: #f3f4f6;
+    --palette-border: rgba(0, 0, 0, 0.08);
+    --palette-forest: #09AE5B;
+
+    --accent-primary: #09AE5B;
+    --accent-primary-hover: #07914b;
     --accent-primary-text: #ffffff;
-    --accent-emerald: #10b981;
-    --accent-blue: #2563eb;
-    --accent-purple: #7c3aed;
-    --accent-amber: #d97706;
-
-    --ring: rgba(25, 25, 25, 0.15);
+    --accent-secondary: #dcfce7;
+    --ring: rgba(9, 174, 91, 0.35);
+    --dashed-grid-line: rgba(0, 0, 0, 0.08);
     color-scheme: light;
   }
 
   html.dark {
-    /* Notion & Serendale Deep Dark Palette */
-    --workspace-bg: #0d0d0f;
-    --workspace-sidebar: #131316;
-    --workspace-card: #18181c;
-    --workspace-card-hover: #1f1f24;
-    --workspace-subtle: #232329;
-    --workspace-border: #26262c;
-    --workspace-border-hover: #383842;
+    /* Dark Mode: Ossium Identical Carbon Charcoal & Signature Green */
+    --workspace-bg: #0E0F10;
+    --workspace-sidebar: #0E0F10;
+    --workspace-card: #121316;
+    --workspace-card-hover: #18191d;
+    --workspace-subtle: #141518;
+    --workspace-border: rgba(255, 255, 255, 0.08);
+    --workspace-border-hover: #09AE5B;
+    --workspace-dotted: rgba(255, 255, 255, 0.12);
 
-    /* Typography */
-    --workspace-text: #f4f4f5;
-    --workspace-secondary: #a1a1aa;
-    --workspace-muted: #71717a;
+    --workspace-text: #E5E5E5;
+    --workspace-secondary: #8E8E93;
+    --workspace-muted: #66666e;
 
-    /* Accents */
-    --accent-primary: #ffffff;
-    --accent-primary-text: #09090b;
-    --accent-emerald: #34d399;
-    --accent-blue: #60a5fa;
-    --accent-purple: #a78bfa;
-    --accent-amber: #f59e0b;
+    --palette-black: #0E0F10;
+    --palette-chrome: #141518;
+    --palette-border: rgba(255, 255, 255, 0.08);
+    --palette-forest: #09AE5B;
 
-    --ring: rgba(255, 255, 255, 0.2);
+    --accent-primary: #09AE5B;
+    --accent-primary-hover: #07914b;
+    --accent-primary-text: #ffffff;
+    --accent-secondary: rgba(9, 174, 91, 0.15);
+    --ring: rgba(9, 174, 91, 0.4);
+    --dashed-grid-line: rgba(255, 255, 255, 0.07);
     color-scheme: dark;
   }
 
-  body {
+  html, body {
     background-color: var(--workspace-bg);
     color: var(--workspace-text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Geist", system-ui, sans-serif;
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
-    letter-spacing: -0.012em;
+    letter-spacing: -0.014em;
   }
 
-  /* Clear Heading Hierarchy */
-  h1, h2, h3, h4 {
-    letter-spacing: -0.025em;
+  html.dark body {
+    background-color: #0E0F10;
+    color: #E5E5E5;
+  }
+
+  ::selection {
+    background-color: #09AE5B;
+    color: #000000;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    letter-spacing: -0.028em;
     font-weight: 600;
+  }
+
+  code, kbd, samp, pre, .font-mono {
+    font-family: var(--font-mono);
+    letter-spacing: -0.01em;
+  }
+
+  button, input, select, textarea {
+    font-family: inherit;
   }
 }
 
-/* Custom Notion-style Scrollbars */
+/* Split-Text Vertical Stagger Hover Animation */
+.split-text-wrapper {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.split-char {
+  display: inline-block;
+  transform: translateY(0%);
+  transition: transform 0.38s cubic-bezier(0.76, 0, 0.24, 1), color 0.3s ease;
+  will-change: transform;
+}
+
+.split-char-clone {
+  display: inline-block;
+  transform: translateY(105%);
+  transition: transform 0.38s cubic-bezier(0.76, 0, 0.24, 1), color 0.3s ease;
+  will-change: transform;
+}
+
+.group:hover .split-char,
+.group:focus-visible .split-char,
+.split-trigger:hover .split-char,
+.split-text-wrapper:hover .split-char,
+a:hover .split-char,
+button:hover .split-char {
+  transform: translateY(-105%);
+}
+
+.group:hover .split-char-clone,
+.group:focus-visible .split-char-clone,
+.split-trigger:hover .split-char-clone,
+.split-text-wrapper:hover .split-char-clone,
+a:hover .split-char-clone,
+button:hover .split-char-clone {
+  transform: translateY(0%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .split-char,
+  .split-char-clone {
+    transition: none !important;
+    transform: none !important;
+  }
+  .split-char-clone {
+    display: none !important;
+  }
+}
+
+/* Custom Minimalist Scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--workspace-border);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--workspace-muted);
+  background: rgba(9, 174, 91, 0.5);
 }
 
 /* Smooth Focus Ring Utility */
@@ -96,22 +188,11 @@
   box-shadow: 0 0 0 2px var(--ring);
 }
 
-/* 21st.dev Hero-1 Animations */
-@keyframes fade-in {
-  0% {
+/* Animations */
+@keyframes fadeIn {
+  from {
     opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fade-up {
-  0% {
-    opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -120,9 +201,5 @@
 }
 
 .animate-fade-in {
-  animation: 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards fade-in;
-}
-
-.animate-fade-up {
-  animation: 1s cubic-bezier(0.16, 1, 0.3, 1) forwards fade-up;
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
