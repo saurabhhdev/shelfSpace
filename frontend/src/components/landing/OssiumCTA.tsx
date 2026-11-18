@@ -9,11 +9,6 @@ export const OssiumCTA: React.FC = () => {
     <section className="py-20 sm:py-24 bg-transparent border-t border-[#3E3E38] relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="rounded-lg border border-[#3E3E38] bg-[#1C1C1B] p-10 sm:p-14 lg:p-16 text-center relative shadow-sm">
-          {/* Subtle Tag / Pill */}
-          <div className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-[#D97757] tracking-wider bg-[#D97757]/10 px-2.5 py-1 rounded border border-[#D97757]/20 mb-5">
-            <span>GET STARTED</span>
-          </div>
-
           {/* Heading */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAF9F5] leading-tight max-w-2xl mx-auto">
             Keep Your Next Project <span className="text-[#D97757]">Within Reach</span>.
@@ -42,11 +37,6 @@ export const OssiumCTA: React.FC = () => {
             >
               Explore Shelfspace
             </Link>
-          </div>
-
-          {/* Restrained Subtext */}
-          <div className="mt-6 text-xs text-[#83827D] font-mono">
-            Free forever for personal use • No credit card required
           </div>
         </div>
       </div>
