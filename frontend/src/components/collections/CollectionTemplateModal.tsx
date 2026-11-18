@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Check } from 'lucide-react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
@@ -9,6 +10,7 @@ import {
   COLLECTION_TEMPLATES,
   CATEGORY_SUGGESTIONS,
   type CollectionTemplate,
+  type CategorySuggestion,
 } from '../../lib/collectionTemplates';
 import type { Collection } from '../../types';
 import { cn } from '../../lib/utils';
@@ -28,7 +30,7 @@ const MUTED_COLORS = [
 interface CollectionTemplateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialTab?: 'templates' | 'custom';
+  initialTab?: 'templates' | 'suggestions' | 'custom';
   onSuccess?: (created: Collection) => void;
 }
 
@@ -39,8 +41,12 @@ export const CollectionTemplateModal: React.FC<CollectionTemplateModalProps> = (
   onSuccess,
 }) => {
   const { notify } = useNotification();
-  const [activeTab, setActiveTab] = useState<'templates' | 'custom'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'templates' | 'suggestions' | 'custom'>(initialTab);
   const [existingCategories, setExistingCategories] = useState<Collection[]>([]);
+
+  // Instant add state for Ready-made tab
+  const [addingSugName, setAddingSugName] = useState<string | null>(null);
+  const [isAddingAllSugs, setIsAddingAllSugs] = useState(false);
 
   // Search in templates
   const [searchQuery, setSearchQuery] = useState('');
@@ -94,6 +100,12 @@ export const CollectionTemplateModal: React.FC<CollectionTemplateModalProps> = (
   const existingNamesSet = useMemo(() => {
     return new Set(existingCategories.map((c) => c.name.trim().toLowerCase()));
   }, [existingCategories]);
+
+  const unaddedSuggestionsCount = useMemo(() => {
+    return CATEGORY_SUGGESTIONS.filter(
+      (s) => !existingNamesSet.has(s.name.toLowerCase())
+    ).length;
+  }, [existingNamesSet]);
 
   // Filter templates by query
   const filteredTemplates = useMemo(() => {
@@ -211,6 +223,60 @@ export const CollectionTemplateModal: React.FC<CollectionTemplateModalProps> = (
     );
   };
 
+  // Instant 1-click addition for Ready-made Categories tab
+  const handleInstantAddCategory = async (sug: CategorySuggestion) => {
+    if (existingNamesSet.has(sug.name.toLowerCase())) return;
+    setAddingSugName(sug.name);
+    try {
+      const res = await apiClient.post('/collections', {
+        name: sug.name,
+        color: sug.color,
+        description: sug.description,
+      });
+      if (res.data?.success) {
+        notify(`Category "${sug.name}" added to workspace!`, 'success');
+        window.dispatchEvent(new CustomEvent('categories-updated'));
+        fetchExistingCategories();
+      }
+    } catch (err: any) {
+      notify(err.response?.data?.message || `Failed to add "${sug.name}"`, 'error');
+    } finally {
+      setAddingSugName(null);
+    }
+  };
+
+  const handleAddAllRemainingSuggestions = async () => {
+    const unadded = CATEGORY_SUGGESTIONS.filter(
+      (s) => !existingNamesSet.has(s.name.toLowerCase())
+    );
+    if (unadded.length === 0) return;
+    setIsAddingAllSugs(true);
+    let count = 0;
+    try {
+      for (const sug of unadded) {
+        try {
+          await apiClient.post('/collections', {
+            name: sug.name,
+            color: sug.color,
+            description: sug.description,
+          });
+          count++;
+        } catch {
+          // ignore duplicate
+        }
+      }
+      if (count > 0) {
+        notify(`Added ${count} ready-made categories!`, 'success');
+        window.dispatchEvent(new CustomEvent('categories-updated'));
+        fetchExistingCategories();
+      }
+    } catch {
+      notify('Failed to add some categories', 'error');
+    } finally {
+      setIsAddingAllSugs(false);
+    }
+  };
+
   // Add multiple selected suggestions in scratch mode
   const handleAddSelectedSuggestions = async () => {
     if (selectedSuggestions.length === 0) return;
@@ -294,6 +360,8 @@ export const CollectionTemplateModal: React.FC<CollectionTemplateModalProps> = (
           ? `Template: ${selectedTemplate.name}`
           : activeTab === 'templates'
           ? 'Explore Collection Templates'
+          : activeTab === 'suggestions'
+          ? 'Ready-made Category Suggestions'
           : 'New Category'
       }
       description={
@@ -301,14 +369,16 @@ export const CollectionTemplateModal: React.FC<CollectionTemplateModalProps> = (
           ? 'Review and customize the suggested categories and tags before creating.'
           : activeTab === 'templates'
           ? 'Jumpstart your workspace with pre-made developer collection templates.'
-          : 'Create a custom category or pick from pre-made category suggestions.'
+          : activeTab === 'suggestions'
+          ? 'Curated developer categories ready to add to your workspace with 1 click.'
+          : 'Create a custom category with a name and color accent.'
       }
       maxWidth="2xl"
     >
       <div className="font-sans">
       {/* Tab Switcher (when not in template preview mode) */}
       {!selectedTemplate && (
-        <div className="flex items-center gap-2 mb-5 p-1 rounded-lg bg-[#141413] border border-[#3E3E38] text-xs">
+        <div className="flex items-center gap-1.5 mb-5 p-1 rounded-lg bg-[#141413] border border-[#3E3E38] text-xs">
           <button
             type="button"
             onClick={() => {
@@ -316,15 +386,33 @@ export const CollectionTemplateModal: React.FC<CollectionTemplateModalProps> = (
               setError('');
             }}
             className={cn(
-              'flex-1 py-1.5 px-3 rounded-md font-medium transition-all text-center flex items-center justify-center gap-2 cursor-pointer',
+              'flex-1 py-1.5 px-3 rounded-md font-medium transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer',
               activeTab === 'templates'
                 ? 'bg-[#262624] text-[#FAF9F5] shadow-xs border border-[#3E3E38]'
                 : 'text-neutral-400 hover:text-white'
             )}
           >
             <Flaticon name="sparkles" className="text-xs text-[#D97757]" />
-            <span>Explore Templates ({COLLECTION_TEMPLATES.length})</span>
+            <span>Templates ({COLLECTION_TEMPLATES.length})</span>
           </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab('suggestions');
+              setError('');
+            }}
+            className={cn(
+              'flex-1 py-1.5 px-3 rounded-md font-medium transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer',
+              activeTab === 'suggestions'
+                ? 'bg-[#262624] text-[#FAF9F5] shadow-xs border border-[#3E3E38]'
+                : 'text-neutral-400 hover:text-white'
+            )}
+          >
+            <Flaticon name="bookmark" className="text-xs text-[#D97757]" />
+            <span>Ready-made (12)</span>
+          </button>
+
           <button
             type="button"
             onClick={() => {
@@ -332,14 +420,14 @@ export const CollectionTemplateModal: React.FC<CollectionTemplateModalProps> = (
               setError('');
             }}
             className={cn(
-              'flex-1 py-1.5 px-3 rounded-md font-medium transition-all text-center flex items-center justify-center gap-2 cursor-pointer',
+              'flex-1 py-1.5 px-3 rounded-md font-medium transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer',
               activeTab === 'custom'
                 ? 'bg-[#262624] text-[#FAF9F5] shadow-xs border border-[#3E3E38]'
                 : 'text-neutral-400 hover:text-white'
             )}
           >
             <Flaticon name="plus" className="text-xs" />
-            <span>Create from Scratch</span>
+            <span>Custom Category</span>
           </button>
         </div>
       )}
@@ -646,90 +734,124 @@ export const CollectionTemplateModal: React.FC<CollectionTemplateModalProps> = (
             </Button>
           </div>
         </div>
-      ) : (
+      ) : activeTab === 'suggestions' ? (
         /* =========================================================================
-            VIEW 3: CREATE FROM SCRATCH + PRE-MADE CATEGORY SUGGESTIONS
+            VIEW 3: READY-MADE CATEGORIES (12 CURATED DEVELOPER CATEGORIES)
            ========================================================================= */
-        <div className="space-y-5">
-          {/* Section 1: Pre-made Category Suggestions */}
-          <div className="p-3.5 rounded-lg bg-[#141413] border border-[#3E3E38] space-y-2.5">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="text-xs font-semibold text-[#FAF9F5] flex items-center gap-1.5">
-                  <Flaticon name="sparkles" className="text-xs text-[#D97757]" />
-                  <span>Pre-made Category Suggestions</span>
-                </h4>
-                <p className="text-[11px] text-[#B7B5A9] mt-0.5">
-                  Pick one or multiple suggestions to add to your categories instantly:
-                </p>
-              </div>
-
-              {selectedSuggestions.length > 0 && (
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="primary"
-                  onClick={handleAddSelectedSuggestions}
-                  isLoading={isSubmitting}
-                  className="text-xs shrink-0"
-                >
-                  Add Selected ({selectedSuggestions.length})
-                </Button>
-              )}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-[#3E3E38]/60">
+            <div>
+              <h3 className="text-xs font-semibold text-[#FAF9F5] flex items-center gap-1.5">
+                <Flaticon name="bookmark" className="text-xs text-[#D97757]" />
+                <span>Ready-made Categories</span>
+              </h3>
+              <p className="text-[11px] text-neutral-400 mt-0.5">
+                Click any category or its "+ Add" button to add it instantly to your workspace.
+              </p>
             </div>
 
-            {/* Chips Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 pt-1">
-              {CATEGORY_SUGGESTIONS.map((sug) => {
-                const isExisting = existingNamesSet.has(sug.name.toLowerCase());
-                const isSelected = selectedSuggestions.includes(sug.name);
-
-                return (
-                  <button
-                    key={sug.name}
-                    type="button"
-                    onClick={() => {
-                      if (!isExisting) toggleSuggestion(sug.name);
-                    }}
-                    disabled={isExisting}
-                    className={cn(
-                      'px-2.5 py-1.5 rounded-md text-xs text-left transition-all border flex items-center justify-between gap-1.5',
-                      isExisting
-                        ? 'opacity-40 bg-white/[0.02] border-[#3E3E38] cursor-not-allowed text-neutral-400'
-                        : isSelected
-                        ? 'bg-[#262624] border-[#D97757] text-white shadow-xs'
-                        : 'bg-[#1C1C1B] hover:bg-[#262624] border-[#3E3E38] text-[#FAF9F5] cursor-pointer'
-                    )}
-                    title={
-                      isExisting
-                        ? `"${sug.name}" is already in your categories`
-                        : `Click to select "${sug.name}"`
-                    }
-                  >
-                    <div className="flex items-center gap-1.5 truncate">
-                      <span
-                        className="w-1.5 h-1.5 rounded-full shrink-0"
-                        style={{ backgroundColor: sug.color }}
-                      />
-                      <span className="truncate">{sug.name}</span>
-                    </div>
-                    {isExisting ? (
-                      <span className="text-[10px] text-neutral-500 font-mono">✓</span>
-                    ) : isSelected ? (
-                      <span className="text-[10px] text-[#D97757] font-mono">★</span>
-                    ) : null}
-                  </button>
-                );
-              })}
-            </div>
+            {unaddedSuggestionsCount > 0 && (
+              <Button
+                type="button"
+                size="sm"
+                variant="primary"
+                onClick={handleAddAllRemainingSuggestions}
+                isLoading={isAddingAllSugs}
+                className="text-xs shrink-0 bg-[#D97757] hover:bg-[#c66849]"
+              >
+                + Add All ({unaddedSuggestionsCount})
+              </Button>
+            )}
           </div>
 
-          {/* Section 2: Custom Category Form */}
-          <form onSubmit={handleCreateFromScratch} className="space-y-3.5 pt-2 border-t border-[#3E3E38]">
-            <h4 className="text-xs font-semibold text-[#FAF9F5]">
-              Or Create a Custom Category
-            </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[420px] overflow-y-auto pr-1">
+            {CATEGORY_SUGGESTIONS.map((sug) => {
+              const isExisting = existingNamesSet.has(sug.name.toLowerCase());
+              const isAdding = addingSugName === sug.name;
 
+              return (
+                <div
+                  key={sug.name}
+                  onClick={() => {
+                    if (!isExisting && !isAdding && !isAddingAllSugs) {
+                      handleInstantAddCategory(sug);
+                    }
+                  }}
+                  className={cn(
+                    'group p-3 rounded-lg border transition-all flex items-center justify-between gap-3 text-left',
+                    isExisting
+                      ? 'bg-white/[0.02] border-[#3E3E38]/40 opacity-60 cursor-default'
+                      : 'bg-[#1C1C1B] hover:bg-[#262624] border-[#3E3E38] hover:border-[#D97757]/60 cursor-pointer shadow-xs'
+                  )}
+                  title={
+                    isExisting
+                      ? `"${sug.name}" is already in your categories`
+                      : `Click to add "${sug.name}" instantly`
+                  }
+                >
+                  <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shrink-0 mt-0.5 group-hover:scale-110 transition-transform"
+                      style={{ backgroundColor: sug.color }}
+                    />
+                    <div className="min-w-0">
+                      <div className="text-xs font-medium text-[#FAF9F5] flex items-center gap-1.5">
+                        <span className="truncate">{sug.name}</span>
+                      </div>
+                      <p className="text-[11px] text-neutral-400 truncate mt-0.5">
+                        {sug.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0">
+                    {isExisting ? (
+                      <span className="inline-flex items-center gap-1 text-[11px] text-neutral-400 font-mono bg-white/[0.04] px-2 py-0.5 rounded border border-[#3E3E38]/50">
+                        <Check className="w-3 h-3 text-[#D97757]" />
+                        <span>Added</span>
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={isAdding || isAddingAllSugs}
+                        className="inline-flex items-center gap-1 text-[11px] font-medium text-[#FAF9F5] group-hover:text-white bg-[#262624] group-hover:bg-[#D97757] px-2.5 py-1 rounded transition-colors border border-[#3E3E38] group-hover:border-[#D97757]"
+                      >
+                        {isAdding ? 'Adding...' : '+ Add'}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="pt-3 border-t border-[#3E3E38] flex items-center justify-between">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setActiveTab('custom')}
+              className="text-xs"
+            >
+              Need a custom category?
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onClose}
+              className="text-xs"
+            >
+              Done
+            </Button>
+          </div>
+        </div>
+      ) : (
+        /* =========================================================================
+            VIEW 4: CREATE CUSTOM CATEGORY FROM SCRATCH
+           ========================================================================= */
+        <div className="space-y-4">
+          <form onSubmit={handleCreateFromScratch} className="space-y-3.5">
             <div>
               <Input
                 label="Category Name"
@@ -778,15 +900,17 @@ export const CollectionTemplateModal: React.FC<CollectionTemplateModalProps> = (
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setActiveTab('templates')}
+                size="sm"
+                onClick={() => setActiveTab('suggestions')}
+                className="text-xs"
               >
-                Explore Templates
+                ← Back to Ready-made
               </Button>
               <div className="flex items-center gap-2">
-                <Button type="button" variant="outline" onClick={onClose}>
+                <Button type="button" variant="outline" size="sm" onClick={onClose}>
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary" isLoading={isSubmitting}>
+                <Button type="submit" variant="primary" size="sm" isLoading={isSubmitting}>
                   Create Category
                 </Button>
               </div>

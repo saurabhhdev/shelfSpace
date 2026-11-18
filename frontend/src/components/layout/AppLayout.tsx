@@ -28,7 +28,7 @@ export const AppLayout: React.FC = () => {
 
   // Template and Project modals state
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
-  const [templateModalTab, setTemplateModalTab] = useState<'templates' | 'custom'>('templates');
+  const [templateModalTab, setTemplateModalTab] = useState<'templates' | 'suggestions' | 'custom'>('templates');
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
 
   // Expandable categories state in sidebar
@@ -87,7 +87,7 @@ export const AppLayout: React.FC = () => {
       setIsAddModalOpen(true);
     };
     const handleOpenTemplates = (e: Event) => {
-      const customEvent = e as CustomEvent<{ tab?: 'templates' | 'custom' }>;
+      const customEvent = e as CustomEvent<{ tab?: 'templates' | 'suggestions' | 'custom' }>;
       setTemplateModalTab(customEvent.detail?.tab || 'templates');
       setIsTemplateModalOpen(true);
     };
@@ -270,11 +270,11 @@ export const AppLayout: React.FC = () => {
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              setTemplateModalTab('custom');
+                              setTemplateModalTab('suggestions');
                               setIsTemplateModalOpen(true);
                             }}
                             className="p-1 rounded hover:bg-white/[0.08] text-neutral-400 hover:text-white transition-colors cursor-pointer"
-                            title="New Category / Collection"
+                            title="New / Ready-made Categories"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -302,23 +302,44 @@ export const AppLayout: React.FC = () => {
                       {/* Expandable Category Tree */}
                       {isCategoriesExpanded && (
                         <div className="pl-5 pr-1 py-0.5 space-y-0.5 animate-in fade-in duration-150">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setTemplateModalTab('templates');
-                              setIsTemplateModalOpen(true);
-                            }}
-                            className="w-full flex items-center justify-between px-2 py-1.5 mb-1 rounded text-[11px] text-neutral-400 hover:text-[#FAF9F5] hover:bg-white/[0.06] transition-colors group cursor-pointer border border-dashed border-[#3E3E38] hover:border-[#D97757]/50"
-                            title="Explore ready-made collection templates"
-                          >
-                            <div className="flex items-center gap-1.5 truncate">
-                              <Sparkles className="w-3 h-3 text-[#D97757] shrink-0" />
-                              <span className="font-medium tracking-tight">Explore Templates</span>
-                            </div>
-                            <span className="text-[9px] uppercase px-1 py-0.5 rounded bg-[#D97757]/15 text-[#D97757] font-semibold">
-                              12 Pre-made
-                            </span>
-                          </button>
+                          {/* Quick shortcuts for Templates & Ready-made Categories */}
+                          <div className="flex items-center gap-1 mb-1.5">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setTemplateModalTab('templates');
+                                setIsTemplateModalOpen(true);
+                              }}
+                              className="flex-1 flex items-center justify-between px-2 py-1.5 rounded text-[11px] text-neutral-400 hover:text-[#FAF9F5] hover:bg-white/[0.06] transition-colors group cursor-pointer border border-dashed border-[#3E3E38] hover:border-[#D97757]/50"
+                              title="Explore ready-made collection templates"
+                            >
+                              <div className="flex items-center gap-1 truncate">
+                                <Sparkles className="w-3 h-3 text-[#D97757] shrink-0" />
+                                <span className="font-medium tracking-tight">Templates</span>
+                              </div>
+                              <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-[#D97757]/15 text-[#D97757] font-semibold">
+                                12
+                              </span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setTemplateModalTab('suggestions');
+                                setIsTemplateModalOpen(true);
+                              }}
+                              className="flex-1 flex items-center justify-between px-2 py-1.5 rounded text-[11px] text-neutral-400 hover:text-[#FAF9F5] hover:bg-white/[0.06] transition-colors group cursor-pointer border border-dashed border-[#3E3E38] hover:border-[#D97757]/50"
+                              title="Explore ready-made category suggestions"
+                            >
+                              <div className="flex items-center gap-1 truncate">
+                                <Flaticon name="bookmark" className="text-[10px] text-[#D97757] shrink-0" />
+                                <span className="font-medium tracking-tight">Ready-made</span>
+                              </div>
+                              <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-white/[0.08] text-neutral-300 font-semibold">
+                                12
+                              </span>
+                            </button>
+                          </div>
 
                           {categories.map((cat) => {
                             const isCatActive =
