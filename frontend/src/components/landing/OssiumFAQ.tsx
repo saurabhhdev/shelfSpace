@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { Flaticon } from '../ui/Flaticon';
+
+interface FAQItem {
+  q: string;
+  a: string;
+}
 
 export const OssiumFAQ: React.FC = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openId, setOpenId] = useState<string | null>('faq-0');
 
-  const faqs = [
+  const faqs: FAQItem[] = [
     {
       q: 'What is Shelfspace and what can I save in it?',
       a: 'Shelfspace is a focused workspace for developers and creators. You can save developer tools, GitHub repositories, UI components, documentation, articles, and design references — keeping everything organized and easily searchable in one place.'
@@ -47,12 +51,22 @@ export const OssiumFAQ: React.FC = () => {
     }
   ];
 
+  // Group into pairs for 2-column grid: 5 rows of [left, right]
+  const rows: [FAQItem, FAQItem][] = [];
+  for (let i = 0; i < faqs.length; i += 2) {
+    rows.push([faqs[i], faqs[i + 1]]);
+  }
+
+  const toggle = (id: string) => {
+    setOpenId(prev => (prev === id ? null : id));
+  };
+
   return (
-    <section id="faq" className="py-24 sm:py-28 bg-transparent border-t border-[#3E3E38]">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="faq" className="py-24 sm:py-28 bg-transparent border-t border-[#3E3E38]/50 relative">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-14 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#FAF9F5] leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#FAF9F5] leading-tight font-sans">
             Frequently Asked Questions
           </h2>
           <p className="mt-3.5 text-sm sm:text-base text-[#B7B5A9] leading-relaxed max-w-xl mx-auto">
@@ -60,43 +74,131 @@ export const OssiumFAQ: React.FC = () => {
           </p>
         </div>
 
-        {/* Clean Editorial Accordion with Thin Horizontal Dividers */}
-        <div className="border-t border-[#3E3E38] divide-y divide-[#3E3E38]">
-          {faqs.map((faq, index) => {
-            const isOpen = openIndex === index;
-            return (
-              <div key={index} className="transition-colors">
-                <button
-                  onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="w-full py-5 sm:py-6 flex items-center justify-between text-left gap-4 cursor-pointer group"
-                  aria-expanded={isOpen}
-                >
-                  <span
-                    className={`text-base sm:text-lg font-medium transition-colors ${
-                      isOpen ? 'text-[#FAF9F5]' : 'text-[#FAF9F5]/90 group-hover:text-white'
-                    }`}
-                  >
-                    {faq.q}
-                  </span>
-                  <span className="shrink-0 flex items-center justify-center w-6 h-6 text-neutral-400 group-hover:text-white transition-colors">
-                    {isOpen ? (
-                      <Flaticon name="minus" className="text-xs text-[#D97757]" />
-                    ) : (
-                      <Flaticon name="plus" className="text-xs" />
-                    )}
-                  </span>
-                </button>
+        {/* Technical Blueprint Grid with Dashed Borders & Corner Crosshairs */}
+        <div className="relative border-t border-dashed border-[#3E3E38]/80">
+          {rows.map(([left, right], rowIndex) => {
+            const leftId = `faq-${rowIndex * 2}`;
+            const rightId = `faq-${rowIndex * 2 + 1}`;
+            const isLeftOpen = openId === leftId;
+            const isRightOpen = openId === rightId;
 
-                {isOpen && (
-                  <div className="pb-6 text-sm sm:text-base text-[#B7B5A9] leading-relaxed pr-6 sm:pr-8 animate-fade-in">
-                    {faq.a}
-                  </div>
-                )}
+            return (
+              <div
+                key={rowIndex}
+                className="relative border-b border-dashed border-[#3E3E38]/80 grid grid-cols-1 md:grid-cols-2"
+              >
+                {/* Crosshairs (+) at row top-left, center, and right */}
+                <span className="absolute -top-[7px] -left-[5px] text-[#706F68] font-mono text-xs leading-none select-none z-10 pointer-events-none">
+                  +
+                </span>
+                <span className="hidden md:block absolute -top-[7px] left-1/2 -translate-x-1/2 text-[#706F68] font-mono text-xs leading-none select-none z-10 pointer-events-none">
+                  +
+                </span>
+                <span className="absolute -top-[7px] -right-[5px] text-[#706F68] font-mono text-xs leading-none select-none z-10 pointer-events-none">
+                  +
+                </span>
+
+                {/* Left Cell */}
+                <div
+                  className={`relative p-5 sm:p-6 transition-colors md:border-r border-dashed border-[#3E3E38]/80 ${
+                    isLeftOpen ? 'bg-white/[0.03]' : 'hover:bg-white/[0.015]'
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggle(leftId)}
+                    className="w-full flex items-center justify-between gap-4 text-left cursor-pointer group"
+                    aria-expanded={isLeftOpen}
+                  >
+                    <span
+                      className={`text-sm sm:text-base font-semibold tracking-tight transition-colors ${
+                        isLeftOpen ? 'text-[#FAF9F5]' : 'text-[#FAF9F5]/90 group-hover:text-white'
+                      }`}
+                    >
+                      {left.q}
+                    </span>
+                    <svg
+                      className={`w-4 h-4 shrink-0 text-neutral-400 transition-transform duration-200 ${
+                        isLeftOpen ? 'rotate-180 text-[#D97757]' : 'group-hover:text-white'
+                      }`}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </button>
+                  {isLeftOpen && (
+                    <div className="mt-3.5 text-xs sm:text-sm text-[#B7B5A9] leading-relaxed pr-2 animate-fade-in">
+                      {left.a}
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Cell */}
+                <div
+                  className={`relative p-5 sm:p-6 transition-colors border-t md:border-t-0 border-dashed border-[#3E3E38]/80 ${
+                    isRightOpen ? 'bg-white/[0.03]' : 'hover:bg-white/[0.015]'
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggle(rightId)}
+                    className="w-full flex items-center justify-between gap-4 text-left cursor-pointer group"
+                    aria-expanded={isRightOpen}
+                  >
+                    <span
+                      className={`text-sm sm:text-base font-semibold tracking-tight transition-colors ${
+                        isRightOpen ? 'text-[#FAF9F5]' : 'text-[#FAF9F5]/90 group-hover:text-white'
+                      }`}
+                    >
+                      {right.q}
+                    </span>
+                    <svg
+                      className={`w-4 h-4 shrink-0 text-neutral-400 transition-transform duration-200 ${
+                        isRightOpen ? 'rotate-180 text-[#D97757]' : 'group-hover:text-white'
+                      }`}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </button>
+                  {isRightOpen && (
+                    <div className="mt-3.5 text-xs sm:text-sm text-[#B7B5A9] leading-relaxed pr-2 animate-fade-in">
+                      {right.a}
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
+
+          {/* Bottom-most Crosshairs (+) */}
+          <div className="relative h-0">
+            <span className="absolute -top-[7px] -left-[5px] text-[#706F68] font-mono text-xs leading-none select-none z-10 pointer-events-none">
+              +
+            </span>
+            <span className="hidden md:block absolute -top-[7px] left-1/2 -translate-x-1/2 text-[#706F68] font-mono text-xs leading-none select-none z-10 pointer-events-none">
+              +
+            </span>
+            <span className="absolute -top-[7px] -right-[5px] text-[#706F68] font-mono text-xs leading-none select-none z-10 pointer-events-none">
+              +
+            </span>
+          </div>
         </div>
       </div>
     </section>
   );
 };
+
+export default OssiumFAQ;
