@@ -1,6 +1,5 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Plus, Check } from 'lucide-react';
 import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Collection, Resource } from '../types';
@@ -8,11 +7,7 @@ import { Button, IconButton } from '../components/ui/Button';
 import { Dialog } from '../components/ui/Dialog';
 import { Input } from '../components/ui/Input';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
-import { CollectionTemplateModal } from '../components/collections/CollectionTemplateModal';
-import {
-  CATEGORY_SUGGESTIONS,
-  type CategorySuggestion,
-} from '../lib/collectionTemplates';
+import { CreateCollectionModal } from '../components/collections/CreateCollectionModal';
 import { useNotification } from '../context/NotificationContext';
 import { getResourceTypeIcon } from '../lib/resourceTypes';
 import { cn, formatRelativeTime } from '../lib/utils';
@@ -33,22 +28,17 @@ export const CollectionsPage: React.FC = () => {
   const [categories, setCategories] = useState<Collection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Create / Edit modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Create modal (Pre-made + Custom)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createModalTab, setCreateModalTab] = useState<'premade' | 'custom'>('premade');
+
+  // Edit existing modal
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Collection | null>(null);
-  const [name, setName] = useState('');
-  const [color, setColor] = useState(MUTED_COLORS[0]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
-
-  // Pre-made templates & suggestions modal
-  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
-  const [templateModalTab, setTemplateModalTab] = useState<'templates' | 'suggestions' | 'custom'>('templates');
-
-  // Quick Add suggestions shelf state
-  const [showQuickAddShelf, setShowQuickAddShelf] = useState(true);
-  const [quickAddingName, setQuickAddingName] = useState<string | null>(null);
-  const [isAddingAll, setIsAddingAll] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editColor, setEditColor] = useState(MUTED_COLORS[0]);
+  const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
+  const [editError, setEditError] = useState('');
 
   // Delete modal
   const [deletingCategory, setDeletingCategory] = useState<Collection | null>(null);
@@ -112,109 +102,43 @@ export const CollectionsPage: React.FC = () => {
     return () => window.removeEventListener('categories-updated', handleUpdate);
   }, []);
 
-  const existingNames = useMemo(() => {
-    return new Set(categories.map((c) => c.name.trim().toLowerCase()));
-  }, [categories]);
-
-  const unaddedSuggestions = useMemo(() => {
-    return CATEGORY_SUGGESTIONS.filter(
-      (s) => !existingNames.has(s.name.trim().toLowerCase())
-    );
-  }, [existingNames]);
-
-  const handleQuickAdd = async (sug: CategorySuggestion) => {
-    setQuickAddingName(sug.name);
-    try {
-      const res = await apiClient.post('/collections', {
-        name: sug.name,
-        color: sug.color,
-        description: sug.description,
-      });
-      if (res.data?.success) {
-        notify(`Category "${sug.name}" added to your workspace`, 'success');
-        fetchCategories();
-        window.dispatchEvent(new CustomEvent('categories-updated'));
-      }
-    } catch (err: any) {
-      notify(err.response?.data?.message || `Failed to add "${sug.name}"`, 'error');
-    } finally {
-      setQuickAddingName(null);
-    }
-  };
-
-  const handleAddAllSuggestions = async () => {
-    if (unaddedSuggestions.length === 0) return;
-    setIsAddingAll(true);
-    let count = 0;
-    try {
-      for (const sug of unaddedSuggestions) {
-        try {
-          await apiClient.post('/collections', {
-            name: sug.name,
-            color: sug.color,
-            description: sug.description,
-          });
-          count++;
-        } catch {
-          // ignore duplicate
-        }
-      }
-      if (count > 0) {
-        notify(`Added ${count} ready-made categories!`, 'success');
-        fetchCategories();
-        window.dispatchEvent(new CustomEvent('categories-updated'));
-      }
-    } catch {
-      notify('Failed to add some categories', 'error');
-    } finally {
-      setIsAddingAll(false);
-    }
-  };
-
-  const openCreateModal = () => {
-    setTemplateModalTab('custom');
-    setIsTemplateModalOpen(true);
+  const openCreateModal = (tab: 'premade' | 'custom' = 'premade') => {
+    setCreateModalTab(tab);
+    setIsCreateModalOpen(true);
   };
 
   const openEditModal = (c: Collection) => {
     setEditingCategory(c);
-    setName(c.name);
-    setColor(c.color || MUTED_COLORS[0]);
-    setError('');
-    setIsModalOpen(true);
+    setEditName(c.name);
+    setEditColor(c.color || MUTED_COLORS[0]);
+    setEditError('');
+    setIsEditModalOpen(true);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) {
-      setError('Category name is required.');
+    if (!editName.trim()) {
+      setEditError('Category name is required.');
       return;
     }
 
-    setIsSubmitting(true);
-    setError('');
+    if (!editingCategory) return;
+    setIsSubmittingEdit(true);
+    setEditError('');
 
     try {
-      if (editingCategory) {
-        await apiClient.patch(`/collections/${editingCategory._id}`, {
-          name: name.trim(),
-          color,
-        });
-        notify('Category updated', 'success');
-      } else {
-        await apiClient.post('/collections', {
-          name: name.trim(),
-          color,
-        });
-        notify('Category created', 'success');
-      }
-      setIsModalOpen(false);
+      await apiClient.patch(`/collections/${editingCategory._id}`, {
+        name: editName.trim(),
+        color: editColor,
+      });
+      notify('Category updated', 'success');
+      setIsEditModalOpen(false);
       fetchCategories();
       window.dispatchEvent(new CustomEvent('categories-updated'));
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save category');
+      setEditError(err.response?.data?.message || 'Failed to update category');
     } finally {
-      setIsSubmitting(false);
+      setIsSubmittingEdit(false);
     }
   };
 
@@ -247,108 +171,16 @@ export const CollectionsPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={() => {
-              setTemplateModalTab('templates');
-              setIsTemplateModalOpen(true);
-            }}
-            leftIcon={<Sparkles className="w-3.5 h-3.5 text-[#D97757]" />}
-            className="border-[#3E3E38] hover:border-[#D97757]/40 text-xs text-[#FAF9F5]"
-          >
-            Explore Templates
-          </Button>
-
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={() => {
-              setTemplateModalTab('suggestions');
-              setIsTemplateModalOpen(true);
-            }}
-            leftIcon={<Flaticon name="bookmark" className="text-xs text-[#D97757]" />}
-            className="border-[#3E3E38] hover:border-[#D97757]/40 text-xs text-[#FAF9F5]"
-          >
-            Ready-made ({unaddedSuggestions.length})
-          </Button>
-
-          <Button
-            type="button"
-            onClick={() => {
-              setTemplateModalTab('custom');
-              setIsTemplateModalOpen(true);
-            }}
-            leftIcon={<Flaticon name="plus" className="text-xs" />}
-            size="sm"
-          >
-            New Category
-          </Button>
-        </div>
+        <Button
+          type="button"
+          onClick={() => openCreateModal('premade')}
+          leftIcon={<Flaticon name="plus" className="text-xs" />}
+          size="sm"
+          className="self-start sm:self-auto shrink-0"
+        >
+          New Category
+        </Button>
       </div>
-
-      {/* Quick Add Ready-Made Categories Shelf */}
-      {unaddedSuggestions.length > 0 && showQuickAddShelf && (
-        <div className="p-3 rounded-lg bg-[#1C1C1B] border border-[#3E3E38] space-y-2 animate-in fade-in duration-150">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#D97757]" />
-              <span className="text-xs font-medium text-[#FAF9F5]">Ready-made Categories</span>
-              <span className="text-[10px] text-neutral-500 font-mono">
-                ({unaddedSuggestions.length} available · 1-click add)
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {unaddedSuggestions.length > 1 && (
-                <button
-                  type="button"
-                  onClick={handleAddAllSuggestions}
-                  disabled={isAddingAll}
-                  className="text-[11px] text-[#D97757] hover:underline font-medium cursor-pointer disabled:opacity-50"
-                >
-                  {isAddingAll ? 'Adding...' : `+ Add All (${unaddedSuggestions.length})`}
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => setShowQuickAddShelf(false)}
-                className="text-neutral-500 hover:text-neutral-300 p-0.5 rounded cursor-pointer"
-                title="Dismiss suggestions shelf"
-              >
-                <Flaticon name="cross-small" className="text-xs" />
-              </button>
-            </div>
-          </div>
-
-          {/* Clean horizontal wrap pills */}
-          <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-            {unaddedSuggestions.map((sug) => {
-              const isAdding = quickAddingName === sug.name;
-              return (
-                <button
-                  key={sug.name}
-                  type="button"
-                  onClick={() => handleQuickAdd(sug)}
-                  disabled={isAdding || isAddingAll}
-                  className="group inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] bg-[#262624] border border-[#3E3E38] hover:border-[#D97757] text-[#FAF9F5] hover:text-white transition-all cursor-pointer disabled:opacity-50 shadow-xs"
-                  title={`Click to add "${sug.name}" (${sug.description})`}
-                >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full shrink-0 group-hover:scale-125 transition-transform"
-                    style={{ backgroundColor: sug.color }}
-                  />
-                  <span className="font-medium">{sug.name}</span>
-                  <Plus className="w-2.5 h-2.5 text-neutral-400 group-hover:text-[#D97757] transition-colors" />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
       {/* Clean List */}
       {isLoading ? (
@@ -465,45 +297,41 @@ export const CollectionsPage: React.FC = () => {
                                   to={`/library/${res._id}`}
                                   className="flex items-center gap-2.5 min-w-0 flex-1 mr-2"
                                 >
-                                  <div className="w-6 h-6 rounded bg-white/[0.04] border border-[#3E3E38] flex items-center justify-center shrink-0 text-neutral-400 group-hover/item:text-white">
-                                    <TypeIcon className="w-3 h-3" />
+                                  <div className="w-6 h-6 rounded bg-[#262624] border border-[#3E3E38] flex items-center justify-center shrink-0">
+                                    <TypeIcon className="w-3.5 h-3.5 text-neutral-400 group-hover/item:text-[#FAF9F5]" />
                                   </div>
-                                  <div className="min-w-0 flex-1">
-                                    <div className="text-xs font-medium text-neutral-200 group-hover/item:text-white truncate">
+                                  <div className="min-w-0 truncate">
+                                    <div className="text-xs font-medium text-[#FAF9F5] group-hover/item:text-[#D97757] transition-colors truncate">
                                       {res.title}
                                     </div>
-                                    <div className="flex items-center gap-2 text-[10px] text-neutral-500 font-mono truncate">
-                                      {domain && <span>{domain}</span>}
-                                      {domain && <span>•</span>}
-                                      <span>{formatRelativeTime(res.createdAt)}</span>
-                                    </div>
+                                    {domain && (
+                                      <div className="text-[10px] text-neutral-500 truncate">
+                                        {domain}
+                                      </div>
+                                    )}
                                   </div>
                                 </Link>
 
-                                {res.url && (
-                                  <a
-                                    href={res.url}
-                                    target="_blank"
-                                    rel="noreferrer noopener"
-                                    className="p-1 rounded text-neutral-500 hover:text-white transition-colors shrink-0"
-                                    title="Open link in new tab"
-                                  >
-                                    <Flaticon name="arrow-up-right" className="text-xs" />
-                                  </a>
-                                )}
+                                <div className="flex items-center gap-2 shrink-0">
+                                  {res.isFavourite && (
+                                    <span className="text-[10px] text-[#D97757]" title="Favorite">
+                                      ★
+                                    </span>
+                                  )}
+                                  <span className="text-[10px] text-neutral-500 font-mono hidden sm:inline">
+                                    {formatRelativeTime(res.createdAt)}
+                                  </span>
+                                </div>
                               </div>
                             );
                           })}
                         </div>
-
                         <div className="pt-2 flex justify-end">
                           <Link
                             to={`/categories/${category._id}`}
-                            className="inline-flex items-center gap-1.5 text-xs text-[#D97757] hover:text-[#EE8360] font-medium transition-colors"
+                            className="text-xs text-[#D97757] hover:underline flex items-center gap-1 font-medium"
                           >
-                            <span>
-                              View all {category.resourceCount || preview.resources.length} resources in {category.name}
-                            </span>
+                            <span>View all {category.resourceCount || preview.resources.length} resources</span>
                             <Flaticon name="angle-small-right" className="text-xs" />
                           </Link>
                         </div>
@@ -520,89 +348,47 @@ export const CollectionsPage: React.FC = () => {
           })}
         </div>
       ) : (
-        <div className="py-12 text-center rounded-lg border border-[#3E3E38] p-8 bg-[#1C1C1B] space-y-5">
-          <div className="w-10 h-10 rounded-full bg-white/[0.04] border border-[#3E3E38] flex items-center justify-center mx-auto text-[#D97757]">
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-sm font-medium text-[#FAF9F5]">
-              No categories yet
-            </h3>
-            <p className="text-xs text-neutral-400 max-w-sm mx-auto">
-              Jumpstart your workspace with one-click ready-made categories or start from scratch.
-            </p>
-          </div>
-
-          {/* 12 Ready-made category pills inside empty state */}
-          <div className="max-w-xl mx-auto pt-1">
-            <div className="flex flex-wrap items-center justify-center gap-1.5 mb-4">
-              {CATEGORY_SUGGESTIONS.map((sug) => (
-                <button
-                  key={sug.name}
-                  type="button"
-                  onClick={() => handleQuickAdd(sug)}
-                  disabled={quickAddingName === sug.name || isAddingAll}
-                  className="group inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] bg-[#262624] border border-[#3E3E38] hover:border-[#D97757] text-[#FAF9F5] transition-all cursor-pointer shadow-xs disabled:opacity-50"
-                  title={`Click to add "${sug.name}"`}
-                >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full shrink-0 group-hover:scale-125 transition-transform"
-                    style={{ backgroundColor: sug.color }}
-                  />
-                  <span>{sug.name}</span>
-                  <Plus className="w-2.5 h-2.5 text-neutral-400 group-hover:text-[#D97757]" />
-                </button>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <Button
-                size="sm"
-                onClick={handleAddAllSuggestions}
-                isLoading={isAddingAll}
-                className="bg-[#D97757] hover:bg-[#c66849] text-white text-xs px-4"
-              >
-                + Add All 12 Categories
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => {
-                  setTemplateModalTab('templates');
-                  setIsTemplateModalOpen(true);
-                }}
-                className="text-xs border-[#3E3E38]"
-              >
-                Explore Templates
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setTemplateModalTab('custom');
-                  setIsTemplateModalOpen(true);
-                }}
-                className="text-xs border-[#3E3E38]"
-              >
-                Custom Category
-              </Button>
-            </div>
+        <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B] space-y-3">
+          <h3 className="text-sm font-medium text-[#FAF9F5]">
+            No categories yet
+          </h3>
+          <p className="text-xs text-neutral-400 max-w-sm mx-auto">
+            Create simple categories or pick from pre-made collections to organize your saved resources.
+          </p>
+          <div className="pt-2 flex items-center justify-center gap-2">
+            <Button
+              size="xs"
+              leftIcon={<Flaticon name="plus" className="text-xs" />}
+              onClick={() => openCreateModal('premade')}
+            >
+              New Category
+            </Button>
           </div>
         </div>
       )}
 
-      {/* Category Create/Edit Modal */}
+      {/* Simplified Creation Modal: Pre-made (1-click) or Custom */}
+      <CreateCollectionModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        initialTab={createModalTab}
+        onSuccess={() => {
+          fetchCategories();
+        }}
+      />
+
+      {/* Edit Category Name & Color Modal */}
       <Dialog
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingCategory ? 'Edit Category' : 'New Category'}
-        description="Categories only require a name and a color."
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Edit Category"
+        description="Update category name and color accent."
         maxWidth="sm"
       >
-        <form onSubmit={handleSave} className="space-y-4 font-sans">
-          {error && (
+        <form onSubmit={handleSaveEdit} className="space-y-4 font-sans pt-1">
+          {editError && (
             <div className="p-2.5 rounded-md bg-rose-950/20 border border-rose-900/40 text-xs text-rose-400">
-              {error}
+              {editError}
             </div>
           )}
 
@@ -610,8 +396,8 @@ export const CollectionsPage: React.FC = () => {
             <Input
               label="Category Name"
               placeholder="e.g. Tools, Frontend, Libraries"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
               required
               autoFocus
             />
@@ -626,10 +412,10 @@ export const CollectionsPage: React.FC = () => {
                 <button
                   key={c}
                   type="button"
-                  onClick={() => setColor(c)}
+                  onClick={() => setEditColor(c)}
                   className={cn(
                     'w-6 h-6 rounded-full transition-transform cursor-pointer',
-                    color === c && 'ring-2 ring-white ring-offset-2 ring-offset-[#1C1C1B]'
+                    editColor === c && 'ring-2 ring-white ring-offset-2 ring-offset-[#1C1C1B]'
                   )}
                   style={{ backgroundColor: c }}
                 />
@@ -641,30 +427,22 @@ export const CollectionsPage: React.FC = () => {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setIsModalOpen(false)}
+              size="sm"
+              onClick={() => setIsEditModalOpen(false)}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               variant="primary"
-              isLoading={isSubmitting}
+              size="sm"
+              isLoading={isSubmittingEdit}
             >
-              {editingCategory ? 'Save Changes' : 'Create Category'}
+              Save Changes
             </Button>
           </div>
         </form>
       </Dialog>
-
-      {/* Pre-made Templates & Suggestions Modal */}
-      <CollectionTemplateModal
-        isOpen={isTemplateModalOpen}
-        onClose={() => setIsTemplateModalOpen(false)}
-        initialTab={templateModalTab}
-        onSuccess={() => {
-          fetchCategories();
-        }}
-      />
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmModal

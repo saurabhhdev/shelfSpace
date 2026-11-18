@@ -4,13 +4,12 @@ import {
   ChevronDown,
   ChevronsUpDown,
   Plus,
-  Sparkles,
 } from 'lucide-react';
 import { Flaticon } from '../ui/Flaticon';
 import { useAuth } from '../../context/AuthContext';
 import { CommandPalette } from '../search/CommandPalette';
 import { ResourceModal } from '../resources/ResourceModal';
-import { CollectionTemplateModal } from '../collections/CollectionTemplateModal';
+import { CreateCollectionModal } from '../collections/CreateCollectionModal';
 import { CreateProjectModal } from '../projects/CreateProjectModal';
 import { apiClient } from '../../api/client';
 import type { Collection } from '../../types';
@@ -26,9 +25,9 @@ export const AppLayout: React.FC = () => {
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // Template and Project modals state
-  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
-  const [templateModalTab, setTemplateModalTab] = useState<'templates' | 'suggestions' | 'custom'>('templates');
+  // Collection and Project creation modals
+  const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
+  const [collectionModalTab, setCollectionModalTab] = useState<'premade' | 'custom'>('premade');
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
 
   // Expandable categories state in sidebar
@@ -86,10 +85,10 @@ export const AppLayout: React.FC = () => {
     const handleOpen = () => {
       setIsAddModalOpen(true);
     };
-    const handleOpenTemplates = (e: Event) => {
-      const customEvent = e as CustomEvent<{ tab?: 'templates' | 'suggestions' | 'custom' }>;
-      setTemplateModalTab(customEvent.detail?.tab || 'templates');
-      setIsTemplateModalOpen(true);
+    const handleOpenCollectionModal = (e: Event) => {
+      const customEvent = e as CustomEvent<{ tab?: 'premade' | 'custom' }>;
+      setCollectionModalTab(customEvent.detail?.tab || 'premade');
+      setIsCollectionModalOpen(true);
     };
     const handleOpenCreateProject = () => {
       setIsCreateProjectOpen(true);
@@ -97,13 +96,15 @@ export const AppLayout: React.FC = () => {
 
     window.addEventListener('open-add-resource', handleOpen);
     window.addEventListener('open-quick-add', handleOpen);
-    window.addEventListener('open-template-modal', handleOpenTemplates as EventListener);
+    window.addEventListener('open-create-collection', handleOpenCollectionModal as EventListener);
+    window.addEventListener('open-template-modal', handleOpenCollectionModal as EventListener);
     window.addEventListener('open-create-project', handleOpenCreateProject);
 
     return () => {
       window.removeEventListener('open-add-resource', handleOpen);
       window.removeEventListener('open-quick-add', handleOpen);
-      window.removeEventListener('open-template-modal', handleOpenTemplates as EventListener);
+      window.removeEventListener('open-create-collection', handleOpenCollectionModal as EventListener);
+      window.removeEventListener('open-template-modal', handleOpenCollectionModal as EventListener);
       window.removeEventListener('open-create-project', handleOpenCreateProject);
     };
   }, []);
@@ -256,25 +257,11 @@ export const AppLayout: React.FC = () => {
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              setTemplateModalTab('templates');
-                              setIsTemplateModalOpen(true);
-                            }}
-                            className="p-1 rounded hover:bg-white/[0.08] text-neutral-400 hover:text-[#FAF9F5] transition-colors cursor-pointer"
-                            title="Explore Collection Templates"
-                          >
-                            <Sparkles className="w-3.5 h-3.5 text-[#D97757]" />
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setTemplateModalTab('suggestions');
-                              setIsTemplateModalOpen(true);
+                              setCollectionModalTab('premade');
+                              setIsCollectionModalOpen(true);
                             }}
                             className="p-1 rounded hover:bg-white/[0.08] text-neutral-400 hover:text-white transition-colors cursor-pointer"
-                            title="New / Ready-made Categories"
+                            title="New Collection"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -287,7 +274,7 @@ export const AppLayout: React.FC = () => {
                               setIsCategoriesExpanded(!isCategoriesExpanded);
                             }}
                             className="p-1 -mr-1 rounded hover:bg-white/[0.08] text-neutral-400 hover:text-white transition-colors cursor-pointer"
-                            title={isCategoriesExpanded ? 'Collapse categories' : 'Expand categories'}
+                            title={isCategoriesExpanded ? 'Collapse collections' : 'Expand collections'}
                           >
                             <ChevronDown
                               className={cn(
@@ -302,45 +289,6 @@ export const AppLayout: React.FC = () => {
                       {/* Expandable Category Tree */}
                       {isCategoriesExpanded && (
                         <div className="pl-5 pr-1 py-0.5 space-y-0.5 animate-in fade-in duration-150">
-                          {/* Quick shortcuts for Templates & Ready-made Categories */}
-                          <div className="flex items-center gap-1 mb-1.5">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setTemplateModalTab('templates');
-                                setIsTemplateModalOpen(true);
-                              }}
-                              className="flex-1 flex items-center justify-between px-2 py-1.5 rounded text-[11px] text-neutral-400 hover:text-[#FAF9F5] hover:bg-white/[0.06] transition-colors group cursor-pointer border border-dashed border-[#3E3E38] hover:border-[#D97757]/50"
-                              title="Explore ready-made collection templates"
-                            >
-                              <div className="flex items-center gap-1 truncate">
-                                <Sparkles className="w-3 h-3 text-[#D97757] shrink-0" />
-                                <span className="font-medium tracking-tight">Templates</span>
-                              </div>
-                              <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-[#D97757]/15 text-[#D97757] font-semibold">
-                                12
-                              </span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setTemplateModalTab('suggestions');
-                                setIsTemplateModalOpen(true);
-                              }}
-                              className="flex-1 flex items-center justify-between px-2 py-1.5 rounded text-[11px] text-neutral-400 hover:text-[#FAF9F5] hover:bg-white/[0.06] transition-colors group cursor-pointer border border-dashed border-[#3E3E38] hover:border-[#D97757]/50"
-                              title="Explore ready-made category suggestions"
-                            >
-                              <div className="flex items-center gap-1 truncate">
-                                <Flaticon name="bookmark" className="text-[10px] text-[#D97757] shrink-0" />
-                                <span className="font-medium tracking-tight">Ready-made</span>
-                              </div>
-                              <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-white/[0.08] text-neutral-300 font-semibold">
-                                12
-                              </span>
-                            </button>
-                          </div>
-
                           {categories.map((cat) => {
                             const isCatActive =
                               location.pathname === `/categories/${cat._id}` ||
@@ -374,18 +322,8 @@ export const AppLayout: React.FC = () => {
                             );
                           })}
                           {categories.length === 0 && (
-                            <div className="px-2 py-1.5 text-[11px] text-neutral-500 italic space-y-1">
-                              <div>No categories yet</div>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setTemplateModalTab('templates');
-                                  setIsTemplateModalOpen(true);
-                                }}
-                                className="text-[11px] text-[#D97757] hover:underline not-italic font-medium inline-block"
-                              >
-                                Get started with templates →
-                              </button>
+                            <div className="px-2 py-1.5 text-[11px] text-neutral-500 italic">
+                              No collections yet
                             </div>
                           )}
                         </div>
@@ -559,11 +497,11 @@ export const AppLayout: React.FC = () => {
         }}
       />
 
-      {/* Pre-made Collection Templates & Category Suggestions Modal */}
-      <CollectionTemplateModal
-        isOpen={isTemplateModalOpen}
-        onClose={() => setIsTemplateModalOpen(false)}
-        initialTab={templateModalTab}
+      {/* Create Collection Modal (Pre-made 1-click & Custom) */}
+      <CreateCollectionModal
+        isOpen={isCollectionModalOpen}
+        onClose={() => setIsCollectionModalOpen(false)}
+        initialTab={collectionModalTab}
         onSuccess={() => {
           fetchCategories();
         }}
