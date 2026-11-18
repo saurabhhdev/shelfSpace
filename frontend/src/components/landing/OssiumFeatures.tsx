@@ -8,21 +8,21 @@ export const OssiumFeatures: React.FC = () => {
       number: '01',
       title: 'Keep Everything Together',
       description:
-        'Bring your developer tools, repositories, UI components, code snippets and useful references into one organized place instead of searching across multiple websites and saved lists.',
+        "You run into great repos, UI kits, libraries, and code snippets all over the web. Shelfspace gives you one place to save them, so you don't have to go digging through your browser history or star list later.",
       iconName: 'apps',
     },
     {
       number: '02',
       title: 'Organize Around Your Projects',
       description:
-        'Group relevant resources by project, so the tools, references and inspiration you need are always easy to find when working on something.',
+        'Create a dedicated workspace for each thing you are building and group the relevant packages, docs, and references inside it. When you return to that codebase, everything you relied on is already there.',
       iconName: 'folder',
     },
     {
       number: '03',
       title: 'Find What You Need Faster',
       description:
-        "Use categories, tags, favorites and search to quickly find the resources you've saved without going through everything again.",
+        'Filter by category, search by tag, or star your go-to references for quick access. You can pull up the exact resource you saved in seconds without paging through a messy list.',
       iconName: 'search',
     },
   ];
@@ -32,37 +32,37 @@ export const OssiumFeatures: React.FC = () => {
     {
       title: 'Resource Collection',
       description:
-        'Save tools, repositories, components, snippets and useful references in one place.',
+        'Bookmark repositories, UI components, helpful articles, and snippets so your personal developer toolkit stays in one spot.',
       iconName: 'boxes',
     },
     {
       title: 'Project Organization',
       description:
-        'Create projects and keep their relevant resources grouped together.',
+        'Set up projects and attach the exact libraries and references you need for each build, keeping them separate and tidy.',
       iconName: 'folder-open',
     },
     {
       title: 'Smart Auto Add',
       description:
-        'Fetch resource details automatically from a URL and review them before saving.',
+        'Paste a link, and Shelfspace grabs the title, summary, and preview image for you. Check over the details and save with one click.',
       iconName: 'sparkles',
     },
     {
       title: 'Auto Categorization & Tags',
       description:
-        'Get relevant category and tag suggestions to keep your collection organized.',
+        'Get automatic tag and category suggestions based on the link you provide, with full control to tweak them whenever you want.',
       iconName: 'tags',
     },
     {
       title: 'Quick Search & Filters',
       description:
-        'Find saved resources using search, categories, resource types and tags.',
+        'Find what you are looking for by typing a keyword, or narrow down items by format, tags, and custom categories.',
       iconName: 'settings-sliders',
     },
     {
       title: 'Favorites',
       description:
-        'Keep your most useful resources within easy reach.',
+        'Star the everyday utilities and cheatsheets you use constantly so they stay pinned right at the top of your library.',
       iconName: 'star',
     },
   ];
