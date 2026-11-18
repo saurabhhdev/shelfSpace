@@ -68,12 +68,12 @@ export const OssiumFeatures: React.FC = () => {
   ];
 
   return (
-    <div id="features" className="relative bg-transparent">
+    <div className="relative bg-transparent">
       {/* =========================================================================
           SECTION 1: WHAT YOU CAN DO
           Explains practical benefits communicating why Shelfspace is useful
          ========================================================================= */}
-      <section className="py-20 sm:py-24 border-t border-[#3E3E38] relative">
+      <section id="what-you-can-do" className="py-20 sm:py-24 border-t border-[#3E3E38] relative">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header - Symmetrical & Centered */}
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
@@ -125,7 +125,7 @@ export const OssiumFeatures: React.FC = () => {
           SECTION 2: FEATURES SECTION
           6-Item 3x2 Symmetrical Grid
          ========================================================================= */}
-      <section className="py-20 sm:py-24 border-t border-[#3E3E38] relative">
+      <section id="features" className="py-20 sm:py-24 border-t border-[#3E3E38] relative">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header - Symmetrical & Centered */}
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
