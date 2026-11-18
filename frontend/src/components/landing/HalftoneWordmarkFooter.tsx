@@ -40,6 +40,8 @@ export interface HalftoneWordmarkFooterProps {
   label?: string
   /** The muted line under it. */
   meta?: React.ReactNode
+  /** Bottom copyright line. */
+  copyright?: React.ReactNode
   /** Link columns along the top. */
   columns?: FooterColumn[]
   /** Show the back-to-top link. It scrolls the window to 0. Defaults to true. */
@@ -283,6 +285,11 @@ export default function HalftoneWordmarkFooter({
       >
         Saurabh
       </a>
+    </>
+  ),
+  copyright = (
+    <>
+      © 2026 Shelfspace · Released under the MIT License
     </>
   ),
   columns = DEFAULT_COLUMNS,
@@ -621,8 +628,8 @@ export default function HalftoneWordmarkFooter({
       </div>
 
       <div className="hwf-rule">
-        <span style={{ opacity: 0.45, color: "#B7B5A9" }}>
-          © {new Date().getFullYear()} Shelfspace
+        <span style={{ opacity: 0.55, color: "#B7B5A9" }}>
+          {copyright}
         </span>
         {backToTop ? (
           <button type="button" className="hwf-up" onClick={toTop}>

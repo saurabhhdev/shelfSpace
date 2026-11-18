@@ -173,26 +173,18 @@ export const OssiumNavbar: React.FC = () => {
             <SplitText hoverColor="text-white">FAQ</SplitText>
           </a>
 
-          {/* Login & Signup in Center Navigation */}
+          {/* Login/Signup Combined Button in Center Navigation */}
           {!isAuthenticated ? (
-            <>
-              <Link
-                to="/login"
-                className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
-              >
-                <SplitText hoverColor="text-white">Log In</SplitText>
-              </Link>
-              <Link
-                to="/register"
-                className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
-              >
-                <SplitText hoverColor="text-white">Sign Up</SplitText>
-              </Link>
-            </>
+            <Link
+              to="/login"
+              className="px-3 py-1 text-xs sm:text-sm font-medium text-[#FAF9F5] bg-white/[0.06] hover:bg-white/[0.12] border border-[#3E3E38] hover:border-[#525149] rounded-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.25)] transition-all duration-150 active:scale-[0.98] inline-flex items-center"
+            >
+              <SplitText hoverColor="text-white">Login/Signup</SplitText>
+            </Link>
           ) : (
             <Link
               to="/dashboard"
-              className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
+              className="px-3 py-1 text-xs sm:text-sm font-medium text-[#FAF9F5] bg-white/[0.06] hover:bg-white/[0.12] border border-[#3E3E38] hover:border-[#525149] rounded-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.25)] transition-all duration-150 active:scale-[0.98] inline-flex items-center"
             >
               <SplitText hoverColor="text-white">Dashboard</SplitText>
             </Link>
@@ -265,22 +257,13 @@ export const OssiumNavbar: React.FC = () => {
               <SplitText hoverColor="text-[#D97757]">FAQ</SplitText>
             </a>
             {!isAuthenticated ? (
-              <>
-                <Link
-                  to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
-                >
-                  <SplitText hoverColor="text-[#D97757]">Log In</SplitText>
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
-                >
-                  <SplitText hoverColor="text-[#D97757]">Sign Up</SplitText>
-                </Link>
-              </>
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06] border border-[#3E3E38] bg-white/[0.04] text-center"
+              >
+                <SplitText hoverColor="text-[#D97757]">Login/Signup</SplitText>
+              </Link>
             ) : (
               <Link
                 to="/dashboard"
