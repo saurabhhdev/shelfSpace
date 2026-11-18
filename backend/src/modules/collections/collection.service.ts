@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 import { Collection, ICollection } from './collection.model';
 import { Resource } from '../resources/resource.model';
 
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 export class CollectionService {
   static async list(userId: string) {
     const collections = await Collection.find({ userId }).sort({ createdAt: -1 });
@@ -39,9 +43,20 @@ export class CollectionService {
   }
 
   static async create(userId: string, data: { name: string; description?: string; color?: string }) {
+    const trimmedName = data.name.trim();
+    const existing = await Collection.findOne({
+      userId,
+      name: { $regex: new RegExp(`^${escapeRegex(trimmedName)}$`, 'i') },
+    });
+    if (existing) {
+      const err: any = new Error(`A category named "${trimmedName}" already exists.`);
+      err.statusCode = 409;
+      throw err;
+    }
+
     return Collection.create({
       userId,
-      name: data.name.trim(),
+      name: trimmedName,
       description: data.description || '',
       color: data.color || '#3b82f6',
     });
@@ -51,7 +66,22 @@ export class CollectionService {
     const collection = await Collection.findOne({ _id: collectionId, userId });
     if (!collection) throw new Error('Collection not found.');
 
-    if (data.name !== undefined) collection.name = data.name.trim();
+    if (data.name !== undefined) {
+      const trimmedName = data.name.trim();
+      if (trimmedName.toLowerCase() !== collection.name.toLowerCase()) {
+        const existing = await Collection.findOne({
+          userId,
+          _id: { $ne: collectionId },
+          name: { $regex: new RegExp(`^${escapeRegex(trimmedName)}$`, 'i') },
+        });
+        if (existing) {
+          const err: any = new Error(`A category named "${trimmedName}" already exists.`);
+          err.statusCode = 409;
+          throw err;
+        }
+      }
+      collection.name = trimmedName;
+    }
     if (data.description !== undefined) collection.description = data.description.trim();
     if (data.color !== undefined) collection.color = data.color.trim();
 

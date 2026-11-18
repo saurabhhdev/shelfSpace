@@ -1,4 +1,5 @@
 import { Resource, ResourceType } from '../resources/resource.model';
+import { Collection } from '../collections/collection.model';
 
 export interface GlobalSearchParams {
   userId: string;
@@ -46,14 +47,25 @@ export class SearchService {
 
     if (q && q.trim()) {
       const term = q.trim();
-      // Combine text search or regex for partial word matching
-      query.$or = [
+      const matchingCollections = await Collection.find({
+        userId,
+        name: { $regex: term, $options: 'i' },
+      }).select('_id');
+      const matchedCategoryIds = matchingCollections.map((c) => c._id);
+
+      const orConditions: any[] = [
         { title: { $regex: term, $options: 'i' } },
         { description: { $regex: term, $options: 'i' } },
         { tags: { $regex: term, $options: 'i' } },
         { notes: { $regex: term, $options: 'i' } },
         { url: { $regex: term, $options: 'i' } },
       ];
+
+      if (matchedCategoryIds.length > 0) {
+        orConditions.push({ collectionIds: { $in: matchedCategoryIds } });
+      }
+
+      query.$or = orConditions;
 
       if (sortBy === 'relevance') {
         sort = { score: { $meta: 'textScore' }, createdAt: -1 };

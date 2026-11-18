@@ -77,6 +77,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/collections', collectionRoutes);
+app.use('/api/categories', collectionRoutes); // Full compatibility alias for Phase 8 Categories
 app.use('/api/search', searchRoutes);
 
 // Catch-all 404 & Global error handlers

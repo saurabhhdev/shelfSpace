@@ -22,6 +22,8 @@ export const DashboardPage: React.FC = () => {
   const [favouriteResources, setFavouriteResources] = useState<Resource[]>([]);
   const [categories, setCategories] = useState<Collection[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [favoriteCount, setFavoriteCount] = useState<number>(0);
+  const [categoryCount, setCategoryCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Modals
@@ -33,17 +35,21 @@ export const DashboardPage: React.FC = () => {
   const fetchDashboardData = async () => {
     setIsLoading(true);
     try {
-      const [recentRes, favRes, colRes] = await Promise.all([
+      const [statsRes, recentRes, favRes, colRes] = await Promise.all([
+        apiClient.get('/resources/stats'),
         apiClient.get('/resources', { params: { limit: 5, sortBy: 'recent', status: 'active' } }),
         apiClient.get('/resources', { params: { limit: 5, isFavourite: true, status: 'active' } }),
         apiClient.get('/collections'),
       ]);
 
+      if (statsRes.data?.success) {
+        setTotalCount(statsRes.data.data.total ?? 0);
+        setFavoriteCount(statsRes.data.data.favorites ?? 0);
+        setCategoryCount(statsRes.data.data.categories ?? 0);
+      }
+
       if (recentRes.data?.success) {
         setRecentResources(recentRes.data.data);
-        if (recentRes.data.meta?.total !== undefined) {
-          setTotalCount(recentRes.data.meta.total);
-        }
       }
 
       if (favRes.data?.success) {
@@ -141,7 +147,7 @@ export const DashboardPage: React.FC = () => {
           <div>
             <span className="text-xs text-neutral-400 block mb-1">Favorites</span>
             <span className="text-xl font-semibold tracking-tight text-[#EDEDED]">
-              {favouriteResources.length}
+              {favoriteCount}
             </span>
           </div>
           <Star className="w-4 h-4 text-amber-400/80 group-hover:text-amber-400 transition-colors" />
@@ -154,7 +160,7 @@ export const DashboardPage: React.FC = () => {
           <div>
             <span className="text-xs text-neutral-400 block mb-1">Categories</span>
             <span className="text-xl font-semibold tracking-tight text-[#EDEDED]">
-              {categories.length}
+              {categoryCount}
             </span>
           </div>
           <BookmarkCheck className="w-4 h-4 text-neutral-500 group-hover:text-white transition-colors" />

@@ -18,6 +18,8 @@ router.post('/login', authLimiter, validateBody(loginSchema), AuthController.log
 router.post('/logout', requireAuth, AuthController.logout);
 router.post('/refresh', AuthController.refresh);
 router.get('/me', requireAuth, AuthController.me);
+router.patch('/me', requireAuth, AuthController.updateProfile);
+router.patch('/profile', requireAuth, AuthController.updateProfile);
 router.post('/verify-email', validateBody(verifyEmailSchema), AuthController.verifyEmail);
 router.post('/forgot-password', authLimiter, validateBody(forgotPasswordSchema), AuthController.forgotPassword);
 router.post('/reset-password', authLimiter, validateBody(resetPasswordSchema), AuthController.resetPassword);

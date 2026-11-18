@@ -27,6 +27,8 @@ export interface ListResourcesParams {
   isFavourite?: boolean;
   projectId?: string;
   collectionId?: string;
+  categoryId?: string;
+  category?: string;
   tag?: string;
   search?: string;
   sortBy?: 'recent' | 'oldest' | 'title_asc' | 'title_desc';
@@ -165,6 +167,8 @@ export class ResourceService {
       isFavourite,
       projectId,
       collectionId,
+      categoryId,
+      category,
       tag,
       search,
       sortBy = 'recent',
@@ -177,18 +181,32 @@ export class ResourceService {
     if (type) query.type = type;
     if (isFavourite !== undefined) query.isFavourite = isFavourite;
     if (projectId) query.projectIds = projectId;
-    if (collectionId) query.collectionIds = collectionId;
+    const targetCollection = collectionId || categoryId || category;
+    if (targetCollection) query.collectionIds = targetCollection;
     if (tag) query.tags = tag.toLowerCase();
 
     if (search && search.trim()) {
       const q = search.trim();
-      query.$or = [
+      // Search resource names, descriptions, tags, notes, urls, and matching category names
+      const matchingCollections = await Collection.find({
+        userId,
+        name: { $regex: q, $options: 'i' },
+      }).select('_id');
+      const matchedCategoryIds = matchingCollections.map((c) => c._id);
+
+      const orConditions: any[] = [
         { title: { $regex: q, $options: 'i' } },
         { description: { $regex: q, $options: 'i' } },
         { tags: { $regex: q, $options: 'i' } },
         { notes: { $regex: q, $options: 'i' } },
         { url: { $regex: q, $options: 'i' } },
       ];
+
+      if (matchedCategoryIds.length > 0) {
+        orConditions.push({ collectionIds: { $in: matchedCategoryIds } });
+      }
+
+      query.$or = orConditions;
     }
 
     // Sorting
@@ -345,6 +363,55 @@ export class ResourceService {
     }
     await resource.save();
     return resource;
+  }
+
+  /**
+   * Aggregates live resource counts, totals, favorites, trash, categories, and projects
+   */
+  static async getStats(userId: string) {
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    const [
+      activeCount,
+      favouriteCount,
+      trashCount,
+      categoryCount,
+      projectCount,
+      typeBreakdown,
+    ] = await Promise.all([
+      Resource.countDocuments({ userId: userObjectId, status: 'active' }),
+      Resource.countDocuments({ userId: userObjectId, status: 'active', isFavourite: true }),
+      Resource.countDocuments({ userId: userObjectId, status: 'trashed' }),
+      Collection.countDocuments({ userId: userObjectId }),
+      Project.countDocuments({ userId: userObjectId }),
+      Resource.aggregate([
+        { $match: { userId: userObjectId, status: 'active' } },
+        { $group: { _id: '$type', count: { $sum: 1 } } },
+      ]),
+    ]);
+
+    const byType: Record<string, number> = {
+      tools: 0,
+      repositories: 0,
+      components: 0,
+      snippets: 0,
+      design: 0,
+      references: 0,
+    };
+    for (const item of typeBreakdown) {
+      if (item._id) {
+        byType[item._id] = item.count;
+      }
+    }
+
+    return {
+      total: activeCount,
+      favorites: favouriteCount,
+      trash: trashCount,
+      categories: categoryCount,
+      projects: projectCount,
+      byType,
+    };
   }
 
   /**

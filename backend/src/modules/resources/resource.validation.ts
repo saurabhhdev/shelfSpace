@@ -59,6 +59,8 @@ export const listResourcesQuerySchema = z.object({
   isFavourite: z.string().transform((v) => v === 'true').optional(),
   projectId: z.string().optional(),
   collectionId: z.string().optional(),
+  categoryId: z.string().optional(),
+  category: z.string().optional(),
   tag: z.string().optional(),
   search: z.string().optional(),
   sortBy: z.enum(['recent', 'oldest', 'title_asc', 'title_desc']).optional().default('recent'),

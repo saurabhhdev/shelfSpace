@@ -225,4 +225,54 @@ export class ResourceController {
       return sendError(res, err.message || 'Failed to refresh metadata', 400);
     }
   }
+
+  static async getStats(req: Request, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const stats = await ResourceService.getStats(userId);
+      return sendSuccess(res, stats, 'Resource statistics retrieved');
+    } catch (err: any) {
+      return sendError(res, err.message || 'Error retrieving resource statistics', 500);
+    }
+  }
+
+  static async getRecent(req: Request, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string, 10) || 10));
+      const result = await ResourceService.list({
+        userId,
+        sortBy: 'recent',
+        status: 'active',
+        limit,
+        page: 1,
+      });
+      return sendSuccess(res, result.resources, 'Recent resources retrieved', 200, {
+        total: result.total,
+        limit,
+      });
+    } catch (err: any) {
+      return sendError(res, err.message || 'Error listing recent resources', 500);
+    }
+  }
+
+  static async getFavourites(req: Request, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string, 10) || 50));
+      const result = await ResourceService.list({
+        userId,
+        isFavourite: true,
+        status: 'active',
+        limit,
+        page: 1,
+      });
+      return sendSuccess(res, result.resources, 'Favourite resources retrieved', 200, {
+        total: result.total,
+        limit,
+      });
+    } catch (err: any) {
+      return sendError(res, err.message || 'Error listing favourite resources', 500);
+    }
+  }
 }

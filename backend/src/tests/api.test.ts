@@ -335,6 +335,118 @@ describe('Shelfspace Backend Core Integration Tests', () => {
       expect(globalResourceCheck.body.data.title).toBe('TEST_Standalone_Tool');
     });
 
+    it('supports profile update and password change', async () => {
+      // 1. Update display name
+      const resName = await request(app)
+        .patch('/api/auth/me')
+        .set('Cookie', authCookieUserA)
+        .send({ name: 'User A Updated' });
+      expect(resName.status).toBe(200);
+      expect(resName.body.data.user.name).toBe('User A Updated');
+
+      // 2. Reject password change if current password is wrong
+      const resWrongPass = await request(app)
+        .patch('/api/auth/me')
+        .set('Cookie', authCookieUserA)
+        .send({ currentPassword: 'WrongPassword!', newPassword: 'NewPassword123!' });
+      expect(resWrongPass.status).toBe(400);
+
+      // 3. Update password successfully
+      const resPass = await request(app)
+        .patch('/api/auth/me')
+        .set('Cookie', authCookieUserA)
+        .send({ currentPassword: 'Password123!', newPassword: 'NewPassword123!' });
+      expect(resPass.status).toBe(200);
+    });
+
+    it('enforces unique category names and retains resources on category deletion', async () => {
+      // 1. Create a category
+      const catRes = await request(app)
+        .post('/api/categories')
+        .set('Cookie', authCookieUserA)
+        .send({
+          name: 'TEST_Category_Original',
+          color: '#09AE5B',
+        });
+      expect(catRes.status).toBe(201);
+      const catId = catRes.body.data._id;
+
+      // 2. Attempt duplicate category name (case-insensitive) -> should reject with 409
+      const dupRes = await request(app)
+        .post('/api/categories')
+        .set('Cookie', authCookieUserA)
+        .send({
+          name: 'test_category_original',
+        });
+      expect(dupRes.status).toBe(409);
+
+      // 3. Create resource associated with category
+      const resCreate = await request(app)
+        .post('/api/resources')
+        .set('Cookie', authCookieUserA)
+        .send({
+          type: 'tools',
+          title: 'TEST_Categorized_Resource',
+          collectionIds: [catId],
+        });
+      expect(resCreate.status).toBe(201);
+      const resourceId = resCreate.body.data._id;
+
+      // 4. Delete the category
+      const deleteCat = await request(app)
+        .delete(`/api/categories/${catId}`)
+        .set('Cookie', authCookieUserA);
+      expect(deleteCat.status).toBe(200);
+
+      // 5. Verify the resource still exists in library with collectionIds cleared
+      const checkRes = await request(app)
+        .get(`/api/resources/${resourceId}`)
+        .set('Cookie', authCookieUserA);
+      expect(checkRes.status).toBe(200);
+      expect(checkRes.body.data.collectionIds.length).toBe(0);
+    });
+
+    it('returns aggregated stats and supports searching across categories', async () => {
+      // 1. Create a category for search test
+      const catSearch = await request(app)
+        .post('/api/categories')
+        .set('Cookie', authCookieUserA)
+        .send({
+          name: 'TEST_DevOps_Special',
+          color: '#3b82f6',
+        });
+      const catId = catSearch.body.data._id;
+
+      // 2. Create resource in this category
+      const resCreate = await request(app)
+        .post('/api/resources')
+        .set('Cookie', authCookieUserA)
+        .send({
+          type: 'tools',
+          title: 'TEST_Unrelated_Title_Tool',
+          description: 'A tool for continuous integration',
+          collectionIds: [catId],
+        });
+      const resourceId = resCreate.body.data._id;
+
+      // 3. Search resources using category keyword "DevOps_Special"
+      const searchRes = await request(app)
+        .get('/api/resources')
+        .set('Cookie', authCookieUserA)
+        .query({ search: 'DevOps_Special' });
+      expect(searchRes.status).toBe(200);
+      expect(searchRes.body.data.some((r: any) => r._id === resourceId)).toBe(true);
+
+      // 4. Retrieve resource stats
+      const statsRes = await request(app)
+        .get('/api/resources/stats')
+        .set('Cookie', authCookieUserA);
+      expect(statsRes.status).toBe(200);
+      expect(statsRes.body.data.total).toBeGreaterThanOrEqual(1);
+      expect(statsRes.body.data.byType).toBeDefined();
+      expect(statsRes.body.data.byType.tools).toBeGreaterThanOrEqual(1);
+    });
+
     it('classifies resources into the 6 types and generates relevant auto tags', () => {
       // Test 1: Component library with user category matching
       const userCategories = [

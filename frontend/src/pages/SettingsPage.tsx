@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { apiClient } from '../api/client';
 import type { Session } from '../types';
 import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { useNotification } from '../context/NotificationContext';
 import {
@@ -13,11 +14,14 @@ import {
   User as UserIcon,
   Calendar,
   Trash2,
+  KeyRound,
+  Check,
+  X,
 } from 'lucide-react';
 import { formatDate, formatRelativeTime } from '../lib/utils';
 
 export const SettingsPage: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, refetchUser } = useAuth();
   const navigate = useNavigate();
   const { notify } = useNotification();
 
@@ -25,9 +29,26 @@ export const SettingsPage: React.FC = () => {
   const [currentSessionId, setCurrentSessionId] = useState<string>('');
   const [isLoadingSessions, setIsLoadingSessions] = useState(true);
 
+  // Profile Edit State
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileName, setProfileName] = useState(user?.name || '');
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+
+  // Password Change State
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+
   const [isRevokingAll, setIsRevokingAll] = useState(false);
   const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
+  useEffect(() => {
+    if (user?.name) setProfileName(user.name);
+  }, [user?.name]);
 
   const fetchSessions = async () => {
     setIsLoadingSessions(true);
@@ -90,6 +111,56 @@ export const SettingsPage: React.FC = () => {
     }
   };
 
+  const handleUpdateName = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!profileName.trim() || profileName.trim().length < 2) {
+      notify('Name must be at least 2 characters', 'error');
+      return;
+    }
+    setIsUpdatingProfile(true);
+    try {
+      await apiClient.patch('/auth/me', { name: profileName.trim() });
+      notify('Profile name updated', 'success');
+      await refetchUser();
+      setIsEditingProfile(false);
+    } catch (err: any) {
+      notify(err.response?.data?.message || 'Failed to update name', 'error');
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError('');
+    if (!currentPassword) {
+      setPasswordError('Current password is required');
+      return;
+    }
+    if (newPassword.length < 8) {
+      setPasswordError('New password must be at least 8 characters');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+
+    setIsUpdatingPassword(true);
+    try {
+      await apiClient.patch('/auth/me', { currentPassword, newPassword });
+      notify('Password changed successfully', 'success');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setIsChangingPassword(false);
+    } catch (err: any) {
+      setPasswordError(err.response?.data?.message || 'Failed to change password');
+    } finally {
+      setIsUpdatingPassword(false);
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-12 font-sans">
       {/* Header */}
@@ -98,40 +169,169 @@ export const SettingsPage: React.FC = () => {
           Settings
         </h1>
         <p className="text-xs text-neutral-400 mt-1">
-          Manage your profile information and active account sessions.
+          Manage your profile information, password, and active account sessions.
         </p>
       </div>
 
       {/* 1. Profile Information */}
       <div className="bg-[#121316] border border-white/[0.08] rounded-md p-5 space-y-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-[#EDEDED]">
-          <UserIcon className="w-4 h-4 text-neutral-400" />
-          <span>Profile Information</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-medium text-[#EDEDED]">
+            <UserIcon className="w-4 h-4 text-neutral-400" />
+            <span>Profile Information</span>
+          </div>
+          {!isEditingProfile && (
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={() => setIsEditingProfile(true)}
+            >
+              Edit Name
+            </Button>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-1">
-          <div>
-            <span className="text-neutral-500 block mb-1">Full Name</span>
-            <span className="font-medium text-[#EDEDED] text-sm block">
-              {user?.name || 'Developer'}
-            </span>
-          </div>
+        {isEditingProfile ? (
+          <form onSubmit={handleUpdateName} className="space-y-3 pt-1">
+            <div>
+              <label className="text-xs text-neutral-400 block mb-1">Full Name</label>
+              <Input
+                value={profileName}
+                onChange={(e) => setProfileName(e.target.value)}
+                placeholder="Your full name"
+                required
+                className="max-w-md"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Button type="submit" size="xs" isLoading={isUpdatingProfile} leftIcon={<Check className="w-3.5 h-3.5" />}>
+                Save Changes
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                onClick={() => {
+                  setProfileName(user?.name || '');
+                  setIsEditingProfile(false);
+                }}
+                leftIcon={<X className="w-3.5 h-3.5" />}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-1">
+            <div>
+              <span className="text-neutral-500 block mb-1">Full Name</span>
+              <span className="font-medium text-[#EDEDED] text-sm block">
+                {user?.name || 'Developer'}
+              </span>
+            </div>
 
-          <div>
-            <span className="text-neutral-500 block mb-1">Email Address</span>
-            <span className="font-medium text-[#EDEDED] text-sm font-mono block">
-              {user?.email || '—'}
-            </span>
-          </div>
+            <div>
+              <span className="text-neutral-500 block mb-1">Email Address</span>
+              <span className="font-medium text-[#EDEDED] text-sm font-mono block">
+                {user?.email || '—'}
+              </span>
+            </div>
 
-          <div>
-            <span className="text-neutral-500 block mb-1">Member Since</span>
-            <span className="text-neutral-300 flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-neutral-500" />
-              <span>{user?.createdAt ? formatDate(user.createdAt) : 'Recently'}</span>
-            </span>
+            <div>
+              <span className="text-neutral-500 block mb-1">Member Since</span>
+              <span className="text-neutral-300 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-neutral-500" />
+                <span>{user?.createdAt ? formatDate(user.createdAt) : 'Recently'}</span>
+              </span>
+            </div>
           </div>
+        )}
+      </div>
+
+      {/* 2. Security & Password */}
+      <div className="bg-[#121316] border border-white/[0.08] rounded-md p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-medium text-[#EDEDED]">
+            <KeyRound className="w-4 h-4 text-neutral-400" />
+            <span>Password & Security</span>
+          </div>
+          {!isChangingPassword && (
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={() => {
+                setIsChangingPassword(true);
+                setPasswordError('');
+              }}
+            >
+              Change Password
+            </Button>
+          )}
         </div>
+
+        {isChangingPassword ? (
+          <form onSubmit={handleChangePassword} className="space-y-3 pt-1 max-w-md">
+            {passwordError && (
+              <div className="p-2.5 rounded bg-rose-500/10 border border-rose-500/20 text-xs text-rose-400">
+                {passwordError}
+              </div>
+            )}
+            <div>
+              <label className="text-xs text-neutral-400 block mb-1">Current Password</label>
+              <Input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Enter current password"
+                required
+              />
+            </div>
+            <div>
+              <label className="text-xs text-neutral-400 block mb-1">New Password (min 8 chars)</label>
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter new secure password"
+                required
+              />
+            </div>
+            <div>
+              <label className="text-xs text-neutral-400 block mb-1">Confirm New Password</label>
+              <Input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repeat new password"
+                required
+              />
+            </div>
+            <div className="flex items-center gap-2 pt-1">
+              <Button type="submit" size="xs" isLoading={isUpdatingPassword} leftIcon={<Check className="w-3.5 h-3.5" />}>
+                Update Password
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                onClick={() => {
+                  setCurrentPassword('');
+                  setNewPassword('');
+                  setConfirmPassword('');
+                  setPasswordError('');
+                  setIsChangingPassword(false);
+                }}
+                leftIcon={<X className="w-3.5 h-3.5" />}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <p className="text-xs text-neutral-400">
+            Ensure your account is using a long, random password to stay secure.
+          </p>
+        )}
       </div>
 
       {/* 2. Account Sessions & Security */}

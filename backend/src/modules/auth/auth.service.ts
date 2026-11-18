@@ -121,6 +121,37 @@ export class AuthService {
     await Session.findByIdAndUpdate(sessionId, { isRevoked: true });
   }
 
+  static async updateProfile(userId: string, data: { name?: string; currentPassword?: string; newPassword?: string }) {
+    const user = await User.findById(userId);
+    if (!user || user.deletedAt) throw new Error('User not found.');
+
+    if (data.name !== undefined) {
+      const trimmed = data.name.trim();
+      if (trimmed.length < 2) {
+        throw new Error('Name must be at least 2 characters long.');
+      }
+      user.name = trimmed;
+    }
+
+    if (data.newPassword) {
+      if (!data.currentPassword) {
+        throw new Error('Current password is required to change password.');
+      }
+      const isMatch = await bcrypt.compare(data.currentPassword, user.passwordHash);
+      if (!isMatch) {
+        throw new Error('Current password is incorrect.');
+      }
+      if (data.newPassword.length < 8) {
+        throw new Error('New password must be at least 8 characters long.');
+      }
+      const salt = await bcrypt.genSalt(12);
+      user.passwordHash = await bcrypt.hash(data.newPassword, salt);
+    }
+
+    await user.save();
+    return user;
+  }
+
   static async verifyEmail(token: string) {
     const user = await User.findOne({ emailVerificationToken: token });
     if (!user) {

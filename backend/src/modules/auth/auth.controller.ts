@@ -151,6 +151,16 @@ export class AuthController {
     }
   }
 
+  static async updateProfile(req: Request, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const updated = await AuthService.updateProfile(userId, req.body);
+      return sendSuccess(res, { user: updated }, 'Profile updated successfully');
+    } catch (err: any) {
+      return sendError(res, err.message || 'Failed to update profile', 400);
+    }
+  }
+
   static async verifyEmail(req: Request, res: Response) {
     try {
       const { token } = req.body;

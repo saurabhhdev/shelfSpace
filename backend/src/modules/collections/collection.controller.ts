@@ -30,7 +30,7 @@ export class CollectionController {
       const collection = await CollectionService.create(userId, req.body);
       return sendSuccess(res, collection, 'Collection created successfully', 201);
     } catch (err: any) {
-      return sendError(res, err.message || 'Error creating collection', 400);
+      return sendError(res, err.message || 'Error creating collection', err.statusCode || 400);
     }
   }
 
@@ -41,7 +41,7 @@ export class CollectionController {
       const collection = await CollectionService.update(userId, collectionId, req.body);
       return sendSuccess(res, collection, 'Collection updated successfully');
     } catch (err: any) {
-      return sendError(res, err.message || 'Error updating collection', 400);
+      return sendError(res, err.message || 'Error updating collection', err.statusCode || 400);
     }
   }
 

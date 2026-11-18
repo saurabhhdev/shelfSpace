@@ -181,18 +181,44 @@ export class MetadataService {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
 
-      const response = await fetch(normalized, {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Shelfspace/1.0',
-          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        },
-        signal: controller.signal,
-        redirect: 'follow',
-      });
+      let currentUrl = normalized;
+      let response: Response | null = null;
+      let redirectCount = 0;
+      const MAX_REDIRECTS = 3;
+
+      while (redirectCount <= MAX_REDIRECTS) {
+        const safe = await validateSafeUrl(currentUrl);
+        if (!safe.safe) {
+          logger.warn(`SSRF Block on redirect to ${currentUrl}: ${safe.reason}`);
+          clearTimeout(timeoutId);
+          return fallback;
+        }
+
+        const resp = await fetch(currentUrl, {
+          headers: {
+            'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Shelfspace/1.0',
+            Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          },
+          signal: controller.signal,
+          redirect: 'manual',
+        });
+
+        // Safe redirect handling
+        if ([301, 302, 303, 307, 308].includes(resp.status)) {
+          const location = resp.headers.get('location');
+          if (!location) break;
+          currentUrl = new URL(location, currentUrl).toString();
+          redirectCount++;
+          continue;
+        }
+
+        response = resp;
+        break;
+      }
       clearTimeout(timeoutId);
 
-      if (!response.ok) {
+      if (!response || !response.ok) {
         return fallback;
       }
 
