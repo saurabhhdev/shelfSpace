@@ -218,13 +218,13 @@ export const OssiumNavbar: React.FC = () => {
                 to="/login"
                 className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors"
               >
-                <SplitText hoverColor="text-white">Sign In</SplitText>
+                <SplitText hoverColor="text-white">Log In</SplitText>
               </Link>
               <Link
                 to="/register"
                 className="inline-flex items-center gap-1.5 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
               >
-                <SplitText hoverColor="text-[#141413]">Start Collecting</SplitText>
+                <SplitText hoverColor="text-[#141413]">Sign Up</SplitText>
                 <span className="text-[11px] font-mono">↗</span>
               </Link>
             </div>
@@ -293,16 +293,16 @@ export const OssiumNavbar: React.FC = () => {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 rounded-md bg-[#1C1C1B] hover:bg-[#1A1915] text-[#FAF9F5] font-medium text-sm border border-[#3E3E38]"
+                  className="w-full text-center py-2 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-[#FAF9F5] font-medium text-sm border border-[#3E3E38] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.3)] transition-all duration-150 active:scale-[0.98]"
                 >
-                  Sign In
+                  Log In
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium text-sm border border-white/40 shadow-xs"
+                  className="w-full text-center py-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium text-sm border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98]"
                 >
-                  Start Collecting
+                  Sign Up ↗
                 </Link>
               </>
             )}

@@ -87,8 +87,8 @@ export const OssiumFooter: React.FC = () => {
             <ul className="space-y-2 text-xs">
               <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
               <li><a href="#features" className="hover:text-white transition-colors">Documentation</a></li>
-              <li><Link to="/login" className="hover:text-white transition-colors">Sign In</Link></li>
-              <li><Link to="/register" className="hover:text-white transition-colors">Create Account</Link></li>
+              <li><Link to="/login" className="hover:text-white transition-colors">Log In</Link></li>
+              <li><Link to="/register" className="hover:text-white transition-colors">Sign Up</Link></li>
             </ul>
           </div>
 
