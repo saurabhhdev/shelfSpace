@@ -6,24 +6,28 @@ export const OssiumFAQ: React.FC = () => {
 
   const faqs = [
     {
+      q: 'What is Shelfspace and what can I save in it?',
+      a: 'Shelfspace is a focused workspace for developers and creators. You can save developer tools, GitHub repositories, UI components, documentation, articles, and design references — keeping everything organized and easily searchable in one place.'
+    },
+    {
       q: 'How is Shelfspace different from normal browser bookmarks?',
-      a: 'Browser bookmarks become cluttered dumping grounds scattered across devices. Shelfspace provides structured taxonomy, live URL status checks, multi-dimensional tags, in-memory fuzzy search, and project binders that you can search from any browser or device.'
+      a: 'Browser bookmarks quickly become disorganized and stay locked to a single browser. Shelfspace provides rich link previews, custom tags, project-based collections, and instant global search that you can access from any browser or device.'
     },
     {
-      q: 'Does Shelfspace automatically scrape metadata and favicons?',
-      a: 'Yes. When you paste any URL or repository, Shelfspace queries the open graph tags, title, description, and high-resolution favicon to give you a clean, previewable card instantly.'
+      q: 'Do I have to type out details manually when adding a link?',
+      a: 'No. Just paste a URL or repository link, and Shelfspace automatically fetches the page title, description, preview image, and favicon. You can review and tweak the details before saving.'
     },
     {
-      q: 'Can I export my data or migrate out at any time?',
-      a: 'Absolutely. We believe in zero vendor lock-in. You can export your entire resource catalog, tags, notes, and collections to Markdown or clean JSON with a single click.'
+      q: 'Can I organize resources by projects?',
+      a: 'Yes. You can create dedicated projects and link any resource to them. A single tool or library can be used across multiple projects without duplicating records.'
     },
     {
-      q: 'Is there a keyboard shortcut for fast navigation?',
-      a: 'Yes! Press ⌘K (or Ctrl+K on Windows) from anywhere to open the global command palette. You can search resources, filter tags, jump to collections, or trigger quick additions without leaving the keyboard.'
+      q: 'How quickly can I find saved resources later?',
+      a: 'Instantly. Shelfspace includes fast full-text search across titles, descriptions, and tags, as well as category filters and a quick command palette (⌘K or Ctrl+K) to jump to any resource within seconds.'
     },
     {
-      q: 'Is Shelfspace free to use?',
-      a: 'Shelfspace offers a generous free tier that includes unlimited bookmarks, tags, and collections for individual developers, with optional team workspace upgrades.'
+      q: 'Is Shelfspace free and open source?',
+      a: 'Yes, Shelfspace is free to use and open source under the MIT License. All core features — unlimited resources, categories, tags, and projects — are available without hidden fees.'
     }
   ];
 
