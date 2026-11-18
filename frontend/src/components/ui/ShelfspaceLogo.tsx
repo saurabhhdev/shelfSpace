@@ -9,22 +9,26 @@ export interface ShelfspaceLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   shelfColor?: string;
   bookColor?: string;
+  accentBookColor?: string;
 }
 
 /**
  * Shelfspace Official Branding (Logo Concept #6: Books on Shelf)
- * Features three books (two upright, one leaning) on a warm golden/champagne horizontal shelf line.
+ * Features three books (two upright, one leaning) on a warm terracotta/orange horizontal shelf line
+ * matching the Shelfspace web theme (#D97757 / #EE8360).
  */
 export const ShelfspaceLogoIcon: React.FC<{
   className?: string;
   size?: number | string;
   shelfColor?: string;
   bookColor?: string;
+  accentBookColor?: string;
 }> = ({
   className,
   size = 24,
-  shelfColor = '#E5C28F',
-  bookColor = 'currentColor',
+  shelfColor = '#D97757',
+  bookColor = '#D97757',
+  accentBookColor = '#EE8360',
 }) => {
   return (
     <svg
@@ -36,7 +40,7 @@ export const ShelfspaceLogoIcon: React.FC<{
       className={cn('shrink-0 select-none', className)}
       aria-hidden="true"
     >
-      {/* 1. Left Book (medium height, upright) */}
+      {/* 1. Left Book (medium height, upright in warm terracotta) */}
       <rect
         x="5"
         y="12"
@@ -46,7 +50,7 @@ export const ShelfspaceLogoIcon: React.FC<{
         fill={bookColor}
       />
 
-      {/* 2. Middle Book (tallest, upright) */}
+      {/* 2. Middle Book (tallest, upright in warm terracotta) */}
       <rect
         x="10.8"
         y="6"
@@ -56,18 +60,18 @@ export const ShelfspaceLogoIcon: React.FC<{
         fill={bookColor}
       />
 
-      {/* 3. Right Book (leaning to the right, resting against middle book) */}
+      {/* 3. Right Book (leaning book with warm orange highlight #EE8360) */}
       <rect
         x="16.5"
         y="7"
         width="4"
         height="18"
         rx="0.75"
-        fill={bookColor}
+        fill={accentBookColor || bookColor}
         transform="rotate(22 17.5 24.5)"
       />
 
-      {/* 4. Bottom Horizontal Shelf Line (warm champagne/gold accent) */}
+      {/* 4. Bottom Horizontal Shelf Line (signature terracotta accent) */}
       <line
         x1="3"
         y1="26"
@@ -87,8 +91,9 @@ export const ShelfspaceLogo: React.FC<ShelfspaceLogoProps> = ({
   textClassName,
   iconOnly = false,
   size = 'md',
-  shelfColor = '#E5C28F',
-  bookColor = '#FAF9F5',
+  shelfColor = '#D97757',
+  bookColor = '#D97757',
+  accentBookColor = '#EE8360',
 }) => {
   const sizeMap = {
     sm: { icon: 18, text: 'text-sm' },
@@ -106,6 +111,7 @@ export const ShelfspaceLogo: React.FC<ShelfspaceLogoProps> = ({
         className={iconClassName}
         shelfColor={shelfColor}
         bookColor={bookColor}
+        accentBookColor={accentBookColor}
       />
 
       {!iconOnly && (
