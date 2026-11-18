@@ -137,60 +137,61 @@ export const AppLayout: React.FC = () => {
       {/* ==================== LEFT SIDEBAR ==================== */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex flex-col justify-between border-r border-[#3E3E38] bg-[#1C1C1B] transition-all duration-150 ease-in-out md:sticky md:top-0 md:h-screen select-none shrink-0',
+          'border-r border-[#3E3E38] bg-[#1C1C1B] transition-all duration-150 ease-in-out select-none shrink-0 flex flex-col justify-between',
+          // Mobile: fixed slide-over drawer; Desktop: natural relative column that flows with the layout
+          'fixed inset-y-0 left-0 z-40 md:relative md:inset-auto md:z-auto md:min-h-screen md:h-auto',
           isCollapsed ? 'w-16' : 'w-56',
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
-        <div className="flex flex-col h-full overflow-hidden justify-between">
-          <div>
-            {/* 1. TOP — BRAND */}
-            <div className="flex items-center justify-between h-14 px-4 border-b border-[#3E3E38] shrink-0 bg-[#1C1C1B]">
-              {!isCollapsed ? (
-                <div className="flex items-center justify-between w-full">
-                  <Link
-                    to="/dashboard"
-                    className="flex items-center gap-2.5 px-1 py-1 rounded-md hover:bg-white/[0.04] transition-colors truncate"
-                  >
-                    <div className="w-5 h-5 rounded-md bg-[#1B1B19] border border-[#3E3E38] flex items-center justify-center shrink-0">
-                      <span className="w-2 h-2 rounded-full bg-[#D97757]"></span>
-                    </div>
-                    <span className="text-xs font-semibold text-[#FAF9F5] tracking-tight truncate">
-                      Shelfspace
-                    </span>
-                  </Link>
-
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => setIsCollapsed(!isCollapsed)}
-                      className="hidden md:flex text-neutral-400 hover:text-white p-1 rounded-md hover:bg-white/[0.06] cursor-pointer transition-colors"
-                      title="Collapse sidebar"
-                    >
-                      <Flaticon name="angle-small-left" className="text-sm" />
-                    </button>
-                    <button
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="md:hidden text-neutral-400 hover:text-white p-1 cursor-pointer"
-                    >
-                      <Flaticon name="cross" className="text-xs" />
-                    </button>
+        <div className="flex-1 flex flex-col min-h-0">
+          {/* 1. TOP — BRAND */}
+          <div className="flex items-center justify-between h-14 px-4 border-b border-[#3E3E38] shrink-0 bg-[#1C1C1B]">
+            {!isCollapsed ? (
+              <div className="flex items-center justify-between w-full">
+                <Link
+                  to="/dashboard"
+                  className="flex items-center gap-2.5 px-1 py-1 rounded-md hover:bg-white/[0.04] transition-colors truncate"
+                >
+                  <div className="w-5 h-5 rounded-md bg-[#1B1B19] border border-[#3E3E38] flex items-center justify-center shrink-0">
+                    <span className="w-2 h-2 rounded-full bg-[#D97757]"></span>
                   </div>
-                </div>
-              ) : (
-                <div className="w-full flex items-center justify-center">
+                  <span className="text-xs font-semibold text-[#FAF9F5] tracking-tight truncate">
+                    Shelfspace
+                  </span>
+                </Link>
+
+                <div className="flex items-center gap-1">
                   <button
-                    onClick={() => setIsCollapsed(false)}
-                    className="text-neutral-400 hover:text-white p-1.5 rounded-md hover:bg-white/[0.06] cursor-pointer transition-colors"
-                    title="Expand sidebar"
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    className="hidden md:flex text-neutral-400 hover:text-white p-1 rounded-md hover:bg-white/[0.06] cursor-pointer transition-colors"
+                    title="Collapse sidebar"
                   >
-                    <Flaticon name="angle-small-right" className="text-sm" />
+                    <Flaticon name="angle-small-left" className="text-sm" />
+                  </button>
+                  <button
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="md:hidden text-neutral-400 hover:text-white p-1 cursor-pointer"
+                  >
+                    <Flaticon name="cross" className="text-xs" />
                   </button>
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="w-full flex items-center justify-center">
+                <button
+                  onClick={() => setIsCollapsed(false)}
+                  className="text-neutral-400 hover:text-white p-1.5 rounded-md hover:bg-white/[0.06] cursor-pointer transition-colors"
+                  title="Expand sidebar"
+                >
+                  <Flaticon name="angle-small-right" className="text-sm" />
+                </button>
+              </div>
+            )}
+          </div>
 
-            {/* 2. MIDDLE — NAVIGATION (With Expandable Categories) */}
-            <div className="px-2 py-3 space-y-1 flex-1 overflow-y-auto">
+          {/* 2. MIDDLE — NAVIGATION (With Expandable Categories) */}
+          <div className="px-2 py-3 space-y-1 flex-1">
               {navItems.map((item) => {
                 // Projects Item with Quick Create Action
                 if (item.to === '/projects' && !isCollapsed) {
@@ -439,7 +440,6 @@ export const AppLayout: React.FC = () => {
               </button>
             )}
           </div>
-        </div>
       </aside>
 
       {/* ==================== MAIN VIEW AREA ==================== */}
