@@ -4,7 +4,7 @@ import { OssiumHero } from '../components/landing/OssiumHero';
 import { OssiumFeatures } from '../components/landing/OssiumFeatures';
 import { OssiumFAQ } from '../components/landing/OssiumFAQ';
 import { OssiumCTA } from '../components/landing/OssiumCTA';
-import { OssiumFooter } from '../components/landing/OssiumFooter';
+import HalftoneWordmarkFooter from '../components/landing/HalftoneWordmarkFooter';
 import { ProductTourModal } from '../components/landing/ProductTourModal';
 
 export const LandingPage: React.FC = () => {
@@ -29,8 +29,8 @@ export const LandingPage: React.FC = () => {
         <OssiumCTA />
       </main>
 
-      {/* 5-Column Footer */}
-      <OssiumFooter />
+      {/* Halftone Wordmark Interactive Footer */}
+      <HalftoneWordmarkFooter />
 
       {/* Interactive Product Tour Modal */}
       <ProductTourModal isOpen={isTourOpen} onClose={() => setIsTourOpen(false)} />
