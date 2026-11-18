@@ -83,7 +83,7 @@ const DEFAULT_COLUMNS: FooterColumn[] = [
     title: "Connect",
     links: [
       {
-        label: "GitHub Repo",
+        label: "GitHub",
         href: "https://github.com/saurabhhdev/shelfSpace",
         icon: <VscGithubAlt className="text-sm shrink-0" />,
       },
