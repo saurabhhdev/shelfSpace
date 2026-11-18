@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
 import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Collection, Resource } from '../types';
@@ -7,6 +8,7 @@ import { Button, IconButton } from '../components/ui/Button';
 import { Dialog } from '../components/ui/Dialog';
 import { Input } from '../components/ui/Input';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
+import { CollectionTemplateModal } from '../components/collections/CollectionTemplateModal';
 import { useNotification } from '../context/NotificationContext';
 import { getResourceTypeIcon } from '../lib/resourceTypes';
 import { cn, formatRelativeTime } from '../lib/utils';
@@ -34,6 +36,10 @@ export const CollectionsPage: React.FC = () => {
   const [color, setColor] = useState(MUTED_COLORS[0]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  // Pre-made templates & suggestions modal
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [templateModalTab, setTemplateModalTab] = useState<'templates' | 'custom'>('templates');
 
   // Delete modal
   const [deletingCategory, setDeletingCategory] = useState<Collection | null>(null);
@@ -92,14 +98,14 @@ export const CollectionsPage: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
+    const handleUpdate = () => fetchCategories();
+    window.addEventListener('categories-updated', handleUpdate);
+    return () => window.removeEventListener('categories-updated', handleUpdate);
   }, []);
 
   const openCreateModal = () => {
-    setEditingCategory(null);
-    setName('');
-    setColor(MUTED_COLORS[0]);
-    setError('');
-    setIsModalOpen(true);
+    setTemplateModalTab('custom');
+    setIsTemplateModalOpen(true);
   };
 
   const openEditModal = (c: Collection) => {
@@ -173,14 +179,33 @@ export const CollectionsPage: React.FC = () => {
           </p>
         </div>
 
-        <Button
-          onClick={openCreateModal}
-          leftIcon={<Flaticon name="plus" className="text-xs" />}
-          size="sm"
-          className="self-start sm:self-auto shrink-0"
-        >
-          New Category
-        </Button>
+        <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              setTemplateModalTab('templates');
+              setIsTemplateModalOpen(true);
+            }}
+            leftIcon={<Sparkles className="w-3.5 h-3.5 text-[#D97757]" />}
+            className="border-[#3E3E38] hover:border-[#D97757]/40 text-xs text-[#FAF9F5]"
+          >
+            Explore Templates
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => {
+              setTemplateModalTab('custom');
+              setIsTemplateModalOpen(true);
+            }}
+            leftIcon={<Flaticon name="plus" className="text-xs" />}
+            size="sm"
+          >
+            New Category
+          </Button>
+        </div>
       </div>
 
       {/* Clean List */}
@@ -353,16 +378,42 @@ export const CollectionsPage: React.FC = () => {
           })}
         </div>
       ) : (
-        <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B] space-y-3">
-          <h3 className="text-sm font-medium text-[#FAF9F5]">
-            No categories yet
-          </h3>
-          <p className="text-xs text-neutral-400 max-w-sm mx-auto">
-            Create simple categories to group and organize your saved developer tools and references.
-          </p>
-          <Button size="xs" leftIcon={<Flaticon name="plus" className="text-xs" />} onClick={openCreateModal}>
-            New Category
-          </Button>
+        <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B] space-y-4">
+          <div className="w-10 h-10 rounded-full bg-white/[0.04] border border-[#3E3E38] flex items-center justify-center mx-auto text-[#D97757]">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium text-[#FAF9F5]">
+              No categories yet
+            </h3>
+            <p className="text-xs text-neutral-400 max-w-sm mx-auto">
+              Get started fast with pre-made developer collection templates or create categories from scratch.
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-2 pt-2">
+            <Button
+              size="xs"
+              variant="secondary"
+              leftIcon={<Sparkles className="w-3.5 h-3.5 text-[#D97757]" />}
+              onClick={() => {
+                setTemplateModalTab('templates');
+                setIsTemplateModalOpen(true);
+              }}
+              className="border-[#3E3E38] hover:border-[#D97757]/40"
+            >
+              Explore Templates
+            </Button>
+            <Button
+              size="xs"
+              leftIcon={<Flaticon name="plus" className="text-xs" />}
+              onClick={() => {
+                setTemplateModalTab('custom');
+                setIsTemplateModalOpen(true);
+              }}
+            >
+              New Category
+            </Button>
+          </div>
         </div>
       )}
 
@@ -430,6 +481,16 @@ export const CollectionsPage: React.FC = () => {
           </div>
         </form>
       </Dialog>
+
+      {/* Pre-made Templates & Suggestions Modal */}
+      <CollectionTemplateModal
+        isOpen={isTemplateModalOpen}
+        onClose={() => setIsTemplateModalOpen(false)}
+        initialTab={templateModalTab}
+        onSuccess={() => {
+          fetchCategories();
+        }}
+      />
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
