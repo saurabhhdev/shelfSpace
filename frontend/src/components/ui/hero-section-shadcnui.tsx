@@ -18,7 +18,7 @@ export interface HeroSectionProps {
 export function HeroSection({
   primaryCtaLabel = "Get Started Free",
   primaryCtaHref = "/register",
-  secondaryCtaLabel = "Explore Shelfspace",
+  secondaryCtaLabel = "View Live Preview",
   secondaryCtaHref = "#features",
   children,
 }: HeroSectionProps) {
