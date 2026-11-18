@@ -28,39 +28,47 @@ export const OssiumFAQ: React.FC = () => {
   ];
 
   return (
-    <section id="faq" className="py-24 bg-transparent border-t border-[#3E3E38]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#FAF9F5]">
+    <section id="faq" className="py-24 sm:py-28 bg-transparent border-t border-[#3E3E38]">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="text-center mb-14 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#FAF9F5] leading-tight">
             Frequently Asked Questions
           </h2>
-          <p className="mt-3 text-base text-[#B7B5A9]">
+          <p className="mt-3.5 text-sm sm:text-base text-[#B7B5A9] leading-relaxed max-w-xl mx-auto">
             Everything you need to know about Shelfspace and how it organizes your workflow.
           </p>
         </div>
 
-        <div className="space-y-3">
+        {/* Clean Editorial Accordion with Thin Horizontal Dividers */}
+        <div className="border-t border-[#3E3E38] divide-y divide-[#3E3E38]">
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
-              <div
-                key={index}
-                className="rounded-none border border-[#3E3E38] bg-[#1C1C1B] overflow-hidden transition-colors"
-              >
+              <div key={index} className="transition-colors">
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="w-full px-5 py-4 flex items-center justify-between text-left gap-4 hover:bg-white/[0.02] transition-colors"
+                  className="w-full py-5 sm:py-6 flex items-center justify-between text-left gap-4 cursor-pointer group"
+                  aria-expanded={isOpen}
                 >
-                  <span className="text-sm sm:text-base font-semibold text-[#FAF9F5]">
+                  <span
+                    className={`text-base sm:text-lg font-medium transition-colors ${
+                      isOpen ? 'text-[#FAF9F5]' : 'text-[#FAF9F5]/90 group-hover:text-white'
+                    }`}
+                  >
                     {faq.q}
                   </span>
-                  <div className="p-1 rounded-none bg-[#1B1B19] text-neutral-400 shrink-0">
-                    {isOpen ? <Flaticon name="minus" className="text-xs text-[#D97757]" /> : <Flaticon name="plus" className="text-xs" />}
-                  </div>
+                  <span className="shrink-0 flex items-center justify-center w-6 h-6 text-neutral-400 group-hover:text-white transition-colors">
+                    {isOpen ? (
+                      <Flaticon name="minus" className="text-xs text-[#D97757]" />
+                    ) : (
+                      <Flaticon name="plus" className="text-xs" />
+                    )}
+                  </span>
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 pb-5 text-sm text-[#B7B5A9] leading-relaxed border-t border-[#3E3E38] pt-3">
+                  <div className="pb-6 text-sm sm:text-base text-[#B7B5A9] leading-relaxed pr-6 sm:pr-8 animate-fade-in">
                     {faq.a}
                   </div>
                 )}
