@@ -26,7 +26,7 @@ export const LandingPage: React.FC = () => {
         <OssiumFAQ />
 
         {/* Call to Action Frame */}
-        <OssiumCTA onExploreClick={() => setIsTourOpen(true)} />
+        <OssiumCTA />
       </main>
 
       {/* 5-Column Footer */}
