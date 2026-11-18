@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Flaticon } from '../ui/Flaticon';
 import type { Resource } from '../../types';
 import { Badge } from '../ui/Badge';
+import { IconButton } from '../ui/Button';
 import { getResourceTypeLabel, getResourceTypeIcon } from '../../lib/resourceTypes';
 import { cn, formatRelativeTime } from '../../lib/utils';
 
@@ -128,58 +129,58 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           </span>
 
           <div className="flex items-center gap-1">
-            <button
+            <IconButton
               onClick={() => onToggleFavourite(resource._id)}
-              className={cn(
-                'p-1.5 rounded-md hover:bg-white/[0.06] transition-colors cursor-pointer',
-                resource.isFavourite ? 'text-amber-400' : 'text-neutral-400 hover:text-white'
-              )}
+              variant={resource.isFavourite ? 'amber' : 'ghost'}
+              size="sm"
               title={resource.isFavourite ? 'Remove favorite' : 'Add to favorites'}
-            >
-              <Flaticon
-                name="star"
-                variant={resource.isFavourite ? 'sr' : 'rr'}
-                className={cn('text-xs', resource.isFavourite && 'text-amber-400')}
-              />
-            </button>
+              icon={
+                <Flaticon
+                  name="star"
+                  variant={resource.isFavourite ? 'sr' : 'rr'}
+                  className={cn('text-xs', resource.isFavourite && 'text-amber-400')}
+                />
+              }
+            />
 
             {resource.url && (
               <a
                 href={resource.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+                className="inline-flex items-center justify-center w-7 h-7 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.08] transition-all active:scale-[0.95]"
                 title="Open website in new tab"
               >
                 <Flaticon name="arrow-up-right" className="text-xs" />
               </a>
             )}
 
-            <button
+            <IconButton
               onClick={() => onEdit(resource)}
-              className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+              variant="ghost"
+              size="sm"
               title="Edit resource"
-            >
-              <Flaticon name="pencil" className="text-xs" />
-            </button>
+              icon={<Flaticon name="pencil" className="text-xs" />}
+            />
 
             {onRemoveFromProject && (
-              <button
+              <IconButton
                 onClick={() => onRemoveFromProject(resource._id, resource.title)}
-                className="p-1.5 rounded-md text-neutral-400 hover:text-amber-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
+                variant="ghost"
+                size="sm"
+                className="hover:text-amber-400"
                 title="Remove from project"
-              >
-                <Flaticon name="folder-minus" className="text-xs" />
-              </button>
+                icon={<Flaticon name="folder-minus" className="text-xs" />}
+              />
             )}
 
-            <button
+            <IconButton
               onClick={() => onDelete(resource._id, resource.title)}
-              className="p-1.5 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
+              variant="danger"
+              size="sm"
               title="Delete resource"
-            >
-              <Flaticon name="trash" className="text-xs" />
-            </button>
+              icon={<Flaticon name="trash" className="text-xs" />}
+            />
           </div>
         </div>
       </div>
@@ -304,38 +305,39 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               href={resource.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+              className="inline-flex items-center justify-center w-7 h-7 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.08] transition-all active:scale-[0.95]"
               title="Open website"
             >
               <Flaticon name="arrow-up-right" className="text-xs" />
             </a>
           )}
 
-          <button
+          <IconButton
             onClick={() => onEdit(resource)}
-            className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+            variant="ghost"
+            size="sm"
             title="Edit"
-          >
-            <Flaticon name="pencil" className="text-xs" />
-          </button>
+            icon={<Flaticon name="pencil" className="text-xs" />}
+          />
 
           {onRemoveFromProject && (
-            <button
+            <IconButton
               onClick={() => onRemoveFromProject(resource._id, resource.title)}
-              className="p-1 rounded text-neutral-400 hover:text-amber-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
+              variant="ghost"
+              size="sm"
+              className="hover:text-amber-400"
               title="Remove from project"
-            >
-              <Flaticon name="folder-minus" className="text-xs" />
-            </button>
+              icon={<Flaticon name="folder-minus" className="text-xs" />}
+            />
           )}
 
-          <button
+          <IconButton
             onClick={() => onDelete(resource._id, resource.title)}
-            className="p-1 rounded text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
+            variant="danger"
+            size="sm"
             title="Delete"
-          >
-            <Flaticon name="trash" className="text-xs" />
-          </button>
+            icon={<Flaticon name="trash" className="text-xs" />}
+          />
         </div>
       </div>
     </div>

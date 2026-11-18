@@ -22,7 +22,7 @@ export const OssiumCTA: React.FC = () => {
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto">
           <Link
             to={isAuthenticated ? "/dashboard" : "/register"}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-6 h-10 text-xs sm:text-sm font-medium text-[#141413] border border-white/40 shadow-sm transition-all duration-150 active:scale-[0.99]"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-6 h-10 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
           >
             <span>{isAuthenticated ? 'Go to Dashboard' : 'Get Started Free'}</span>
             <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#141413] text-[11px] font-mono">
@@ -32,7 +32,7 @@ export const OssiumCTA: React.FC = () => {
 
           <Link
             to="/library"
-            className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-[#1C1C1B] hover:bg-[#1A1915] px-6 h-10 text-xs sm:text-sm font-medium text-[#FAF9F5] hover:text-white border border-[#3E3E38] hover:border-[#52514A] shadow-sm transition-all duration-150 active:scale-[0.99]"
+            className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-[#1C1C1B] hover:bg-[#262624] px-6 h-10 text-xs sm:text-sm font-medium text-[#FAF9F5] hover:text-white border border-[#3E3E38] hover:border-[#52514A] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.3)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
           >
             Explore Shelfspace
           </Link>

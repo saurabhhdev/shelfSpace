@@ -6,7 +6,7 @@ import type { Project, Resource, Collection, ResourceType } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
 import { ResourceModal } from '../components/resources/ResourceModal';
 import { AddResourcesModal } from '../components/projects/AddResourcesModal';
-import { Button } from '../components/ui/Button';
+import { Button, IconButton } from '../components/ui/Button';
 import { Dialog } from '../components/ui/Dialog';
 import { Input } from '../components/ui/Input';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
@@ -304,33 +304,33 @@ export const ProjectDetailPage: React.FC = () => {
               New Resource
             </Button>
 
-            <button
+            <IconButton
               onClick={() => setIsEditProjectModalOpen(true)}
-              className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer border border-white/[0.06]"
+              variant="outline"
+              size="sm"
+              icon={<Flaticon name="pencil" className="text-xs" />}
               title="Edit project details"
-            >
-              <Flaticon name="pencil" className="text-xs" />
-            </button>
+            />
 
-            <button
+            <IconButton
               onClick={handleToggleArchiveProject}
-              className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer border border-white/[0.06]"
-              title={project.isArchived ? 'Unarchive project' : 'Archive project'}
-            >
-              {project.isArchived ? (
-                <Flaticon name="refresh" className="text-xs text-amber-400" />
+              variant={project.isArchived ? "amber" : "outline"}
+              size="sm"
+              icon={project.isArchived ? (
+                <Flaticon name="refresh" className="text-xs" />
               ) : (
                 <Flaticon name="box-alt" className="text-xs" />
               )}
-            </button>
+              title={project.isArchived ? 'Unarchive project' : 'Archive project'}
+            />
 
-            <button
+            <IconButton
               onClick={() => setIsDeleteProjectOpen(true)}
-              className="p-1.5 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer border border-white/[0.06]"
+              variant="danger"
+              size="sm"
+              icon={<Flaticon name="trash" className="text-xs" />}
               title="Delete project"
-            >
-              <Flaticon name="trash" className="text-xs" />
-            </button>
+            />
           </div>
         </div>
       </div>
@@ -392,14 +392,14 @@ export const ProjectDetailPage: React.FC = () => {
           </button>
 
           {/* View Mode Switcher */}
-          <div className="flex rounded-md border border-[#3E3E38] bg-[#1C1C1B] p-0.5 shrink-0">
+          <div className="flex rounded-md border border-[#3E3E38] bg-[#1C1C1B] p-0.5 shrink-0 shadow-inner">
             <button
               onClick={() => setViewMode('grid')}
               className={cn(
-                'p-1.5 rounded-sm transition-colors cursor-pointer',
+                'p-1.5 rounded text-xs transition-all duration-150 cursor-pointer active:scale-95',
                 viewMode === 'grid'
-                  ? 'bg-white/[0.1] text-white'
-                  : 'text-neutral-400 hover:text-white'
+                  ? 'bg-[#262624] text-[#FAF9F5] shadow-xs border border-[#3E3E38]'
+                  : 'text-[#83827D] hover:text-[#FAF9F5] border border-transparent'
               )}
               title="Grid view"
             >
@@ -408,10 +408,10 @@ export const ProjectDetailPage: React.FC = () => {
             <button
               onClick={() => setViewMode('list')}
               className={cn(
-                'p-1.5 rounded-sm transition-colors cursor-pointer',
+                'p-1.5 rounded text-xs transition-all duration-150 cursor-pointer active:scale-95',
                 viewMode === 'list'
-                  ? 'bg-white/[0.1] text-white'
-                  : 'text-neutral-400 hover:text-white'
+                  ? 'bg-[#262624] text-[#FAF9F5] shadow-xs border border-[#3E3E38]'
+                  : 'text-[#83827D] hover:text-[#FAF9F5] border border-transparent'
               )}
               title="List view"
             >

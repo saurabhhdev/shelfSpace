@@ -205,7 +205,7 @@ export const OssiumNavbar: React.FC = () => {
           {isAuthenticated ? (
             <Link
               to="/dashboard"
-              className="group inline-flex items-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] pl-4 pr-2.5 py-1.5 text-xs sm:text-sm font-semibold text-[#141413] transition-colors duration-150 shadow-sm"
+              className="group inline-flex items-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] pl-4 pr-2.5 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
             >
               <SplitText hoverColor="text-[#141413]">Dashboard</SplitText>
               <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#141413] text-[10px] font-mono">
@@ -222,7 +222,7 @@ export const OssiumNavbar: React.FC = () => {
               </Link>
               <Link
                 to="/register"
-                className="inline-flex items-center gap-1.5 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/40 shadow-sm transition-all duration-150 active:scale-[0.99]"
+                className="inline-flex items-center gap-1.5 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
               >
                 <SplitText hoverColor="text-[#141413]">Start Collecting</SplitText>
                 <span className="text-[11px] font-mono">↗</span>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Collection, Resource } from '../types';
-import { Button } from '../components/ui/Button';
+import { Button, IconButton } from '../components/ui/Button';
 import { Dialog } from '../components/ui/Dialog';
 import { Input } from '../components/ui/Input';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
@@ -241,26 +241,26 @@ export const CollectionsPage: React.FC = () => {
                     </Link>
                   </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <button
+                  <div className="flex items-center gap-1 shrink-0">
+                    <IconButton
                       onClick={() => openEditModal(category)}
-                      className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+                      variant="ghost"
+                      size="sm"
                       title="Rename & edit color"
-                    >
-                      <Flaticon name="pencil" className="text-xs" />
-                    </button>
+                      icon={<Flaticon name="pencil" className="text-xs" />}
+                    />
 
-                    <button
+                    <IconButton
                       onClick={() => setDeletingCategory(category)}
-                      className="p-1.5 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
+                      variant="danger"
+                      size="sm"
                       title="Delete category"
-                    >
-                      <Flaticon name="trash" className="text-xs" />
-                    </button>
+                      icon={<Flaticon name="trash" className="text-xs" />}
+                    />
 
                     <Link
                       to={`/categories/${category._id}`}
-                      className="p-1.5 rounded-md text-neutral-500 hover:text-white transition-colors"
+                      className="inline-flex items-center justify-center w-7 h-7 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.08] transition-all active:scale-[0.95]"
                       title="View all resources"
                     >
                       <Flaticon name="angle-small-right" className="text-xs" />

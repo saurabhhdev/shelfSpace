@@ -199,7 +199,7 @@ export const ResourceDetailPage: React.FC = () => {
               href={resource.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#D97757] hover:bg-[#EE8360] text-white text-xs font-semibold shrink-0 transition-colors self-start"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-[#D97757] hover:bg-[#EE8360] text-white text-xs font-medium shrink-0 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25),0_1px_3px_0_rgba(0,0,0,0.4)] border border-[#EE8360]/40 transition-all duration-150 active:scale-[0.98] self-start"
             >
               <span>Open Link</span>
               <ExternalLink className="w-3 h-3" />

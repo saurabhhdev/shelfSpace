@@ -116,10 +116,10 @@ export const CollectionDetailPage: React.FC = () => {
               <button
                 onClick={() => setViewMode('list')}
                 className={cn(
-                  'p-1.5 rounded-sm transition-colors cursor-pointer',
+                  'p-1.5 rounded-sm transition-all duration-150 cursor-pointer select-none',
                   viewMode === 'list'
-                    ? 'bg-white/[0.1] text-white'
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-[#262624] text-[#FAF9F5] shadow-xs border border-[#3E3E38]'
+                    : 'text-[#B7B5A9] hover:text-[#FAF9F5]'
                 )}
                 title="List view"
               >
@@ -128,10 +128,10 @@ export const CollectionDetailPage: React.FC = () => {
               <button
                 onClick={() => setViewMode('grid')}
                 className={cn(
-                  'p-1.5 rounded-sm transition-colors cursor-pointer',
+                  'p-1.5 rounded-sm transition-all duration-150 cursor-pointer select-none',
                   viewMode === 'grid'
-                    ? 'bg-white/[0.1] text-white'
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-[#262624] text-[#FAF9F5] shadow-xs border border-[#3E3E38]'
+                    : 'text-[#B7B5A9] hover:text-[#FAF9F5]'
                 )}
                 title="Grid view"
               >

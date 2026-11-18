@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Project } from '../types';
-import { Button } from '../components/ui/Button';
+import { Button, IconButton } from '../components/ui/Button';
 import { Dialog } from '../components/ui/Dialog';
 import { Input } from '../components/ui/Input';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
@@ -204,34 +204,34 @@ export const ProjectsPage: React.FC = () => {
           )}
         </div>
 
-        {/* Status Filter Tabs */}
-        <div className="flex items-center gap-1 p-0.5 bg-[#1C1C1B] border border-[#3E3E38] rounded-md self-start sm:self-auto">
+        {/* Status Filter Tabs (Segmented Control) */}
+        <div className="flex items-center gap-1 p-1 bg-[#1C1C1B] border border-[#3E3E38] rounded-md self-start sm:self-auto">
           <button
             onClick={() => setStatusFilter('active')}
-            className={`px-2.5 py-1 text-xs rounded transition-colors cursor-pointer ${
+            className={`px-2.5 py-1 text-xs rounded transition-all duration-150 cursor-pointer select-none ${
               statusFilter === 'active'
-                ? 'bg-white/[0.1] text-white font-medium'
-                : 'text-neutral-400 hover:text-white'
+                ? 'bg-[#262624] text-[#FAF9F5] font-medium shadow-xs border border-[#3E3E38]'
+                : 'text-[#B7B5A9] hover:text-[#FAF9F5]'
             }`}
           >
             Active ({activeCount})
           </button>
           <button
             onClick={() => setStatusFilter('archived')}
-            className={`px-2.5 py-1 text-xs rounded transition-colors cursor-pointer ${
+            className={`px-2.5 py-1 text-xs rounded transition-all duration-150 cursor-pointer select-none ${
               statusFilter === 'archived'
-                ? 'bg-white/[0.1] text-white font-medium'
-                : 'text-neutral-400 hover:text-white'
+                ? 'bg-[#262624] text-[#FAF9F5] font-medium shadow-xs border border-[#3E3E38]'
+                : 'text-[#B7B5A9] hover:text-[#FAF9F5]'
             }`}
           >
             Archived ({archivedCount})
           </button>
           <button
             onClick={() => setStatusFilter('all')}
-            className={`px-2.5 py-1 text-xs rounded transition-colors cursor-pointer ${
+            className={`px-2.5 py-1 text-xs rounded transition-all duration-150 cursor-pointer select-none ${
               statusFilter === 'all'
-                ? 'bg-white/[0.1] text-white font-medium'
-                : 'text-neutral-400 hover:text-white'
+                ? 'bg-[#262624] text-[#FAF9F5] font-medium shadow-xs border border-[#3E3E38]'
+                : 'text-[#B7B5A9] hover:text-[#FAF9F5]'
             }`}
           >
             All ({projects.length})
@@ -319,37 +319,39 @@ export const ProjectsPage: React.FC = () => {
                 </span>
 
                 <div className="flex items-center gap-1">
-                  <button
+                  <IconButton
                     onClick={() => openEditModal(project)}
-                    className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+                    variant="ghost"
+                    size="sm"
                     title="Edit project"
-                  >
-                    <Flaticon name="pencil" className="text-xs" />
-                  </button>
+                    icon={<Flaticon name="pencil" className="text-xs" />}
+                  />
 
-                  <button
+                  <IconButton
                     onClick={() => handleToggleArchive(project)}
-                    className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
+                    variant="ghost"
+                    size="sm"
                     title={project.isArchived ? 'Unarchive project' : 'Archive project'}
-                  >
-                    {project.isArchived ? (
-                      <Flaticon name="refresh" className="text-xs text-amber-400" />
-                    ) : (
-                      <Flaticon name="box-alt" className="text-xs" />
-                    )}
-                  </button>
+                    icon={
+                      project.isArchived ? (
+                        <Flaticon name="refresh" className="text-xs text-amber-400" />
+                      ) : (
+                        <Flaticon name="box-alt" className="text-xs" />
+                      )
+                    }
+                  />
 
-                  <button
+                  <IconButton
                     onClick={() => setDeletingProject(project)}
-                    className="p-1 rounded text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
+                    variant="danger"
+                    size="sm"
                     title="Delete project"
-                  >
-                    <Flaticon name="trash" className="text-xs" />
-                  </button>
+                    icon={<Flaticon name="trash" className="text-xs" />}
+                  />
 
                   <Link
                     to={`/projects/${project._id}`}
-                    className="ml-1 pl-1.5 border-l border-white/[0.08] text-neutral-400 hover:text-white flex items-center gap-0.5 transition-colors"
+                    className="ml-1 pl-1.5 border-l border-[#3E3E38] text-xs text-neutral-400 hover:text-white flex items-center gap-0.5 transition-colors"
                     title="Open project"
                   >
                     <span>Open</span>
