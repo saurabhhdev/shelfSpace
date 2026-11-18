@@ -25,7 +25,7 @@ async function startServer() {
     ResourceService.cleanupExpiredTrash().catch(() => {});
 
     // 3. Start listening
-    const server = app.listen(env.PORT, () => {
+    const server = app.listen(env.PORT, '0.0.0.0', () => {
       logger.info(`🚀 Shelfspace Server running on http://localhost:${env.PORT} [${env.NODE_ENV}]`);
       logger.info(`Health check available at http://localhost:${env.PORT}/api/health`);
     });
