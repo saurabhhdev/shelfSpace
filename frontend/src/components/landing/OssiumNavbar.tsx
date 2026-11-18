@@ -174,61 +174,51 @@ export const OssiumNavbar: React.FC = () => {
             <SplitText hoverColor="text-white">FAQ</SplitText>
           </a>
 
-          {/* Login/Signup Combined Button in Center Navigation */}
+          {/* Star on GitHub in Center Navigation */}
+          <a
+            href="https://github.com/saurabhhdev/shelfSpace"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="group inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-xs font-medium text-[#FAF9F5] border border-[#3E3E38] hover:border-[#525149] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98]"
+            title="Star Shelfspace on GitHub"
+          >
+            <VscGithubAlt className="text-[13px] text-[#B7B5A9] group-hover:text-white transition-colors shrink-0" />
+            <span>Star on GitHub</span>
+            <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-white/[0.08] text-amber-500 text-[10px] font-mono group-hover:scale-110 transition-transform">
+              ★
+            </span>
+          </a>
+        </nav>
+
+        {/* Right CTA Cluster — Login/Signup */}
+        <div className="flex items-center gap-2.5">
           {!isAuthenticated ? (
             <Link
               to="/login"
-              className="group inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-xs font-medium text-[#FAF9F5] border border-[#3E3E38] hover:border-[#525149] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98]"
+              className="group inline-flex items-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
               title="Log in or create an account"
             >
-              <FiUser className="text-[13px] text-[#B7B5A9] group-hover:text-[#D97757] transition-colors shrink-0" />
-              <span className="flex items-center gap-1">
+              <FiUser className="text-[13px] text-[#141413] shrink-0" />
+              <span className="flex items-center gap-1 font-semibold">
                 <span>Login</span>
-                <span className="text-[#3E3E38] group-hover:text-[#525149] font-mono text-[10px] transition-colors">/</span>
+                <span className="text-[#141413]/40 font-mono text-[10px]">/</span>
                 <span>Signup</span>
               </span>
-              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-white/[0.06] group-hover:bg-[#D97757]/15 text-[#B7B5A9] group-hover:text-[#D97757] text-[10px] font-mono transition-colors">
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#141413] text-[10px] font-mono">
                 ↗
               </span>
             </Link>
           ) : (
             <Link
               to="/dashboard"
-              className="group inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-xs font-medium text-[#FAF9F5] border border-[#3E3E38] hover:border-[#525149] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98]"
+              className="group inline-flex items-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-4 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
             >
-              <FiUser className="text-[13px] text-[#B7B5A9] group-hover:text-[#D97757] transition-colors shrink-0" />
               <span>Dashboard</span>
-              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-white/[0.06] group-hover:bg-[#D97757]/15 text-[#B7B5A9] group-hover:text-[#D97757] text-[10px] font-mono transition-colors">
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#141413] text-[10px] font-mono">
                 ↗
               </span>
             </Link>
           )}
-        </nav>
-
-        {/* Right CTA Cluster — Star on GitHub */}
-        <div className="flex items-center gap-2.5">
-          {isAuthenticated && (
-            <Link
-              to="/dashboard"
-              className="hidden sm:inline-flex px-3 py-1.5 text-xs sm:text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06] rounded-md border border-[#3E3E38] transition-colors"
-            >
-              Dashboard ↗
-            </Link>
-          )}
-
-          <a
-            href="https://github.com/saurabhhdev/shelfSpace"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="group inline-flex items-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
-            title="Star Shelfspace on GitHub"
-          >
-            <VscGithubAlt className="text-base shrink-0" />
-            <span>Star on GitHub</span>
-            <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-amber-600 text-[10px] font-mono group-hover:scale-110 transition-transform">
-              ★
-            </span>
-          </a>
 
           {/* Mobile menu trigger */}
           <button
@@ -270,53 +260,44 @@ export const OssiumNavbar: React.FC = () => {
             >
               <SplitText hoverColor="text-[#D97757]">FAQ</SplitText>
             </a>
-            {!isAuthenticated ? (
-              <Link
-                to="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="group flex items-center justify-between px-3.5 py-2.5 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-sm font-medium text-[#FAF9F5] border border-[#3E3E38] hover:border-[#525149] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.3)] transition-all"
-              >
-                <div className="flex items-center gap-2">
-                  <FiUser className="text-sm text-[#B7B5A9] group-hover:text-[#D97757] transition-colors" />
-                  <span className="flex items-center gap-1">
-                    <span>Login</span>
-                    <span className="text-[#3E3E38] font-mono text-xs">/</span>
-                    <span>Signup</span>
-                  </span>
-                </div>
-                <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-white/[0.06] text-[#B7B5A9] text-xs font-mono">
-                  ↗
-                </span>
-              </Link>
-            ) : (
-              <Link
-                to="/dashboard"
-                onClick={() => setMobileMenuOpen(false)}
-                className="group flex items-center justify-between px-3.5 py-2.5 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-sm font-medium text-[#FAF9F5] border border-[#3E3E38] hover:border-[#525149] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.3)] transition-all"
-              >
-                <div className="flex items-center gap-2">
-                  <FiUser className="text-sm text-[#B7B5A9] group-hover:text-[#D97757] transition-colors" />
-                  <span>Dashboard</span>
-                </div>
-                <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-white/[0.06] text-[#B7B5A9] text-xs font-mono">
-                  ↗
-                </span>
-              </Link>
-            )}
-          </div>
-
-          <div className="pt-3 border-t border-[#3E3E38] flex flex-col gap-2">
             <a
               href="https://github.com/saurabhhdev/shelfSpace"
               target="_blank"
               rel="noreferrer noopener"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full inline-flex items-center justify-center gap-2 py-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium text-sm border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all"
+              className="group flex items-center justify-between px-3.5 py-2.5 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-sm font-medium text-[#FAF9F5] border border-[#3E3E38] hover:border-[#525149] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.3)] transition-all"
             >
-              <VscGithubAlt className="text-base" />
-              <span>Star on GitHub</span>
-              <span className="text-[11px] text-amber-600 font-mono">★</span>
+              <div className="flex items-center gap-2">
+                <VscGithubAlt className="text-base text-[#B7B5A9] group-hover:text-white transition-colors" />
+                <span>Star on GitHub</span>
+              </div>
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-white/[0.08] text-amber-500 text-xs font-mono">
+                ★
+              </span>
             </a>
+          </div>
+
+          <div className="pt-3 border-t border-[#3E3E38] flex flex-col gap-2">
+            {!isAuthenticated ? (
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full inline-flex items-center justify-center gap-2 py-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium text-sm border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all"
+              >
+                <FiUser className="text-sm" />
+                <span className="font-semibold">Login / Signup</span>
+                <span className="text-xs font-mono">↗</span>
+              </Link>
+            ) : (
+              <Link
+                to="/dashboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full inline-flex items-center justify-center gap-2 py-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium text-sm border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all"
+              >
+                <span>Dashboard</span>
+                <span className="text-xs font-mono">↗</span>
+              </Link>
+            )}
           </div>
         </div>
       )}
