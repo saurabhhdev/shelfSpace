@@ -3,7 +3,6 @@ import { OssiumNavbar } from '../components/landing/OssiumNavbar';
 import { OssiumHero } from '../components/landing/OssiumHero';
 import { OssiumFeatures } from '../components/landing/OssiumFeatures';
 import { OssiumFAQ } from '../components/landing/OssiumFAQ';
-import { OssiumCTA } from '../components/landing/OssiumCTA';
 import HalftoneWordmarkFooter from '../components/landing/HalftoneWordmarkFooter';
 import { ProductTourModal } from '../components/landing/ProductTourModal';
 
@@ -24,9 +23,6 @@ export const LandingPage: React.FC = () => {
 
         {/* Frequently Asked Questions Accordion */}
         <OssiumFAQ />
-
-        {/* Call to Action Frame */}
-        <OssiumCTA />
       </main>
 
       {/* Halftone Wordmark Interactive Footer */}

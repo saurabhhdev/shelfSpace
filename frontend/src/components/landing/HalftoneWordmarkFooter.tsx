@@ -1,7 +1,9 @@
 import * as React from "react"
+import { Link } from "react-router-dom"
 import { VscGithubAlt } from "react-icons/vsc"
 import { FiLinkedin } from "react-icons/fi"
 import { RiTwitterXLine } from "react-icons/ri"
+import { useAuth } from "../../context/AuthContext"
 
 export interface HalftonePalette {
   /** The footer background. */
@@ -26,6 +28,12 @@ export interface FooterColumn {
 }
 
 export interface HalftoneWordmarkFooterProps {
+  /** Whether to show the combined CTA header. Defaults to true. */
+  showCTA?: boolean
+  /** CTA heading node. */
+  ctaHeading?: React.ReactNode
+  /** CTA description copy. */
+  ctaDescription?: string
   /** The giant word printed in dots. Lowercase reads best. */
   wordmark?: string
   /** Top-left studio line. */
@@ -167,12 +175,48 @@ const HWF_CSS = `
 .hwf-root {
   position: relative; width: 100%; overflow: hidden; isolation: isolate;
   background: var(--hwf-bg); color: var(--hwf-ink); -webkit-font-smoothing: antialiased;
-  border-top: 1px solid rgba(62, 62, 56, 0.6);
+  border-top: 1px solid #3E3E38;
 }
 .hwf-root canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; max-width: none; }
+
+/* Combined CTA Block */
+.hwf-cta {
+  position: relative; z-index: 1; text-align: center;
+  padding: clamp(48px, 6vw, 76px) clamp(20px, 3.4vw, 48px) clamp(30px, 3.5vw, 44px);
+  max-width: 820px; margin: 0 auto;
+}
+.hwf-cta-heading {
+  font-family: var(--font-sans, "Geist", sans-serif);
+  font-size: clamp(26px, 4vw, 48px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: #FAF9F5;
+  margin: 0 0 16px;
+}
+.hwf-cta-desc {
+  font-family: var(--font-sans, "Geist", sans-serif);
+  font-size: clamp(13px, 1.5vw, 16px);
+  color: #B7B5A9;
+  line-height: 1.65;
+  max-width: 580px;
+  margin: 0 auto 26px;
+}
+.hwf-cta-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hwf-divider {
+  position: relative; z-index: 1;
+  margin: 0 clamp(20px, 3.4vw, 48px);
+  border-top: 0.5px solid rgba(62, 62, 56, 0.6);
+}
+
 .hwf-top {
   position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.25fr) repeat(3, minmax(0, 1fr));
-  gap: 24px; padding: clamp(18px, 2.4vw, 28px) clamp(20px, 3.4vw, 48px) 0;
+  gap: 24px; padding: clamp(20px, 2.5vw, 32px) clamp(20px, 3.4vw, 48px) 0;
   font-family: var(--hwf-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; line-height: 1.75;
 }
 .hwf-brand strong { display: block; font-weight: 600; color: #FAF9F5; }
@@ -192,7 +236,7 @@ const HWF_CSS = `
 .hwf-col a:hover .hwf-icon { opacity: 1; }
 .hwf-rule {
   position: relative; z-index: 1; display: flex; justify-content: flex-end; align-items: center; gap: 16px;
-  margin: clamp(18px, 2.6vw, 30px) clamp(20px, 3.4vw, 48px) 0; padding-top: 14px;
+  margin: clamp(14px, 2vw, 24px) clamp(20px, 3.4vw, 48px) 0; padding-top: 12px;
   border-top: 0.5px solid color-mix(in srgb, var(--hwf-ink) 14%, transparent);
   font-family: var(--hwf-mono); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
 }
@@ -209,6 +253,13 @@ const HWF_CSS = `
 type PointerEv = PointerEvent
 
 export default function HalftoneWordmarkFooter({
+  showCTA = true,
+  ctaHeading = (
+    <>
+      Keep Your Next Project <span style={{ color: "#D97757" }}>Within Reach</span>.
+    </>
+  ),
+  ctaDescription = "Save the tools, repositories, components and references you find useful. Keep them organized in one place and come back whenever you need them.",
   wordmark = "shelfspace",
   label = "Shelfspace",
   meta = "©2026 · The Developer Resource Workspace",
@@ -224,9 +275,10 @@ export default function HalftoneWordmarkFooter({
   fontFamily = SANS_STACK,
   fontWeight = 800,
   monoFamily = MONO_STACK,
-  height = "540px",
+  height = "680px",
   className = "",
 }: HalftoneWordmarkFooterProps) {
+  const { isAuthenticated } = useAuth()
   const colors = { ...(PRESETS[preset] || PRESETS.shelfspace), ...(palette || {}) }
   const rootRef = React.useRef(null as HTMLElement | null)
   const canvasRef = React.useRef(null as HTMLCanvasElement | null)
@@ -496,6 +548,29 @@ export default function HalftoneWordmarkFooter({
       <style>{HWF_CSS}</style>
       <canvas ref={canvasRef} aria-hidden="true" />
       <span className="hwf-sr">{wordmark}</span>
+
+      {/* Combined Final CTA Section */}
+      {showCTA && (
+        <div className="hwf-cta">
+          <h2 className="hwf-cta-heading">{ctaHeading}</h2>
+          <p className="hwf-cta-desc">{ctaDescription}</p>
+          <div className="hwf-cta-actions">
+            <Link
+              to={isAuthenticated ? "/dashboard" : "/register"}
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-7 h-10 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
+            >
+              <span>{isAuthenticated ? "Go to Dashboard" : "Get Started Free"}</span>
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#141413] text-[11px] font-mono">
+                ↗
+              </span>
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {showCTA && <div className="hwf-divider" />}
+
+      {/* Nav Link Columns */}
       <div className="hwf-top">
         <div className="hwf-brand">
           <strong>{label}</strong>
@@ -522,6 +597,7 @@ export default function HalftoneWordmarkFooter({
           </nav>
         ))}
       </div>
+
       <div className="hwf-rule">
         {backToTop ? (
           <button type="button" className="hwf-up" onClick={toTop}>
