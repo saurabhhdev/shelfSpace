@@ -39,7 +39,7 @@ export interface HalftoneWordmarkFooterProps {
   /** Top-left studio line. */
   label?: string
   /** The muted line under it. */
-  meta?: string
+  meta?: React.ReactNode
   /** Link columns along the top. */
   columns?: FooterColumn[]
   /** Show the back-to-top link. It scrolls the window to 0. Defaults to true. */
@@ -221,6 +221,17 @@ const HWF_CSS = `
 }
 .hwf-brand strong { display: block; font-weight: 600; color: #FAF9F5; }
 .hwf-brand span { opacity: .55; color: #B7B5A9; }
+.hwf-brand a {
+  color: #FAF9F5;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(250, 249, 245, 0.4);
+  transition: color .2s ease, text-decoration-color .2s ease;
+}
+.hwf-brand a:hover {
+  color: #D97757;
+  text-decoration-color: #D97757;
+}
 .hwf-col h3 { margin: 0; font: inherit; opacity: .45; font-weight: 600; color: #FAF9F5; }
 .hwf-col ul { list-style: none; margin: 0; padding: 0; }
 .hwf-col a, .hwf-up {
@@ -235,7 +246,7 @@ const HWF_CSS = `
 .hwf-icon { display: inline-flex; align-items: center; justify-content: center; opacity: .85; }
 .hwf-col a:hover .hwf-icon { opacity: 1; }
 .hwf-rule {
-  position: relative; z-index: 1; display: flex; justify-content: flex-end; align-items: center; gap: 16px;
+  position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 16px;
   margin: clamp(14px, 2vw, 24px) clamp(20px, 3.4vw, 48px) 0; padding-top: 12px;
   border-top: 0.5px solid color-mix(in srgb, var(--hwf-ink) 14%, transparent);
   font-family: var(--hwf-mono); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
@@ -262,7 +273,18 @@ export default function HalftoneWordmarkFooter({
   ctaDescription = "Save the tools, repositories, components and references you find useful. Keep them organized in one place and come back whenever you need them.",
   wordmark = "shelfspace",
   label = "Shelfspace",
-  meta = "©2026 · The Developer Resource Workspace",
+  meta = (
+    <>
+      Made by{" "}
+      <a
+        href="https://saurabhhdev.vercel.app/"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        Saurabh
+      </a>
+    </>
+  ),
   columns = DEFAULT_COLUMNS,
   backToTop = true,
   preset = "shelfspace",
@@ -599,6 +621,9 @@ export default function HalftoneWordmarkFooter({
       </div>
 
       <div className="hwf-rule">
+        <span style={{ opacity: 0.45, color: "#B7B5A9" }}>
+          © {new Date().getFullYear()} Shelfspace
+        </span>
         {backToTop ? (
           <button type="button" className="hwf-up" onClick={toTop}>
             Back to top ↑

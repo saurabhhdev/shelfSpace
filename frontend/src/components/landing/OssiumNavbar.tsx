@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Flaticon } from '../ui/Flaticon';
 import { useAuth } from '../../context/AuthContext';
 import { SplitText } from '../ui/SplitText';
+import { VscGithubAlt } from 'react-icons/vsc';
 
 export const OssiumNavbar: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -172,44 +173,56 @@ export const OssiumNavbar: React.FC = () => {
             <SplitText hoverColor="text-white">FAQ</SplitText>
           </a>
 
-          {/* Explore Library Link */}
-          <Link
-            to="/library"
-            className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
-          >
-            <SplitText hoverColor="text-white">Library</SplitText>
-          </Link>
-        </nav>
-
-        {/* Right CTA Cluster */}
-        <div className="flex items-center gap-2.5">
-          {isAuthenticated ? (
-            <Link
-              to="/dashboard"
-              className="group inline-flex items-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] pl-4 pr-2.5 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
-            >
-              <SplitText hoverColor="text-[#141413]">Dashboard</SplitText>
-              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#141413] text-[10px] font-mono">
-                ↗
-              </span>
-            </Link>
-          ) : (
-            <div className="flex items-center gap-2">
+          {/* Login & Signup in Center Navigation */}
+          {!isAuthenticated ? (
+            <>
               <Link
                 to="/login"
-                className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors"
+                className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
               >
                 <SplitText hoverColor="text-white">Log In</SplitText>
               </Link>
               <Link
                 to="/register"
-                className="inline-flex items-center gap-1.5 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
+                className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
               >
-                <SplitText hoverColor="text-[#141413]">Sign Up</SplitText>
-                <span className="text-[11px] font-mono">↗</span>
+                <SplitText hoverColor="text-white">Sign Up</SplitText>
               </Link>
-            </div>
+            </>
+          ) : (
+            <Link
+              to="/dashboard"
+              className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
+            >
+              <SplitText hoverColor="text-white">Dashboard</SplitText>
+            </Link>
           )}
+        </nav>
+
+        {/* Right CTA Cluster — Star on GitHub */}
+        <div className="flex items-center gap-2.5">
+          {isAuthenticated && (
+            <Link
+              to="/dashboard"
+              className="hidden sm:inline-flex px-3 py-1.5 text-xs sm:text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06] rounded-md border border-[#3E3E38] transition-colors"
+            >
+              Dashboard ↗
+            </Link>
+          )}
+
+          <a
+            href="https://github.com/saurabhhdev/shelfSpace"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="group inline-flex items-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
+            title="Star Shelfspace on GitHub"
+          >
+            <VscGithubAlt className="text-base shrink-0" />
+            <span>Star on GitHub</span>
+            <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-amber-600 text-[10px] font-mono group-hover:scale-110 transition-transform">
+              ★
+            </span>
+          </a>
 
           {/* Mobile menu trigger */}
           <button
@@ -251,42 +264,46 @@ export const OssiumNavbar: React.FC = () => {
             >
               <SplitText hoverColor="text-[#D97757]">FAQ</SplitText>
             </a>
-            <Link
-              to="/library"
-              onClick={() => setMobileMenuOpen(false)}
-              className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
-            >
-              <SplitText hoverColor="text-[#D97757]">Library</SplitText>
-            </Link>
-          </div>
-
-          <div className="pt-3 border-t border-[#3E3E38] flex flex-col gap-2">
-            {isAuthenticated ? (
-              <Link
-                to="/dashboard"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium text-sm border border-white/40 shadow-xs"
-              >
-                Go to Dashboard
-              </Link>
-            ) : (
+            {!isAuthenticated ? (
               <>
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-[#FAF9F5] font-medium text-sm border border-[#3E3E38] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.3)] transition-all duration-150 active:scale-[0.98]"
+                  className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
                 >
-                  Log In
+                  <SplitText hoverColor="text-[#D97757]">Log In</SplitText>
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium text-sm border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98]"
+                  className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
                 >
-                  Sign Up ↗
+                  <SplitText hoverColor="text-[#D97757]">Sign Up</SplitText>
                 </Link>
               </>
+            ) : (
+              <Link
+                to="/dashboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
+              >
+                <SplitText hoverColor="text-[#D97757]">Dashboard</SplitText>
+              </Link>
             )}
+          </div>
+
+          <div className="pt-3 border-t border-[#3E3E38] flex flex-col gap-2">
+            <a
+              href="https://github.com/saurabhhdev/shelfSpace"
+              target="_blank"
+              rel="noreferrer noopener"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full inline-flex items-center justify-center gap-2 py-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium text-sm border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all"
+            >
+              <VscGithubAlt className="text-base" />
+              <span>Star on GitHub</span>
+              <span className="text-[11px] text-amber-600 font-mono">★</span>
+            </a>
           </div>
         </div>
       )}
