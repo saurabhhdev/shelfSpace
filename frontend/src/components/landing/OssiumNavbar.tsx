@@ -4,6 +4,7 @@ import { Flaticon } from '../ui/Flaticon';
 import { useAuth } from '../../context/AuthContext';
 import { SplitText } from '../ui/SplitText';
 import { VscGithubAlt } from 'react-icons/vsc';
+import { FiUser } from 'react-icons/fi';
 
 export const OssiumNavbar: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -177,16 +178,29 @@ export const OssiumNavbar: React.FC = () => {
           {!isAuthenticated ? (
             <Link
               to="/login"
-              className="px-3 py-1 text-xs sm:text-sm font-medium text-[#FAF9F5] bg-white/[0.06] hover:bg-white/[0.12] border border-[#3E3E38] hover:border-[#525149] rounded-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.25)] transition-all duration-150 active:scale-[0.98] inline-flex items-center"
+              className="group inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-xs font-medium text-[#FAF9F5] border border-[#3E3E38] hover:border-[#525149] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98]"
+              title="Log in or create an account"
             >
-              <SplitText hoverColor="text-white">Login/Signup</SplitText>
+              <FiUser className="text-[13px] text-[#B7B5A9] group-hover:text-[#D97757] transition-colors shrink-0" />
+              <span className="flex items-center gap-1">
+                <span>Login</span>
+                <span className="text-[#3E3E38] group-hover:text-[#525149] font-mono text-[10px] transition-colors">/</span>
+                <span>Signup</span>
+              </span>
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-white/[0.06] group-hover:bg-[#D97757]/15 text-[#B7B5A9] group-hover:text-[#D97757] text-[10px] font-mono transition-colors">
+                ↗
+              </span>
             </Link>
           ) : (
             <Link
               to="/dashboard"
-              className="px-3 py-1 text-xs sm:text-sm font-medium text-[#FAF9F5] bg-white/[0.06] hover:bg-white/[0.12] border border-[#3E3E38] hover:border-[#525149] rounded-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.25)] transition-all duration-150 active:scale-[0.98] inline-flex items-center"
+              className="group inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-xs font-medium text-[#FAF9F5] border border-[#3E3E38] hover:border-[#525149] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98]"
             >
-              <SplitText hoverColor="text-white">Dashboard</SplitText>
+              <FiUser className="text-[13px] text-[#B7B5A9] group-hover:text-[#D97757] transition-colors shrink-0" />
+              <span>Dashboard</span>
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-white/[0.06] group-hover:bg-[#D97757]/15 text-[#B7B5A9] group-hover:text-[#D97757] text-[10px] font-mono transition-colors">
+                ↗
+              </span>
             </Link>
           )}
         </nav>
@@ -260,17 +274,33 @@ export const OssiumNavbar: React.FC = () => {
               <Link
                 to="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06] border border-[#3E3E38] bg-white/[0.04] text-center"
+                className="group flex items-center justify-between px-3.5 py-2.5 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-sm font-medium text-[#FAF9F5] border border-[#3E3E38] hover:border-[#525149] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.3)] transition-all"
               >
-                <SplitText hoverColor="text-[#D97757]">Login/Signup</SplitText>
+                <div className="flex items-center gap-2">
+                  <FiUser className="text-sm text-[#B7B5A9] group-hover:text-[#D97757] transition-colors" />
+                  <span className="flex items-center gap-1">
+                    <span>Login</span>
+                    <span className="text-[#3E3E38] font-mono text-xs">/</span>
+                    <span>Signup</span>
+                  </span>
+                </div>
+                <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-white/[0.06] text-[#B7B5A9] text-xs font-mono">
+                  ↗
+                </span>
               </Link>
             ) : (
               <Link
                 to="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
-                className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
+                className="group flex items-center justify-between px-3.5 py-2.5 rounded-md bg-[#1C1C1B] hover:bg-[#262624] text-sm font-medium text-[#FAF9F5] border border-[#3E3E38] hover:border-[#525149] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.3)] transition-all"
               >
-                <SplitText hoverColor="text-[#D97757]">Dashboard</SplitText>
+                <div className="flex items-center gap-2">
+                  <FiUser className="text-sm text-[#B7B5A9] group-hover:text-[#D97757] transition-colors" />
+                  <span>Dashboard</span>
+                </div>
+                <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-white/[0.06] text-[#B7B5A9] text-xs font-mono">
+                  ↗
+                </span>
               </Link>
             )}
           </div>
