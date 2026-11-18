@@ -26,6 +26,22 @@ export const OssiumFAQ: React.FC = () => {
       a: 'Instantly. Shelfspace includes fast full-text search across titles, descriptions, and tags, as well as category filters and a quick command palette (⌘K or Ctrl+K) to jump to any resource within seconds.'
     },
     {
+      q: 'Can I export my data or migrate out at any time?',
+      a: 'Absolutely. We believe in zero vendor lock-in. You can export your entire catalog of resources, collections, tags, and notes to clean JSON or Markdown at any time with a single click.'
+    },
+    {
+      q: 'Can I import my existing bookmarks from my browser?',
+      a: 'Yes. You can import existing bookmarks exported from Chrome, Brave, Safari, or Firefox. Shelfspace parses your bookmark files and converts them into structured resource cards.'
+    },
+    {
+      q: 'Does Shelfspace work on mobile devices?',
+      a: 'Yes. Shelfspace is built with a responsive mobile-first interface, allowing you to search, view, and organize your resource library seamlessly from your phone, tablet, or desktop.'
+    },
+    {
+      q: 'Can I customize categories and tag colors?',
+      a: 'Yes. You can create custom categories, assign multi-colored tags, and star important resources as favorites so your most critical tools and repos are always one click away.'
+    },
+    {
       q: 'Is Shelfspace free and open source?',
       a: 'Yes, Shelfspace is free to use and open source under the MIT License. All core features — unlimited resources, categories, tags, and projects — are available without hidden fees.'
     }
