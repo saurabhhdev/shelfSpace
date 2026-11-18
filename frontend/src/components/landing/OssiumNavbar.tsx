@@ -2,17 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Flaticon } from '../ui/Flaticon';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 import { SplitText } from '../ui/SplitText';
 
 export const OssiumNavbar: React.FC = () => {
   const { isAuthenticated } = useAuth();
-  const { theme, setTheme, resolvedTheme } = useTheme();
   const navigate = useNavigate();
-
-  const toggleTheme = () => {
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
-  };
 
   const [featuresOpen, setFeaturesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -189,19 +183,6 @@ export const OssiumNavbar: React.FC = () => {
 
         {/* Right CTA Cluster */}
         <div className="flex items-center gap-2.5">
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
-          >
-            {theme === 'dark' ? (
-              <Flaticon name="sun" className="text-xs" />
-            ) : (
-              <Flaticon name="moon" className="text-xs" />
-            )}
-          </button>
-
           {isAuthenticated ? (
             <Link
               to="/dashboard"

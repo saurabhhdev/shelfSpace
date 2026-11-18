@@ -1,6 +1,5 @@
 import React from "react";
 import { cn } from "../../lib/utils";
-import { useTheme } from "../../context/ThemeContext";
 
 export interface TailwindCssBackgroundSnippetProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -14,7 +13,7 @@ export interface TailwindCssBackgroundSnippetProps
  * Tailwind CSS Background Snippet
  * Based on @ibelick/components/tailwind-css-background-snippet on 21st.dev
  * Features subtle precision grid lines with an elliptical radial-gradient mask
- * and delicate ambient radial glow, tuned for both Dark Mode and Light Mode.
+ * and delicate ambient radial glow.
  */
 export function TailwindCssBackgroundSnippet({
   className,
@@ -23,18 +22,9 @@ export function TailwindCssBackgroundSnippet({
   children,
   ...props
 }: TailwindCssBackgroundSnippetProps) {
-  let isDark = true;
-  try {
-    const themeCtx = useTheme();
-    isDark = themeCtx.resolvedTheme === "dark";
-  } catch {
-    if (typeof document !== "undefined") {
-      isDark = document.documentElement.classList.contains("dark");
-    }
-  }
-
-  const gridLineColor = isDark ? "rgba(255, 255, 255, 0.09)" : "rgba(0, 0, 0, 0.06)";
-  const bgColor = isDark ? "#000000" : "#f9fafb";
+  const isDark = true;
+  const gridLineColor = "rgba(255, 255, 255, 0.09)";
+  const bgColor = "#000000";
 
   return (
     <div
