@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useCallback } from 'react';
-import { Trash2, RotateCcw } from 'lucide-react';
+import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Resource } from '../types';
 import { Button } from '../components/ui/Button';
@@ -91,7 +91,7 @@ export const TrashPage: React.FC = () => {
             variant="danger"
             size="xs"
             onClick={() => setIsEmptyTrashOpen(true)}
-            leftIcon={<Trash2 className="w-3.5 h-3.5" />}
+            leftIcon={<Flaticon name="trash" className="text-xs" />}
           >
             Empty Trash
           </Button>
@@ -104,7 +104,7 @@ export const TrashPage: React.FC = () => {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-16 rounded-md bg-[#121316] animate-pulse border border-white/[0.08]"
+              className="h-16 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
             />
           ))}
         </div>
@@ -113,11 +113,11 @@ export const TrashPage: React.FC = () => {
           {trashedResources.map((item) => (
             <div
               key={item._id}
-              className="flex items-center justify-between p-3.5 rounded-md bg-[#121316] border border-white/[0.08] hover:border-white/20 transition-colors"
+              className="flex items-center justify-between p-3.5 rounded-md bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 transition-colors"
             >
               <div className="min-w-0 flex-1 pr-4">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-xs sm:text-sm text-[#EDEDED] truncate">
+                  <span className="font-medium text-xs sm:text-sm text-[#FAF9F5] truncate">
                     {item.title}
                   </span>
                   <Badge type={item.type} size="sm">
@@ -139,7 +139,7 @@ export const TrashPage: React.FC = () => {
                   variant="outline"
                   size="xs"
                   onClick={() => handleRestore(item._id)}
-                  leftIcon={<RotateCcw className="w-3.5 h-3.5" />}
+                  leftIcon={<Flaticon name="refresh" className="text-xs" />}
                 >
                   Restore
                 </Button>
@@ -157,9 +157,9 @@ export const TrashPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
-          <Trash2 className="w-8 h-8 text-neutral-500 mx-auto mb-3" />
-          <h3 className="text-sm font-medium text-[#EDEDED] mb-1">
+        <div className="py-16 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B]">
+          <Flaticon name="trash" className="text-3xl text-neutral-500 mx-auto mb-3" />
+          <h3 className="text-sm font-medium text-[#FAF9F5] mb-1">
             Trash is empty
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto">

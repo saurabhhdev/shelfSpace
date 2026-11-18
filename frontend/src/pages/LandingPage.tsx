@@ -8,7 +8,7 @@ import { OssiumFooter } from '../components/landing/OssiumFooter';
 
 export const LandingPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#0E0F10] text-[#E5E5E5] relative selection:bg-[#09AE5B] selection:text-black">
+    <div className="min-h-screen bg-[#262624] text-[#FAF9F5] relative selection:bg-[#D97757] selection:text-white">
       {/* Ossium Sticky/Fixed Navbar */}
       <OssiumNavbar />
 

@@ -6,14 +6,8 @@ import { ResourceCard } from '../components/resources/ResourceCard';
 import { ResourceModal } from '../components/resources/ResourceModal';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { Button } from '../components/ui/Button';
+import { Flaticon } from '../components/ui/Flaticon';
 import { useNotification } from '../context/NotificationContext';
-import {
-  Plus,
-  ArrowRight,
-  Star,
-  Layers,
-  BookmarkCheck,
-} from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
   const { notify } = useNotification();
@@ -117,7 +111,7 @@ export const DashboardPage: React.FC = () => {
 
         <Button
           onClick={() => setIsAddOpen(true)}
-          leftIcon={<Plus className="w-3.5 h-3.5" />}
+          leftIcon={<Flaticon name="plus" className="text-xs" />}
           size="sm"
           className="self-start sm:self-auto shrink-0"
         >
@@ -129,48 +123,48 @@ export const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Link
           to="/library"
-          className="p-3.5 rounded-md bg-[#121316] border border-white/[0.08] hover:border-white/20 transition-colors group flex items-center justify-between"
+          className="p-3.5 rounded-md bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 transition-colors group flex items-center justify-between"
         >
           <div>
             <span className="text-xs text-neutral-400 block mb-1">Total Resources</span>
-            <span className="text-xl font-semibold tracking-tight text-[#EDEDED]">
+            <span className="text-xl font-semibold tracking-tight text-[#FAF9F5]">
               {totalCount}
             </span>
           </div>
-          <Layers className="w-4 h-4 text-neutral-500 group-hover:text-white transition-colors" />
+          <Flaticon name="layers" className="text-sm text-neutral-500 group-hover:text-white transition-colors" />
         </Link>
 
         <Link
           to="/favourites"
-          className="p-3.5 rounded-md bg-[#121316] border border-white/[0.08] hover:border-white/20 transition-colors group flex items-center justify-between"
+          className="p-3.5 rounded-md bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 transition-colors group flex items-center justify-between"
         >
           <div>
             <span className="text-xs text-neutral-400 block mb-1">Favorites</span>
-            <span className="text-xl font-semibold tracking-tight text-[#EDEDED]">
+            <span className="text-xl font-semibold tracking-tight text-[#FAF9F5]">
               {favoriteCount}
             </span>
           </div>
-          <Star className="w-4 h-4 text-amber-400/80 group-hover:text-amber-400 transition-colors" />
+          <Flaticon name="star" className="text-sm text-amber-400/80 group-hover:text-amber-400 transition-colors" />
         </Link>
 
         <Link
           to="/categories"
-          className="p-3.5 rounded-md bg-[#121316] border border-white/[0.08] hover:border-white/20 transition-colors group flex items-center justify-between"
+          className="p-3.5 rounded-md bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 transition-colors group flex items-center justify-between"
         >
           <div>
             <span className="text-xs text-neutral-400 block mb-1">Categories</span>
-            <span className="text-xl font-semibold tracking-tight text-[#EDEDED]">
+            <span className="text-xl font-semibold tracking-tight text-[#FAF9F5]">
               {categoryCount}
             </span>
           </div>
-          <BookmarkCheck className="w-4 h-4 text-neutral-500 group-hover:text-white transition-colors" />
+          <Flaticon name="bookmark" className="text-sm text-neutral-500 group-hover:text-white transition-colors" />
         </Link>
       </div>
 
       {/* C. Recently Added (5 most recently added resources in list view) */}
       <div className="space-y-3 pt-2">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-[#EDEDED]">
+          <h2 className="text-sm font-medium text-[#FAF9F5]">
             Recently Added
           </h2>
           <Link
@@ -178,7 +172,7 @@ export const DashboardPage: React.FC = () => {
             className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors"
           >
             <span>View All</span>
-            <ArrowRight className="w-3 h-3" />
+            <Flaticon name="angle-small-right" className="text-xs" />
           </Link>
         </div>
 
@@ -187,19 +181,19 @@ export const DashboardPage: React.FC = () => {
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="h-14 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
+                className="h-14 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
               />
             ))}
           </div>
         ) : recentResources.length === 0 ? (
-          <div className="p-8 rounded-md bg-[#121316] border border-white/[0.08] text-center space-y-3">
+          <div className="p-8 rounded-md bg-[#1C1C1B] border border-[#3E3E38] text-center space-y-3">
             <p className="text-xs text-neutral-400 max-w-sm mx-auto">
               Your library is currently empty. Add your first resource to get started.
             </p>
             <Button
               onClick={() => setIsAddOpen(true)}
               size="xs"
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
+              leftIcon={<Flaticon name="plus" className="text-xs" />}
             >
               Add Resource
             </Button>
@@ -221,9 +215,9 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* D. Favorites (Compact section) */}
-      <div className="space-y-3 pt-4 border-t border-white/[0.06]">
+      <div className="space-y-3 pt-4 border-t border-[#3E3E38]">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-[#EDEDED]">
+          <h2 className="text-sm font-medium text-[#FAF9F5]">
             Favorites
           </h2>
           <Link
@@ -231,7 +225,7 @@ export const DashboardPage: React.FC = () => {
             className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors"
           >
             <span>View All Favorites</span>
-            <ArrowRight className="w-3 h-3" />
+            <Flaticon name="angle-small-right" className="text-xs" />
           </Link>
         </div>
 
@@ -240,12 +234,12 @@ export const DashboardPage: React.FC = () => {
             {[...Array(2)].map((_, i) => (
               <div
                 key={i}
-                className="h-14 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
+                className="h-14 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
               />
             ))}
           </div>
         ) : favouriteResources.length === 0 ? (
-          <div className="p-6 rounded-md bg-[#121316] border border-white/[0.08] text-center">
+          <div className="p-6 rounded-md bg-[#1C1C1B] border border-[#3E3E38] text-center">
             <p className="text-xs text-neutral-400">
               No favorite resources yet. Click the star icon on any resource to add it here for quick access.
             </p>

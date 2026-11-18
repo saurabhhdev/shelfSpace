@@ -41,16 +41,16 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
           <div
             key={toast.id}
             className={cn(
-              'pointer-events-auto flex items-center justify-between gap-3 p-3 rounded-md bg-[#16171b] border border-white/[0.08] shadow-lg text-xs transition-all duration-150 animate-in fade-in slide-in-from-bottom-2',
+              'pointer-events-auto flex items-center justify-between gap-3 p-3 rounded-md bg-[#1C1C1B] border border-[#3E3E38] shadow-lg text-xs transition-all duration-150 animate-in fade-in slide-in-from-bottom-2',
               toast.type === 'error' && 'border-rose-900/40 text-rose-300',
-              toast.type === 'success' && 'text-[#E5E5E5]'
+              toast.type === 'success' && 'text-[#FAF9F5]'
             )}
           >
             <div className="flex items-center gap-2 min-w-0">
               {toast.type === 'error' ? (
                 <AlertCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
               ) : (
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#09AE5B] shrink-0" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#D97757] shrink-0" />
               )}
               <span className="truncate">{toast.message}</span>
             </div>

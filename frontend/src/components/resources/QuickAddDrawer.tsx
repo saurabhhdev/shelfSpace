@@ -199,15 +199,15 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
       width="lg"
     >
       {/* Mode switcher tabs */}
-      <div className="flex rounded-md bg-[#0E0F10] p-1 mb-5 border border-white/[0.06]">
+      <div className="flex rounded-md bg-[#262624] p-1 mb-5 border border-[#3E3E38]">
         <button
           type="button"
           onClick={() => setMode('import')}
           className={cn(
             'flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer',
             mode === 'import'
-              ? 'bg-white/[0.08] text-white'
-              : 'text-neutral-400 hover:text-white'
+              ? 'bg-[#1C1C1B] text-[#FAF9F5]'
+              : 'text-[#B7B5A9] hover:text-[#FAF9F5]'
           )}
         >
           <Sparkles className="w-3.5 h-3.5" />
@@ -220,8 +220,8 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
           className={cn(
             'flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer',
             mode === 'manual'
-              ? 'bg-white/[0.08] text-white'
-              : 'text-neutral-400 hover:text-white'
+              ? 'bg-[#1C1C1B] text-[#FAF9F5]'
+              : 'text-[#B7B5A9] hover:text-[#FAF9F5]'
           )}
         >
           <PenTool className="w-3.5 h-3.5" />
@@ -301,7 +301,7 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
           {/* Collections Selector */}
           {collections.length > 0 && (
             <div>
-              <label className="text-xs font-medium text-neutral-300 block mb-1">
+              <label className="text-xs font-medium text-[#FAF9F5] block mb-1">
                 Collections
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -315,11 +315,11 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
                       className={cn(
                         'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition-colors cursor-pointer',
                         isSelected
-                          ? 'border-[#09AE5B]/50 bg-[#09AE5B]/15 text-[#09AE5B] font-medium'
-                          : 'border-white/[0.08] bg-[#0E0F10] text-neutral-400 hover:text-white'
+                          ? 'border-[#D97757]/50 bg-[#D97757]/15 text-[#D97757] font-medium'
+                          : 'border-[#3E3E38] bg-[#262624] text-[#B7B5A9] hover:text-[#FAF9F5]'
                       )}
                     >
-                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col.color || '#09AE5B' }} />
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col.color || '#D97757' }} />
                       <span>{col.name}</span>
                     </button>
                   );
@@ -331,7 +331,7 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
           {/* Projects Selector */}
           {projects.length > 0 && (
             <div>
-              <label className="text-xs font-medium text-neutral-300 block mb-1">
+              <label className="text-xs font-medium text-[#FAF9F5] block mb-1">
                 Projects
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -345,8 +345,8 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
                       className={cn(
                         'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition-colors cursor-pointer',
                         isSelected
-                          ? 'border-[#09AE5B]/50 bg-[#09AE5B]/15 text-[#09AE5B] font-medium'
-                          : 'border-white/[0.08] bg-[#0E0F10] text-neutral-400 hover:text-white'
+                          ? 'border-[#D97757]/50 bg-[#D97757]/15 text-[#D97757] font-medium'
+                          : 'border-[#3E3E38] bg-[#262624] text-[#B7B5A9] hover:text-[#FAF9F5]'
                       )}
                     >
                       <span>{proj.name}</span>
@@ -357,7 +357,7 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
             </div>
           )}
 
-          <div className="pt-4 border-t border-white/[0.08] flex justify-end gap-2">
+          <div className="pt-4 border-t border-[#3E3E38] flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
@@ -372,7 +372,7 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
       {mode === 'manual' && (
         <form onSubmit={handleManualSave} className="space-y-4">
           <div>
-            <label className="text-xs font-medium text-neutral-300 block mb-1.5">
+            <label className="text-xs font-medium text-[#FAF9F5] block mb-1.5">
               Category
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -384,11 +384,11 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
                   className={cn(
                     'flex items-center gap-2 p-2.5 rounded-md border text-left text-xs transition-colors cursor-pointer',
                     type === opt.type
-                      ? 'border-[#09AE5B]/50 bg-[#09AE5B]/10 text-white font-medium'
-                      : 'border-white/[0.08] bg-[#0E0F10] text-neutral-400 hover:text-white'
+                      ? 'border-[#D97757]/50 bg-[#D97757]/10 text-[#FAF9F5] font-medium'
+                      : 'border-[#3E3E38] bg-[#262624] text-[#B7B5A9] hover:text-[#FAF9F5]'
                   )}
                 >
-                  <span className={type === opt.type ? 'text-[#09AE5B]' : 'text-neutral-500'}>
+                  <span className={type === opt.type ? 'text-[#D97757]' : 'text-[#83827D]'}>
                     {opt.icon}
                   </span>
                   <span>{opt.label}</span>
@@ -419,12 +419,12 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
           </div>
 
           <div>
-            <label className="text-xs font-medium text-neutral-300 block mb-1">
+            <label className="text-xs font-medium text-[#FAF9F5] block mb-1">
               Description
             </label>
             <textarea
               rows={2}
-              className="w-full rounded-md p-2.5 text-xs bg-[#121316] border border-white/[0.08] focus:outline-none focus:border-white/20 text-[#E5E5E5] placeholder:text-neutral-500"
+              className="w-full rounded-md p-2.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] focus:outline-none focus:border-[#D97757] text-[#FAF9F5] placeholder:text-[#83827D]"
               placeholder="Brief description of the resource..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -436,7 +436,7 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
             <div>
               <Input
                 label="Color Palette (Hex Codes)"
-                placeholder="#000000, #141519, #09AE5B"
+                placeholder="#FAF9F5, #262624, #D97757"
                 value={hexColors}
                 onChange={(e) => setHexColors(e.target.value)}
                 hint="Comma-separated hex colors"
@@ -457,18 +457,18 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
 
           {type === 'data' && (
             <div>
-              <label className="text-xs font-medium text-neutral-300 block mb-1">
+              <label className="text-xs font-medium text-[#FAF9F5] block mb-1">
                 API / Data Format
               </label>
               <select
                 value={dataFormat}
                 onChange={(e) => setDataFormat(e.target.value)}
-                className="w-full h-9 rounded-md px-3 text-xs bg-[#121316] border border-white/[0.08] text-[#E5E5E5] focus:outline-none focus:border-white/20"
+                className="w-full h-9 rounded-md px-3 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] focus:outline-none focus:border-[#D97757]"
               >
-                <option value="json" className="bg-[#121316]">JSON / REST</option>
-                <option value="graphql" className="bg-[#121316]">GraphQL</option>
-                <option value="csv" className="bg-[#121316]">CSV / Dataset</option>
-                <option value="grpc" className="bg-[#121316]">gRPC / Protobuf</option>
+                <option value="json" className="bg-[#1C1C1B]">JSON / REST</option>
+                <option value="graphql" className="bg-[#1C1C1B]">GraphQL</option>
+                <option value="csv" className="bg-[#1C1C1B]">CSV / Dataset</option>
+                <option value="grpc" className="bg-[#1C1C1B]">gRPC / Protobuf</option>
               </select>
             </div>
           )}
@@ -486,12 +486,12 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
 
           {/* Notes */}
           <div>
-            <label className="text-xs font-medium text-neutral-300 block mb-1">
+            <label className="text-xs font-medium text-[#FAF9F5] block mb-1">
               Personal Notes
             </label>
             <textarea
               rows={3}
-              className="w-full rounded-md p-2.5 font-mono text-xs bg-[#121316] border border-white/[0.08] focus:outline-none focus:border-white/20 text-[#E5E5E5] placeholder:text-neutral-500"
+              className="w-full rounded-md p-2.5 font-mono text-xs bg-[#1C1C1B] border border-[#3E3E38] focus:outline-none focus:border-[#D97757] text-[#FAF9F5] placeholder:text-[#83827D]"
               placeholder="Personal notes, code snippets, or installation commands..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -500,7 +500,7 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
 
           {/* Tags */}
           <div>
-            <label className="text-xs font-medium text-neutral-300 block mb-1">
+            <label className="text-xs font-medium text-[#FAF9F5] block mb-1">
               Tags
             </label>
             <div className="flex gap-2">
@@ -529,7 +529,7 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
                 {tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-white/[0.05] text-neutral-300 border border-white/[0.08]"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-[#262624] text-[#FAF9F5] border border-[#3E3E38]"
                   >
                     #{tag}
                     <button
@@ -548,7 +548,7 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
           {/* Collections Selector */}
           {collections.length > 0 && (
             <div>
-              <label className="text-xs font-medium text-neutral-300 block mb-1">
+              <label className="text-xs font-medium text-[#FAF9F5] block mb-1">
                 Collections
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -562,11 +562,11 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
                       className={cn(
                         'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition-colors cursor-pointer',
                         isSelected
-                          ? 'border-[#09AE5B]/50 bg-[#09AE5B]/15 text-[#09AE5B] font-medium'
-                          : 'border-white/[0.08] bg-[#0E0F10] text-neutral-400 hover:text-white'
+                          ? 'border-[#D97757]/50 bg-[#D97757]/15 text-[#D97757] font-medium'
+                          : 'border-[#3E3E38] bg-[#262624] text-[#B7B5A9] hover:text-[#FAF9F5]'
                       )}
                     >
-                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col.color || '#09AE5B' }} />
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col.color || '#D97757' }} />
                       <span>{col.name}</span>
                     </button>
                   );
@@ -578,7 +578,7 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
           {/* Projects Selector */}
           {projects.length > 0 && (
             <div>
-              <label className="text-xs font-medium text-neutral-300 block mb-1">
+              <label className="text-xs font-medium text-[#FAF9F5] block mb-1">
                 Projects
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -592,8 +592,8 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
                       className={cn(
                         'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition-colors cursor-pointer',
                         isSelected
-                          ? 'border-[#09AE5B]/50 bg-[#09AE5B]/15 text-[#09AE5B] font-medium'
-                          : 'border-white/[0.08] bg-[#0E0F10] text-neutral-400 hover:text-white'
+                          ? 'border-[#D97757]/50 bg-[#D97757]/15 text-[#D97757] font-medium'
+                          : 'border-[#3E3E38] bg-[#262624] text-[#B7B5A9] hover:text-[#FAF9F5]'
                       )}
                     >
                       <span>{proj.name}</span>
@@ -604,7 +604,7 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
             </div>
           )}
 
-          <div className="pt-4 border-t border-white/[0.08] flex justify-end gap-2">
+          <div className="pt-4 border-t border-[#3E3E38] flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>

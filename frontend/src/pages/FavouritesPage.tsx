@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useCallback } from 'react';
-import { LayoutGrid, List } from 'lucide-react';
+import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Resource, Collection } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
@@ -84,7 +84,7 @@ export const FavouritesPage: React.FC = () => {
         </div>
 
         {/* View mode toggle */}
-        <div className="flex rounded-md border border-white/[0.08] bg-[#121316] p-0.5 self-start sm:self-auto">
+        <div className="flex rounded-md border border-[#3E3E38] bg-[#1C1C1B] p-0.5 self-start sm:self-auto">
           <button
             onClick={() => setViewMode('list')}
             className={cn(
@@ -95,7 +95,7 @@ export const FavouritesPage: React.FC = () => {
             )}
             title="List view"
           >
-            <List className="w-3.5 h-3.5" />
+            <Flaticon name="menu-burger" className="text-xs" />
           </button>
           <button
             onClick={() => setViewMode('grid')}
@@ -107,7 +107,7 @@ export const FavouritesPage: React.FC = () => {
             )}
             title="Grid view"
           >
-            <LayoutGrid className="w-3.5 h-3.5" />
+            <Flaticon name="apps" className="text-xs" />
           </button>
         </div>
       </div>
@@ -118,7 +118,7 @@ export const FavouritesPage: React.FC = () => {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-16 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
+              className="h-16 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
             />
           ))}
         </div>
@@ -142,8 +142,8 @@ export const FavouritesPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-14 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
-          <h3 className="text-sm font-medium text-[#EDEDED] mb-1">
+        <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B]">
+          <h3 className="text-sm font-medium text-[#FAF9F5] mb-1">
             No favorites yet
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto">

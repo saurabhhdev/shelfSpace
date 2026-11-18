@@ -1,15 +1,5 @@
 ﻿import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Search,
-  LayoutGrid,
-  List,
-  Plus,
-  ArrowUpDown,
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  X,
-} from 'lucide-react';
+import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Resource, ResourceType, Collection } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
@@ -171,7 +161,7 @@ export const LibraryPage: React.FC = () => {
 
         <Button
           onClick={() => setIsAddOpen(true)}
-          leftIcon={<Plus className="w-3.5 h-3.5" />}
+          leftIcon={<Flaticon name="plus" className="text-xs" />}
           size="sm"
           className="self-start sm:self-auto shrink-0"
         >
@@ -184,7 +174,7 @@ export const LibraryPage: React.FC = () => {
         {/* Search Bar + Controls */}
         <div className="flex flex-col sm:flex-row items-center gap-2.5">
           <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Flaticon name="search" className="text-xs text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={search}
@@ -193,7 +183,7 @@ export const LibraryPage: React.FC = () => {
                 setPage(1);
               }}
               placeholder="Search by name, description, url, or tag..."
-              className="w-full h-9 pl-9 pr-14 rounded-md text-xs sm:text-sm bg-[#121316] border border-white/[0.08] text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-white/20 transition-colors"
+              className="w-full h-9 pl-9 pr-14 rounded-md text-xs sm:text-sm bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
             />
             {search && (
               <button
@@ -207,21 +197,21 @@ export const LibraryPage: React.FC = () => {
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
             {/* Sorting */}
-            <div className="flex items-center gap-1.5 h-9 px-2.5 rounded-md border border-white/[0.08] bg-[#121316] text-xs text-neutral-400">
-              <ArrowUpDown className="w-3.5 h-3.5 text-neutral-500" />
+            <div className="flex items-center gap-1.5 h-9 px-2.5 rounded-md border border-[#3E3E38] bg-[#1C1C1B] text-xs text-neutral-400">
+              <Flaticon name="sort-alt" className="text-xs text-neutral-500" />
               <select
                 value={sortBy}
                 onChange={(e) => handleSortChange(e.target.value as any)}
-                className="bg-transparent focus:outline-none cursor-pointer text-xs text-[#E5E5E5]"
+                className="bg-transparent focus:outline-none cursor-pointer text-xs text-[#FAF9F5]"
               >
-                <option value="recent" className="bg-[#121316]">Recently Added</option>
-                <option value="oldest" className="bg-[#121316]">Oldest First</option>
-                <option value="title_asc" className="bg-[#121316]">Alphabetical (A–Z)</option>
+                <option value="recent" className="bg-[#1C1C1B]">Recently Added</option>
+                <option value="oldest" className="bg-[#1C1C1B]">Oldest First</option>
+                <option value="title_asc" className="bg-[#1C1C1B]">Alphabetical (A–Z)</option>
               </select>
             </div>
 
             {/* List / Grid view switcher */}
-            <div className="flex rounded-md border border-white/[0.08] bg-[#121316] p-0.5">
+            <div className="flex rounded-md border border-[#3E3E38] bg-[#1C1C1B] p-0.5">
               <button
                 onClick={() => handleViewModeChange('list')}
                 className={cn(
@@ -232,7 +222,7 @@ export const LibraryPage: React.FC = () => {
                 )}
                 title="List view"
               >
-                <List className="w-3.5 h-3.5" />
+                <Flaticon name="menu-burger" className="text-xs" />
               </button>
               <button
                 onClick={() => handleViewModeChange('grid')}
@@ -244,7 +234,7 @@ export const LibraryPage: React.FC = () => {
                 )}
                 title="Grid view"
               >
-                <LayoutGrid className="w-3.5 h-3.5" />
+                <Flaticon name="apps" className="text-xs" />
               </button>
             </div>
           </div>
@@ -259,7 +249,7 @@ export const LibraryPage: React.FC = () => {
               setTypeFilter(e.target.value);
               setPage(1);
             }}
-            className="h-8 px-2.5 rounded-md border border-white/[0.08] bg-[#121316] text-neutral-300 text-xs focus:outline-none focus:border-white/20"
+            className="h-8 px-2.5 rounded-md border border-[#3E3E38] bg-[#1C1C1B] text-neutral-300 text-xs focus:outline-none focus:border-neutral-500"
           >
             <option value="all">All Types</option>
             {RESOURCE_TYPES.map((t) => (
@@ -277,7 +267,7 @@ export const LibraryPage: React.FC = () => {
                 setCategoryFilter(e.target.value);
                 setPage(1);
               }}
-              className="h-8 px-2.5 rounded-md border border-white/[0.08] bg-[#121316] text-neutral-300 text-xs focus:outline-none focus:border-white/20"
+              className="h-8 px-2.5 rounded-md border border-[#3E3E38] bg-[#1C1C1B] text-neutral-300 text-xs focus:outline-none focus:border-neutral-500"
             >
               <option value="all">All Categories</option>
               {categories.map((c) => (
@@ -299,10 +289,14 @@ export const LibraryPage: React.FC = () => {
               'h-8 px-2.5 rounded-md border text-xs flex items-center gap-1.5 transition-colors cursor-pointer',
               onlyFavorites
                 ? 'bg-amber-400/10 border-amber-400/40 text-amber-300'
-                : 'bg-[#121316] border-white/[0.08] text-neutral-400 hover:text-white'
+                : 'bg-[#1C1C1B] border-[#3E3E38] text-neutral-400 hover:text-white'
             )}
           >
-            <Star className={cn('w-3 h-3', onlyFavorites && 'fill-amber-400')} />
+            <Flaticon
+              name="star"
+              variant={onlyFavorites ? 'sr' : 'rr'}
+              className={cn('text-xs', onlyFavorites && 'text-amber-400')}
+            />
             <span>Favorites only</span>
           </button>
 
@@ -312,7 +306,7 @@ export const LibraryPage: React.FC = () => {
               onClick={clearAllFilters}
               className="h-8 px-2 text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
             >
-              <X className="w-3 h-3" />
+              <Flaticon name="cross" className="text-[10px]" />
               <span>Clear filters</span>
             </button>
           )}
@@ -325,7 +319,7 @@ export const LibraryPage: React.FC = () => {
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="h-16 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
+              className="h-16 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
             />
           ))}
         </div>
@@ -349,8 +343,8 @@ export const LibraryPage: React.FC = () => {
           ))}
         </div>
       ) : hasActiveFilters ? (
-        <div className="py-14 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316] space-y-3">
-          <h3 className="text-sm font-medium text-[#EDEDED]">
+        <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B] space-y-3">
+          <h3 className="text-sm font-medium text-[#FAF9F5]">
             No resources found
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto">
@@ -361,14 +355,14 @@ export const LibraryPage: React.FC = () => {
           </Button>
         </div>
       ) : (
-        <div className="py-14 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316] space-y-3">
-          <h3 className="text-sm font-medium text-[#EDEDED]">
+        <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B] space-y-3">
+          <h3 className="text-sm font-medium text-[#FAF9F5]">
             Your library is empty
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto">
             Start saving your essential developer tools, components, repositories, and notes.
           </p>
-          <Button size="xs" leftIcon={<Plus className="w-3.5 h-3.5" />} onClick={() => setIsAddOpen(true)}>
+          <Button size="xs" leftIcon={<Flaticon name="plus" className="text-xs" />} onClick={() => setIsAddOpen(true)}>
             Add Resource
           </Button>
         </div>
@@ -386,7 +380,7 @@ export const LibraryPage: React.FC = () => {
               size="xs"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              leftIcon={<ChevronLeft className="w-3.5 h-3.5" />}
+              leftIcon={<Flaticon name="angle-small-left" className="text-xs" />}
             >
               Previous
             </Button>
@@ -395,7 +389,7 @@ export const LibraryPage: React.FC = () => {
               size="xs"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              rightIcon={<ChevronRight className="w-3.5 h-3.5" />}
+              rightIcon={<Flaticon name="angle-small-right" className="text-xs" />}
             >
               Next
             </Button>

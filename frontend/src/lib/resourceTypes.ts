@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Wrench,
-  GitBranch,
-  Layers,
-  Code2,
-  Palette,
-  BookOpen,
-} from 'lucide-react';
+import { Flaticon } from '../components/ui/Flaticon';
 import type { ResourceType } from '../types';
 
 export interface ResourceTypeConfig {
@@ -15,13 +8,17 @@ export interface ResourceTypeConfig {
   icon: React.ComponentType<{ className?: string }>;
 }
 
+const createFlaticonComponent = (name: string): React.FC<{ className?: string }> => {
+  return ({ className }) => React.createElement(Flaticon, { name, className });
+};
+
 export const RESOURCE_TYPES: ResourceTypeConfig[] = [
-  { id: 'tools', label: 'Tools', icon: Wrench },
-  { id: 'repositories', label: 'Repositories', icon: GitBranch },
-  { id: 'components', label: 'Components', icon: Layers },
-  { id: 'snippets', label: 'Code Snippets', icon: Code2 },
-  { id: 'design', label: 'Design Resources', icon: Palette },
-  { id: 'references', label: 'References', icon: BookOpen },
+  { id: 'tools', label: 'Tools', icon: createFlaticonComponent('tools') },
+  { id: 'repositories', label: 'Repositories', icon: createFlaticonComponent('code-branch') },
+  { id: 'components', label: 'Components', icon: createFlaticonComponent('layers') },
+  { id: 'snippets', label: 'Code Snippets', icon: createFlaticonComponent('file-code') },
+  { id: 'design', label: 'Design Resources', icon: createFlaticonComponent('palette') },
+  { id: 'references', label: 'References', icon: createFlaticonComponent('book-alt') },
 ];
 
 export const normalizeResourceType = (type: string): ResourceType => {
@@ -57,5 +54,5 @@ export const getResourceTypeLabel = (type: string): string => {
 export const getResourceTypeIcon = (type: string) => {
   const normalized = normalizeResourceType(type);
   const found = RESOURCE_TYPES.find((t) => t.id === normalized);
-  return found ? found.icon : Wrench;
+  return found ? found.icon : RESOURCE_TYPES[0].icon;
 };

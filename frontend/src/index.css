@@ -2,79 +2,89 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+/* Flaticon UIcons base alignment */
+i.fi, i[class*="fi-"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-style: normal;
+  vertical-align: middle;
+}
+
 @theme {
   --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --color-ossium-bg: #0E0F10;
-  --color-ossium-card: #121316;
-  --color-ossium-card-hover: #17181c;
-  --color-ossium-surface: #18191d;
-  --color-ossium-border: rgba(255, 255, 255, 0.08);
-  --color-ossium-green: #09AE5B;
-  --color-ossium-green-hover: #07914b;
-  --color-ossium-text: #E5E5E5;
-  --color-ossium-muted: #8E8E93;
-  --color-ossium-darkbtn: #242424;
-  --color-ossium-lightbtn: #D6D6D6;
+  --color-ossium-bg: #262624;
+  --color-ossium-card: #1C1C1B;
+  --color-ossium-card-hover: #1A1915;
+  --color-ossium-surface: #1B1B19;
+  --color-ossium-border: #3E3E38;
+  --color-ossium-green: #D97757;
+  --color-ossium-green-hover: #EE8360;
+  --color-ossium-text: #FAF9F5;
+  --color-ossium-muted: #B7B5A9;
+  --color-ossium-darkbtn: #30302E;
+  --color-ossium-lightbtn: #FAF9F5;
 }
 
 @layer base {
   :root {
-    /* Light Mode: Clean high-contrast studio style */
-    --workspace-bg: #f7f7f8;
-    --workspace-sidebar: #efeff1;
-    --workspace-card: #ffffff;
-    --workspace-card-hover: #f3f4f6;
-    --workspace-subtle: #f0f1f4;
-    --workspace-border: rgba(0, 0, 0, 0.08);
-    --workspace-border-hover: #09AE5B;
-    --workspace-dotted: #d1d5db;
+    /* Light Mode: MX Icons Palette */
+    --workspace-bg: #FAF9F5;
+    --workspace-sidebar: #F0EDE4;
+    --workspace-card: #F0EDE4;
+    --workspace-card-hover: #E9E6DC;
+    --workspace-subtle: #EDE9DE;
+    --workspace-border: #DAD9D4;
+    --workspace-border-hover: #C96442;
+    --workspace-dotted: #DAD9D4;
     
-    --workspace-text: #0E0F10;
-    --workspace-secondary: #4b5563;
-    --workspace-muted: #6b7280;
+    --workspace-text: #141413;
+    --workspace-secondary: #535146;
+    --workspace-muted: #83827D;
 
-    --palette-black: #ffffff;
-    --palette-chrome: #f3f4f6;
-    --palette-border: rgba(0, 0, 0, 0.08);
-    --palette-forest: #09AE5B;
+    --palette-black: #FAF9F5;
+    --palette-chrome: #EDE9DE;
+    --palette-border: #DAD9D4;
+    --palette-forest: #C96442;
 
-    --accent-primary: #09AE5B;
-    --accent-primary-hover: #07914b;
-    --accent-primary-text: #ffffff;
-    --accent-secondary: #dcfce7;
-    --ring: rgba(9, 174, 91, 0.35);
-    --dashed-grid-line: rgba(0, 0, 0, 0.08);
+    --accent-primary: #C96442;
+    --accent-primary-hover: #B05730;
+    --accent-primary-text: #FFFFFF;
+    --accent-secondary: rgba(201, 100, 66, 0.15);
+    --ring: rgba(201, 100, 66, 0.4);
+    --dashed-grid-line: #DAD9D4;
     color-scheme: light;
   }
 
   html.dark {
-    /* Dark Mode: Ossium Identical Carbon Charcoal & Signature Green */
-    --workspace-bg: #0E0F10;
-    --workspace-sidebar: #0E0F10;
-    --workspace-card: #121316;
-    --workspace-card-hover: #18191d;
-    --workspace-subtle: #141518;
-    --workspace-border: rgba(255, 255, 255, 0.08);
-    --workspace-border-hover: #09AE5B;
-    --workspace-dotted: rgba(255, 255, 255, 0.12);
+    /* Dark Mode: MX Icons Exact Palette */
+    --workspace-bg: #262624;
+    --workspace-sidebar: #1C1C1B;
+    --workspace-card: #1C1C1B;
+    --workspace-card-hover: #1A1915;
+    --workspace-subtle: #1B1B19;
+    --workspace-border: #3E3E38;
+    --workspace-border-hover: #D97757;
+    --workspace-dotted: #3E3E38;
 
-    --workspace-text: #E5E5E5;
-    --workspace-secondary: #8E8E93;
-    --workspace-muted: #66666e;
+    --workspace-text: #FAF9F5;
+    --workspace-secondary: #C3C0B6;
+    --workspace-muted: #83827D;
 
-    --palette-black: #0E0F10;
-    --palette-chrome: #141518;
-    --palette-border: rgba(255, 255, 255, 0.08);
-    --palette-forest: #09AE5B;
+    --palette-black: #262624;
+    --palette-chrome: #1B1B19;
+    --palette-border: #3E3E38;
+    --palette-forest: #D97757;
 
-    --accent-primary: #09AE5B;
-    --accent-primary-hover: #07914b;
-    --accent-primary-text: #ffffff;
-    --accent-secondary: rgba(9, 174, 91, 0.15);
-    --ring: rgba(9, 174, 91, 0.4);
-    --dashed-grid-line: rgba(255, 255, 255, 0.07);
+    --accent-primary: #D97757;
+    --accent-primary-hover: #EE8360;
+    --accent-primary-text: #FFFFFF;
+    --accent-secondary: rgba(217, 119, 87, 0.15);
+    --ring: rgba(217, 119, 87, 0.4);
+    --dashed-grid-line: #3E3E38;
     color-scheme: dark;
   }
 
@@ -89,13 +99,13 @@
   }
 
   html.dark body {
-    background-color: #0E0F10;
-    color: #E5E5E5;
+    background-color: #262624;
+    color: #FAF9F5;
   }
 
   ::selection {
-    background-color: #09AE5B;
-    color: #000000;
+    background-color: #D97757;
+    color: #FFFFFF;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -179,7 +189,7 @@ button:hover .split-char-clone {
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(9, 174, 91, 0.5);
+  background: rgba(217, 119, 87, 0.5);
 }
 
 /* Smooth Focus Ring Utility */

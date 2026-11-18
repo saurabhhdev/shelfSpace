@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ChevronLeft, LayoutGrid, List, Plus } from 'lucide-react';
+import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Collection, Resource } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
@@ -90,18 +90,18 @@ export const CollectionDetailPage: React.FC = () => {
           to="/categories"
           className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white transition-colors"
         >
-          <ChevronLeft className="w-3.5 h-3.5" />
+          <Flaticon name="angle-small-left" className="text-xs" />
           <span>All Categories</span>
         </Link>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#3E3E38]">
           <div className="flex items-center gap-3">
             <span
               className="w-3.5 h-3.5 rounded-full shrink-0"
-              style={{ backgroundColor: collection?.color || '#09AE5B' }}
+              style={{ backgroundColor: collection?.color || '#D97757' }}
             />
             <div>
-              <h1 className="text-xl font-semibold tracking-tight text-[#EDEDED]">
+              <h1 className="text-xl font-semibold tracking-tight text-[#FAF9F5]">
                 {collection?.name || 'Category'}
               </h1>
               <p className="text-xs text-neutral-400 mt-0.5">
@@ -112,7 +112,7 @@ export const CollectionDetailPage: React.FC = () => {
 
           <div className="flex items-center gap-2 self-start sm:self-auto">
             {/* View mode toggle */}
-            <div className="flex rounded-md border border-white/[0.08] bg-[#121316] p-0.5">
+            <div className="flex rounded-md border border-[#3E3E38] bg-[#1C1C1B] p-0.5">
               <button
                 onClick={() => setViewMode('list')}
                 className={cn(
@@ -123,7 +123,7 @@ export const CollectionDetailPage: React.FC = () => {
                 )}
                 title="List view"
               >
-                <List className="w-3.5 h-3.5" />
+                <Flaticon name="menu-burger" className="text-xs" />
               </button>
               <button
                 onClick={() => setViewMode('grid')}
@@ -135,13 +135,13 @@ export const CollectionDetailPage: React.FC = () => {
                 )}
                 title="Grid view"
               >
-                <LayoutGrid className="w-3.5 h-3.5" />
+                <Flaticon name="apps" className="text-xs" />
               </button>
             </div>
 
             <Button
               onClick={() => setIsAddOpen(true)}
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
+              leftIcon={<Flaticon name="plus" className="text-xs" />}
               size="sm"
             >
               Add Resource
@@ -156,7 +156,7 @@ export const CollectionDetailPage: React.FC = () => {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-16 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
+              className="h-16 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
             />
           ))}
         </div>
@@ -180,14 +180,14 @@ export const CollectionDetailPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-14 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316] space-y-3">
-          <h3 className="text-sm font-medium text-[#EDEDED]">
+        <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B] space-y-3">
+          <h3 className="text-sm font-medium text-[#FAF9F5]">
             No resources in this category
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto">
             Save a resource and assign it to {collection?.name} to see it here.
           </p>
-          <Button size="xs" leftIcon={<Plus className="w-3.5 h-3.5" />} onClick={() => setIsAddOpen(true)}>
+          <Button size="xs" leftIcon={<Flaticon name="plus" className="text-xs" />} onClick={() => setIsAddOpen(true)}>
             Add Resource
           </Button>
         </div>

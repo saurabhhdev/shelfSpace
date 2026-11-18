@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, Plus, Minus } from 'lucide-react';
+import { Flaticon } from '../ui/Flaticon';
 
 export const OssiumFAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -28,13 +28,13 @@ export const OssiumFAQ: React.FC = () => {
   ];
 
   return (
-    <section id="faq" className="py-24 bg-transparent border-t border-white/[0.06]">
+    <section id="faq" className="py-24 bg-transparent border-t border-[#3E3E38]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#E5E5E5]">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#FAF9F5]">
             Frequently Asked Questions
           </h2>
-          <p className="mt-3 text-base text-[#8E8E93]">
+          <p className="mt-3 text-base text-[#B7B5A9]">
             Everything you need to know about Shelfspace and how it organizes your workflow.
           </p>
         </div>
@@ -45,22 +45,22 @@ export const OssiumFAQ: React.FC = () => {
             return (
               <div
                 key={index}
-                className="rounded-none border border-white/[0.06] bg-[#121316] overflow-hidden transition-colors"
+                className="rounded-none border border-[#3E3E38] bg-[#1C1C1B] overflow-hidden transition-colors"
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   className="w-full px-5 py-4 flex items-center justify-between text-left gap-4 hover:bg-white/[0.02] transition-colors"
                 >
-                  <span className="text-sm sm:text-base font-semibold text-[#E5E5E5]">
+                  <span className="text-sm sm:text-base font-semibold text-[#FAF9F5]">
                     {faq.q}
                   </span>
-                  <div className="p-1 rounded-none bg-white/[0.04] text-neutral-400 shrink-0">
-                    {isOpen ? <Minus className="w-4 h-4 text-[#09AE5B]" /> : <Plus className="w-4 h-4" />}
+                  <div className="p-1 rounded-none bg-[#1B1B19] text-neutral-400 shrink-0">
+                    {isOpen ? <Flaticon name="minus" className="text-xs text-[#D97757]" /> : <Flaticon name="plus" className="text-xs" />}
                   </div>
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 pb-5 text-sm text-[#8E8E93] leading-relaxed border-t border-white/[0.04] pt-3">
+                  <div className="px-5 pb-5 text-sm text-[#B7B5A9] leading-relaxed border-t border-[#3E3E38] pt-3">
                     {faq.a}
                   </div>
                 )}

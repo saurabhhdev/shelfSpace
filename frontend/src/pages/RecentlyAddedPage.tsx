@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useCallback } from 'react';
-import { Clock, LayoutGrid, List } from 'lucide-react';
+import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Resource } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
@@ -57,7 +57,7 @@ export const RecentlyAddedPage: React.FC = () => {
     <div className="space-y-6 max-w-6xl mx-auto pb-12">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#EDEDED]">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#FAF9F5]">
             Recently Added
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1">
@@ -65,7 +65,7 @@ export const RecentlyAddedPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex rounded-md border border-white/[0.08] bg-[#121316] p-0.5 self-start sm:self-auto">
+        <div className="flex rounded-md border border-[#3E3E38] bg-[#1C1C1B] p-0.5 self-start sm:self-auto">
           <button
             onClick={() => setViewMode('grid')}
             className={cn(
@@ -76,7 +76,7 @@ export const RecentlyAddedPage: React.FC = () => {
             )}
             title="Grid view"
           >
-            <LayoutGrid className="w-3.5 h-3.5" />
+            <Flaticon name="apps" className="text-xs" />
           </button>
           <button
             onClick={() => setViewMode('list')}
@@ -88,7 +88,7 @@ export const RecentlyAddedPage: React.FC = () => {
             )}
             title="List view"
           >
-            <List className="w-3.5 h-3.5" />
+            <Flaticon name="menu-burger" className="text-xs" />
           </button>
         </div>
       </div>
@@ -98,7 +98,7 @@ export const RecentlyAddedPage: React.FC = () => {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-36 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
+              className="h-36 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
             />
           ))}
         </div>
@@ -122,9 +122,9 @@ export const RecentlyAddedPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-16 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
-          <Clock className="w-8 h-8 text-neutral-500 mx-auto mb-3" />
-          <h3 className="text-sm font-medium text-[#EDEDED] mb-1">
+        <div className="py-16 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B]">
+          <Flaticon name="clock" className="text-3xl text-neutral-500 mx-auto mb-3" />
+          <h3 className="text-sm font-medium text-[#FAF9F5] mb-1">
             No recent additions
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto">

@@ -147,14 +147,14 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
           <select
             value={type}
             onChange={(e) => setType(e.target.value as ResourceType)}
-            className="w-full h-9 rounded-md px-3 text-xs bg-[#0E0F10] border border-white/[0.08] text-[#E5E5E5] focus:outline-none focus:border-white/20"
+            className="w-full h-9 rounded-md px-3 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] focus:outline-none focus:border-neutral-500"
           >
-            <option value="development" className="bg-[#0E0F10]">Development</option>
-            <option value="ui" className="bg-[#0E0F10]">UI & Components</option>
-            <option value="design" className="bg-[#0E0F10]">Design & Colors</option>
-            <option value="data" className="bg-[#0E0F10]">Data & APIs</option>
-            <option value="learning" className="bg-[#0E0F10]">Learning & Docs</option>
-            <option value="personal" className="bg-[#0E0F10]">Personal Notes</option>
+            <option value="development" className="bg-[#1C1C1B]">Development</option>
+            <option value="ui" className="bg-[#1C1C1B]">UI & Components</option>
+            <option value="design" className="bg-[#1C1C1B]">Design & Colors</option>
+            <option value="data" className="bg-[#1C1C1B]">Data & APIs</option>
+            <option value="learning" className="bg-[#1C1C1B]">Learning & Docs</option>
+            <option value="personal" className="bg-[#1C1C1B]">Personal Notes</option>
           </select>
         </div>
 
@@ -164,7 +164,7 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
           </label>
           <textarea
             rows={2}
-            className="w-full rounded-md p-2.5 text-xs bg-[#0E0F10] border border-white/[0.08] text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-white/20"
+            className="w-full rounded-md p-2.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -234,11 +234,11 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
                     className={cn(
                       'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition-colors cursor-pointer',
                       isSelected
-                        ? 'border-[#09AE5B]/50 bg-[#09AE5B]/15 text-[#09AE5B] font-medium'
-                        : 'border-white/[0.08] bg-[#0E0F10] text-neutral-400 hover:text-white'
+                        ? 'border-[#D97757]/50 bg-[#D97757]/15 text-[#D97757] font-medium'
+                        : 'border-[#3E3E38] bg-[#1C1C1B] text-neutral-400 hover:text-white'
                     )}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col.color || '#09AE5B' }} />
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col.color || '#D97757' }} />
                     <span>{col.name}</span>
                   </button>
                 );
@@ -264,8 +264,8 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
                     className={cn(
                       'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border transition-colors cursor-pointer',
                       isSelected
-                        ? 'border-[#09AE5B]/50 bg-[#09AE5B]/15 text-[#09AE5B] font-medium'
-                        : 'border-white/[0.08] bg-[#0E0F10] text-neutral-400 hover:text-white'
+                        ? 'border-[#D97757]/50 bg-[#D97757]/15 text-[#D97757] font-medium'
+                        : 'border-[#3E3E38] bg-[#1C1C1B] text-neutral-400 hover:text-white'
                     )}
                   >
                     <span>{proj.name}</span>
@@ -282,13 +282,13 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
           </label>
           <textarea
             rows={3}
-            className="w-full rounded-md p-2.5 font-mono text-xs bg-[#0E0F10] border border-white/[0.08] text-[#E5E5E5] focus:outline-none focus:border-white/20"
+            className="w-full rounded-md p-2.5 font-mono text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] focus:outline-none focus:border-neutral-500"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
         </div>
 
-        <div className="pt-3 border-t border-white/[0.08] flex justify-end gap-2">
+        <div className="pt-3 border-t border-[#3E3E38] flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>

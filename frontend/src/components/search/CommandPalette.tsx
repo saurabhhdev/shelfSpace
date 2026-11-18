@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ArrowRight, X } from 'lucide-react';
+import { Flaticon } from '../ui/Flaticon';
 import { apiClient } from '../../api/client';
 import { getResourceTypeLabel, getResourceTypeIcon } from '../../lib/resourceTypes';
 import type { Resource } from '../../types';
@@ -82,16 +82,16 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
       />
 
       <div
-        className="relative w-full max-w-xl bg-[#121316] border border-white/[0.08] rounded-lg shadow-2xl overflow-hidden z-10"
+        className="relative w-full max-w-xl bg-[#1C1C1B] border border-[#3E3E38] rounded-lg shadow-2xl overflow-hidden z-10"
         onKeyDown={handleKeyDown}
       >
         {/* Search Input */}
-        <div className="flex items-center px-4 py-3 border-b border-white/[0.08] bg-[#0E0F10]">
-          <Search className="w-4 h-4 text-neutral-400 shrink-0 mr-3" />
+        <div className="flex items-center px-4 py-3 border-b border-[#3E3E38] bg-[#262624]">
+          <Flaticon name="search" className="text-xs text-neutral-400 shrink-0 mr-3" />
           <input
             ref={inputRef}
             type="text"
-            className="w-full bg-transparent text-sm text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none"
+            className="w-full bg-transparent text-sm text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none"
             placeholder="Search resources, tags, categories..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -101,10 +101,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
               onClick={() => setQuery('')}
               className="text-neutral-400 hover:text-white p-1 cursor-pointer"
             >
-              <X className="w-3.5 h-3.5" />
+              <Flaticon name="cross" className="text-[10px]" />
             </button>
           )}
-          <kbd className="hidden sm:inline-block ml-2 px-1.5 py-0.5 text-[10px] font-mono bg-white/[0.06] text-neutral-400 rounded border border-white/[0.08]">
+          <kbd className="hidden sm:inline-block ml-2 px-1.5 py-0.5 text-[10px] font-mono bg-white/[0.06] text-neutral-400 rounded border border-[#3E3E38]">
             ESC
           </kbd>
         </div>
@@ -136,11 +136,11 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                     )}
                   >
                     <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                      <span className={cn('p-1 rounded shrink-0', isSelected ? 'bg-white/[0.08] text-[#09AE5B]' : 'bg-white/[0.04] text-neutral-400')}>
+                      <span className={cn('p-1 rounded shrink-0', isSelected ? 'bg-white/[0.08] text-[#D97757]' : 'bg-white/[0.04] text-neutral-400')}>
                         <TypeIcon className="w-3.5 h-3.5" />
                       </span>
                       <div className="min-w-0">
-                        <div className="font-medium text-xs truncate text-[#E5E5E5]">
+                        <div className="font-medium text-xs truncate text-[#FAF9F5]">
                           {item.title}
                         </div>
                         {item.description && (
@@ -152,10 +152,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.05] text-neutral-400 border border-white/[0.08]">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.05] text-neutral-400 border border-[#3E3E38]">
                         {typeLabel}
                       </span>
-                      <ArrowRight className="w-3.5 h-3.5 text-neutral-500" />
+                      <Flaticon name="angle-small-right" className="text-xs text-neutral-500" />
                     </div>
                   </button>
                 );
@@ -215,10 +215,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2 border-t border-white/[0.08] flex items-center justify-between text-[11px] text-neutral-500 bg-[#0E0F10]">
+        <div className="px-4 py-2 border-t border-[#3E3E38] flex items-center justify-between text-[11px] text-neutral-500 bg-[#262624]">
           <div className="flex items-center gap-2">
-            <span>Select: <kbd className="font-mono text-[10px] bg-white/[0.06] text-neutral-400 px-1 py-0.5 rounded border border-white/[0.08]">↵</kbd></span>
-            <span>Navigate: <kbd className="font-mono text-[10px] bg-white/[0.06] text-neutral-400 px-1 py-0.5 rounded border border-white/[0.08]">↑↓</kbd></span>
+            <span>Select: <kbd className="font-mono text-[10px] bg-white/[0.06] text-neutral-400 px-1 py-0.5 rounded border border-[#3E3E38]">↵</kbd></span>
+            <span>Navigate: <kbd className="font-mono text-[10px] bg-white/[0.06] text-neutral-400 px-1 py-0.5 rounded border border-[#3E3E38]">↑↓</kbd></span>
           </div>
           <span className="text-[11px] text-neutral-500">Shelfspace</span>
         </div>

@@ -1,22 +1,6 @@
 ﻿import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import {
-  FolderKanban,
-  ChevronLeft,
-  LayoutGrid,
-  List,
-  Plus,
-  Search,
-  Star,
-  Edit2,
-  Trash2,
-  Archive,
-  ArchiveRestore,
-  ExternalLink,
-  Layers,
-  X,
-  Filter,
-} from 'lucide-react';
+import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Project, Resource, Collection, ResourceType } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
@@ -228,8 +212,8 @@ export const ProjectDetailPage: React.FC = () => {
   if (isLoading || !project) {
     return (
       <div className="py-24 text-center text-xs text-neutral-400 font-sans">
-        <div className="w-8 h-8 rounded-md bg-[#16171b] border border-white/[0.08] flex items-center justify-center mx-auto mb-3">
-          <span className="w-2.5 h-2.5 rounded-sm bg-[#09AE5B] animate-pulse"></span>
+        <div className="w-8 h-8 rounded-md bg-[#1C1C1B] border border-[#3E3E38] flex items-center justify-center mx-auto mb-3">
+          <span className="w-2.5 h-2.5 rounded-sm bg-[#D97757] animate-pulse"></span>
         </div>
         <span>Loading project details...</span>
       </div>
@@ -244,16 +228,16 @@ export const ProjectDetailPage: React.FC = () => {
           to="/projects"
           className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white transition-colors"
         >
-          <ChevronLeft className="w-3.5 h-3.5" />
+          <Flaticon name="angle-small-left" className="text-xs" />
           <span>Back to Projects</span>
         </Link>
       </div>
 
       {/* 2. Project Header Card Banner */}
-      <div className="rounded-md bg-[#121316] border border-white/[0.08] overflow-hidden">
+      <div className="rounded-md bg-[#1C1C1B] border border-[#3E3E38] overflow-hidden">
         {/* Cover image if available */}
         {project.imageUrl && (
-          <div className="w-full h-36 sm:h-48 bg-[#0E0F10] border-b border-white/[0.08] relative overflow-hidden">
+          <div className="w-full h-36 sm:h-48 bg-[#262624] border-b border-[#3E3E38] relative overflow-hidden">
             <img
               src={project.imageUrl}
               alt={project.name}
@@ -262,20 +246,20 @@ export const ProjectDetailPage: React.FC = () => {
                 (e.target as HTMLElement).style.display = 'none';
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#121316] via-transparent to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1C1C1B] via-transparent to-transparent"></div>
           </div>
         )}
 
         {/* Content & Action Bar */}
         <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start sm:items-center gap-3.5">
-            <div className="w-10 h-10 rounded-md bg-[#0E0F10] text-neutral-400 flex items-center justify-center border border-white/10 shrink-0">
-              <FolderKanban className="w-5 h-5 text-[#09AE5B]" />
+            <div className="w-10 h-10 rounded-md bg-[#262624] text-neutral-400 flex items-center justify-center border border-[#3E3E38] shrink-0">
+              <Flaticon name="folder-open" className="text-base text-[#D97757]" />
             </div>
 
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-lg sm:text-xl font-semibold text-[#EDEDED] tracking-tight">
+                <h1 className="text-lg sm:text-xl font-semibold text-[#FAF9F5] tracking-tight">
                   {project.name}
                 </h1>
                 {project.isArchived && (
@@ -283,8 +267,8 @@ export const ProjectDetailPage: React.FC = () => {
                     Archived
                   </span>
                 )}
-                <span className="inline-flex items-center gap-1 font-mono text-[11px] text-neutral-400 bg-white/[0.04] px-1.5 py-0.5 rounded border border-white/[0.06]">
-                  <Layers className="w-3 h-3 text-[#09AE5B]" />
+                <span className="inline-flex items-center gap-1 font-mono text-[11px] text-neutral-400 bg-white/[0.04] px-1.5 py-0.5 rounded border border-[#3E3E38]">
+                  <Flaticon name="layers" className="text-xs text-[#D97757]" />
                   <span>
                     {resources.length} {resources.length === 1 ? 'resource' : 'resources'}
                   </span>
@@ -304,7 +288,7 @@ export const ProjectDetailPage: React.FC = () => {
             <Button
               variant="outline"
               size="xs"
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
+              leftIcon={<Flaticon name="plus" className="text-xs" />}
               onClick={() => setIsAddExistingModalOpen(true)}
               title="Add existing resources from your library"
             >
@@ -313,7 +297,7 @@ export const ProjectDetailPage: React.FC = () => {
 
             <Button
               size="xs"
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
+              leftIcon={<Flaticon name="plus" className="text-xs" />}
               onClick={() => setIsCreateResourceModalOpen(true)}
               title="Create new resource directly inside this project"
             >
@@ -325,7 +309,7 @@ export const ProjectDetailPage: React.FC = () => {
               className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer border border-white/[0.06]"
               title="Edit project details"
             >
-              <Edit2 className="w-3.5 h-3.5" />
+              <Flaticon name="pencil" className="text-xs" />
             </button>
 
             <button
@@ -334,9 +318,9 @@ export const ProjectDetailPage: React.FC = () => {
               title={project.isArchived ? 'Unarchive project' : 'Archive project'}
             >
               {project.isArchived ? (
-                <ArchiveRestore className="w-3.5 h-3.5 text-amber-400" />
+                <Flaticon name="refresh" className="text-xs text-amber-400" />
               ) : (
-                <Archive className="w-3.5 h-3.5" />
+                <Flaticon name="box-alt" className="text-xs" />
               )}
             </button>
 
@@ -345,7 +329,7 @@ export const ProjectDetailPage: React.FC = () => {
               className="p-1.5 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer border border-white/[0.06]"
               title="Delete project"
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <Flaticon name="trash" className="text-xs" />
             </button>
           </div>
         </div>
@@ -355,20 +339,20 @@ export const ProjectDetailPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
         {/* Left: Search input */}
         <div className="relative flex-1 max-w-sm">
-          <Search className="w-3.5 h-3.5 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Flaticon name="search" className="text-xs text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search within this project..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-8 py-1.5 text-xs bg-[#121316] border border-white/[0.08] rounded-md text-[#EDEDED] placeholder:text-neutral-500 focus:outline-none focus:border-white/20"
+            className="w-full pl-9 pr-8 py-1.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded-md text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500"
           />
           {search && (
             <button
               onClick={() => setSearch('')}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white"
             >
-              <X className="w-3.5 h-3.5" />
+              <Flaticon name="cross" className="text-[10px]" />
             </button>
           )}
         </div>
@@ -379,7 +363,7 @@ export const ProjectDetailPage: React.FC = () => {
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="px-2.5 py-1.5 text-xs bg-[#121316] border border-white/[0.08] rounded-md text-[#EDEDED] focus:outline-none focus:border-white/20 cursor-pointer"
+            className="px-2.5 py-1.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded-md text-[#FAF9F5] focus:outline-none focus:border-neutral-500 cursor-pointer"
           >
             <option value="all">All Types</option>
             {RESOURCE_TYPES.map((t) => (
@@ -396,15 +380,19 @@ export const ProjectDetailPage: React.FC = () => {
               'px-2.5 py-1.5 text-xs rounded-md border transition-colors flex items-center gap-1.5 cursor-pointer',
               onlyFavorites
                 ? 'bg-amber-400/10 border-amber-400/30 text-amber-300'
-                : 'bg-[#121316] border-white/[0.08] text-neutral-400 hover:text-white'
+                : 'bg-[#1C1C1B] border-[#3E3E38] text-neutral-400 hover:text-white'
             )}
           >
-            <Star className={cn('w-3 h-3', onlyFavorites && 'fill-amber-300')} />
+            <Flaticon
+              name="star"
+              variant={onlyFavorites ? 'sr' : 'rr'}
+              className={cn('text-xs', onlyFavorites && 'text-amber-400')}
+            />
             <span>Favorites</span>
           </button>
 
           {/* View Mode Switcher */}
-          <div className="flex rounded-md border border-white/[0.08] bg-[#121316] p-0.5 shrink-0">
+          <div className="flex rounded-md border border-[#3E3E38] bg-[#1C1C1B] p-0.5 shrink-0">
             <button
               onClick={() => setViewMode('grid')}
               className={cn(
@@ -415,7 +403,7 @@ export const ProjectDetailPage: React.FC = () => {
               )}
               title="Grid view"
             >
-              <LayoutGrid className="w-3.5 h-3.5" />
+              <Flaticon name="apps" className="text-xs" />
             </button>
             <button
               onClick={() => setViewMode('list')}
@@ -427,7 +415,7 @@ export const ProjectDetailPage: React.FC = () => {
               )}
               title="List view"
             >
-              <List className="w-3.5 h-3.5" />
+              <Flaticon name="menu-burger" className="text-xs" />
             </button>
           </div>
         </div>
@@ -456,8 +444,8 @@ export const ProjectDetailPage: React.FC = () => {
         </div>
       ) : resources.length > 0 ? (
         /* Filtered Empty State */
-        <div className="py-16 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
-          <h3 className="text-sm font-medium text-[#EDEDED] mb-1">
+        <div className="py-16 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B]">
+          <h3 className="text-sm font-medium text-[#FAF9F5] mb-1">
             No matching resources in this project
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
@@ -477,11 +465,11 @@ export const ProjectDetailPage: React.FC = () => {
         </div>
       ) : (
         /* Initial Project Empty State */
-        <div className="py-16 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
+        <div className="py-16 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B]">
           <div className="w-10 h-10 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center mx-auto mb-3 text-neutral-400">
-            <FolderKanban className="w-5 h-5" />
+            <Flaticon name="folder-open" className="text-base" />
           </div>
-          <h3 className="text-sm font-medium text-[#EDEDED] mb-1">
+          <h3 className="text-sm font-medium text-[#FAF9F5] mb-1">
             No resources in this project yet
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
@@ -491,14 +479,14 @@ export const ProjectDetailPage: React.FC = () => {
             <Button
               size="xs"
               variant="outline"
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
+              leftIcon={<Flaticon name="plus" className="text-xs" />}
               onClick={() => setIsAddExistingModalOpen(true)}
             >
               Add Existing
             </Button>
             <Button
               size="xs"
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
+              leftIcon={<Flaticon name="plus" className="text-xs" />}
               onClick={() => setIsCreateResourceModalOpen(true)}
             >
               New Resource
@@ -584,7 +572,7 @@ export const ProjectDetailPage: React.FC = () => {
             </label>
             <textarea
               rows={2}
-              className="w-full rounded-md p-2.5 text-xs bg-[#121316] border border-white/[0.08] text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-white/20 transition-colors"
+              className="w-full rounded-md p-2.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
               placeholder="What is this project about?"
               value={projectDesc}
               onChange={(e) => setProjectDesc(e.target.value)}
@@ -600,7 +588,7 @@ export const ProjectDetailPage: React.FC = () => {
               onChange={(e) => setProjectImg(e.target.value)}
             />
             {projectImg && (
-              <div className="mt-2 rounded border border-white/10 overflow-hidden h-24 bg-[#0E0F10] flex items-center justify-center">
+              <div className="mt-2 rounded border border-[#3E3E38] overflow-hidden h-24 bg-[#262624] flex items-center justify-center">
                 <img
                   src={projectImg}
                   alt="Preview"

@@ -155,9 +155,9 @@ export const ResourceDetailPage: React.FC = () => {
       </div>
 
       {/* Main Details Card */}
-      <div className="bg-[#121316] border border-white/[0.08] rounded-md p-6 space-y-6">
+      <div className="bg-[#1C1C1B] border border-[#3E3E38] rounded-md p-6 space-y-6">
         {/* Header: Name, Type, External Link */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-white/[0.06]">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-[#3E3E38]">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Badge size="sm">
@@ -165,17 +165,17 @@ export const ResourceDetailPage: React.FC = () => {
                 <span>{typeLabel}</span>
               </Badge>
               {categoryName && (
-                <span className="inline-flex items-center gap-1.5 text-xs text-neutral-300 bg-white/[0.04] px-2 py-0.5 rounded border border-white/[0.06]">
+                <span className="inline-flex items-center gap-1.5 text-xs text-neutral-300 bg-white/[0.04] px-2 py-0.5 rounded border border-[#3E3E38]">
                   <span
                     className="w-1.5 h-1.5 rounded-full"
-                    style={{ backgroundColor: categoryColor || '#09AE5B' }}
+                    style={{ backgroundColor: categoryColor || '#D97757' }}
                   />
                   <span>{categoryName}</span>
                 </span>
               )}
             </div>
 
-            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#EDEDED]">
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#FAF9F5]">
               {resource.title}
             </h1>
 
@@ -185,7 +185,7 @@ export const ResourceDetailPage: React.FC = () => {
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#09AE5B] hover:underline flex items-center gap-1.5 font-mono truncate max-w-md"
+                  className="text-[#D97757] hover:underline flex items-center gap-1.5 font-mono truncate max-w-md"
                 >
                   <Globe className="w-3.5 h-3.5 shrink-0" />
                   <span className="truncate">{resource.url}</span>
@@ -199,7 +199,7 @@ export const ResourceDetailPage: React.FC = () => {
               href={resource.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#09AE5B] hover:bg-[#07914b] text-black text-xs font-semibold shrink-0 transition-colors self-start"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#D97757] hover:bg-[#EE8360] text-white text-xs font-semibold shrink-0 transition-colors self-start"
             >
               <span>Open Link</span>
               <ExternalLink className="w-3 h-3" />
@@ -225,7 +225,7 @@ export const ResourceDetailPage: React.FC = () => {
             <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
               Personal Notes
             </h2>
-            <div className="p-3.5 rounded-md bg-[#0E0F10] border border-white/[0.08] font-mono text-xs text-[#E5E5E5] whitespace-pre-wrap leading-relaxed">
+            <div className="p-3.5 rounded-md bg-[#262624] border border-[#3E3E38] font-mono text-xs text-[#FAF9F5] whitespace-pre-wrap leading-relaxed">
               {resource.notes}
             </div>
           </div>

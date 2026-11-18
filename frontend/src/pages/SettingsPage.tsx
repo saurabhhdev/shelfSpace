@@ -174,9 +174,9 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* 1. Profile Information */}
-      <div className="bg-[#121316] border border-white/[0.08] rounded-md p-5 space-y-4">
+      <div className="bg-[#1C1C1B] border border-[#3E3E38] rounded-md p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm font-medium text-[#EDEDED]">
+          <div className="flex items-center gap-2 text-sm font-medium text-[#FAF9F5]">
             <UserIcon className="w-4 h-4 text-neutral-400" />
             <span>Profile Information</span>
           </div>
@@ -225,14 +225,14 @@ export const SettingsPage: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-1">
             <div>
               <span className="text-neutral-500 block mb-1">Full Name</span>
-              <span className="font-medium text-[#EDEDED] text-sm block">
+              <span className="font-medium text-[#FAF9F5] text-sm block">
                 {user?.name || 'Developer'}
               </span>
             </div>
 
             <div>
               <span className="text-neutral-500 block mb-1">Email Address</span>
-              <span className="font-medium text-[#EDEDED] text-sm font-mono block">
+              <span className="font-medium text-[#FAF9F5] text-sm font-mono block">
                 {user?.email || '—'}
               </span>
             </div>
@@ -249,9 +249,9 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* 2. Security & Password */}
-      <div className="bg-[#121316] border border-white/[0.08] rounded-md p-5 space-y-4">
+      <div className="bg-[#1C1C1B] border border-[#3E3E38] rounded-md p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm font-medium text-[#EDEDED]">
+          <div className="flex items-center gap-2 text-sm font-medium text-[#FAF9F5]">
             <KeyRound className="w-4 h-4 text-neutral-400" />
             <span>Password & Security</span>
           </div>
@@ -335,9 +335,9 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* 2. Account Sessions & Security */}
-      <div className="bg-[#121316] border border-white/[0.08] rounded-md p-5 space-y-4">
+      <div className="bg-[#1C1C1B] border border-[#3E3E38] rounded-md p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm font-medium text-[#EDEDED]">
+          <div className="flex items-center gap-2 text-sm font-medium text-[#FAF9F5]">
             <ShieldCheck className="w-4 h-4 text-neutral-400" />
             <span>Active Sessions</span>
           </div>
@@ -363,7 +363,7 @@ export const SettingsPage: React.FC = () => {
             {[...Array(2)].map((_, i) => (
               <div
                 key={i}
-                className="h-14 rounded-md bg-[#0E0F10] animate-pulse border border-white/[0.06]"
+                className="h-14 rounded-md bg-[#262624] animate-pulse border border-[#3E3E38]"
               />
             ))}
           </div>
@@ -376,7 +376,7 @@ export const SettingsPage: React.FC = () => {
               return (
                 <div
                   key={session._id}
-                  className="flex items-center justify-between p-3 rounded-md bg-[#0E0F10] border border-white/[0.06] text-xs"
+                  className="flex items-center justify-between p-3 rounded-md bg-[#262624] border border-[#3E3E38] text-xs"
                 >
                   <div className="flex items-center gap-3">
                     <div className="text-neutral-400">
@@ -388,11 +388,11 @@ export const SettingsPage: React.FC = () => {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-[#EDEDED]">
+                        <span className="font-medium text-[#FAF9F5]">
                           {session.userAgent || 'Web Browser'}
                         </span>
                         {isCurrent && (
-                          <span className="text-[10px] text-[#09AE5B] font-medium bg-[#09AE5B]/10 px-1.5 py-0.2 rounded border border-[#09AE5B]/20">
+                          <span className="text-[10px] text-[#D97757] font-medium bg-[#D97757]/10 px-1.5 py-0.2 rounded border border-[#D97757]/20">
                             Current device
                           </span>
                         )}
@@ -421,7 +421,7 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* 3. Delete Account */}
-      <div className="bg-[#121316] border border-rose-950/40 rounded-md p-5 space-y-3">
+      <div className="bg-[#1C1C1B] border border-rose-950/40 rounded-md p-5 space-y-3">
         <div className="text-sm font-medium text-rose-400 flex items-center gap-2">
           <Trash2 className="w-4 h-4" />
           <span>Delete Account</span>

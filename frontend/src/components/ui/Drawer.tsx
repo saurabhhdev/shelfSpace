@@ -54,15 +54,15 @@ export const Drawer: React.FC<DrawerProps> = ({
       {/* Drawer content */}
       <div
         className={cn(
-          'relative w-full h-full bg-[#121316] border-l border-white/[0.08] shadow-2xl flex flex-col z-10 text-[#E5E5E5]',
+          'relative w-full h-full bg-[#1C1C1B] border-l border-[#3E3E38] shadow-2xl flex flex-col z-10 text-[#FAF9F5]',
           'animate-in slide-in-from-right duration-200',
           widths[width]
         )}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08] bg-[#121316]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#3E3E38] bg-[#1C1C1B]">
           <div>
             {title && (
-              <h2 className="text-base font-semibold text-[#E5E5E5]">
+              <h2 className="text-base font-semibold text-[#FAF9F5]">
                 {title}
               </h2>
             )}

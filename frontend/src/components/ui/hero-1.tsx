@@ -42,7 +42,7 @@ export function Hero1({
         {eyebrow && (
           <div className="group inline-block animate-fade-in">
             <span className="text-xs text-gray-700 dark:text-gray-300 font-medium mx-auto px-4 py-1.5 bg-gradient-to-tr from-zinc-300/10 via-gray-400/10 to-transparent border border-gray-300/30 dark:border-white/10 rounded-full w-fit tracking-tight uppercase flex items-center justify-center gap-2 shadow-2xs hover:border-gray-400/50 dark:hover:border-white/20 transition-all cursor-pointer">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D97757] animate-pulse" />
               <span>{eyebrow}</span>
               <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-0.5 transition-transform duration-300" />
             </span>

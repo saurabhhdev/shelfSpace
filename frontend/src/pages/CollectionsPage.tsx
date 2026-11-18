@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Edit2, Trash2, ArrowRight, ChevronDown, ChevronRight, Loader2, Globe, ExternalLink } from 'lucide-react';
+import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Collection, Resource } from '../types';
 import { Button } from '../components/ui/Button';
@@ -12,7 +12,7 @@ import { getResourceTypeIcon } from '../lib/resourceTypes';
 import { cn, formatRelativeTime } from '../lib/utils';
 
 const MUTED_COLORS = [
-  '#09AE5B', // Emerald
+  '#D97757', // Terracotta (MX Icons)
   '#3b82f6', // Blue
   '#8b5cf6', // Purple
   '#f59e0b', // Amber
@@ -175,7 +175,7 @@ export const CollectionsPage: React.FC = () => {
 
         <Button
           onClick={openCreateModal}
-          leftIcon={<Plus className="w-3.5 h-3.5" />}
+          leftIcon={<Flaticon name="plus" className="text-xs" />}
           size="sm"
           className="self-start sm:self-auto shrink-0"
         >
@@ -189,7 +189,7 @@ export const CollectionsPage: React.FC = () => {
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="h-14 rounded-md bg-[#121316] animate-pulse border border-white/[0.06]"
+              className="h-14 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
             />
           ))}
         </div>
@@ -202,7 +202,7 @@ export const CollectionsPage: React.FC = () => {
             return (
               <div
                 key={category._id}
-                className="bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors overflow-hidden"
+                className="bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 rounded-md transition-colors overflow-hidden"
               >
                 {/* Header row */}
                 <div className="group flex items-center justify-between p-3.5">
@@ -213,9 +213,10 @@ export const CollectionsPage: React.FC = () => {
                       className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer shrink-0"
                       title={isExpanded ? 'Collapse category' : 'Expand category'}
                     >
-                      <ChevronRight
+                      <Flaticon
+                        name="angle-small-right"
                         className={cn(
-                          'w-4 h-4 transition-transform duration-150',
+                          'text-xs transition-transform duration-150',
                           isExpanded && 'rotate-90 text-white'
                         )}
                       />
@@ -227,10 +228,10 @@ export const CollectionsPage: React.FC = () => {
                     >
                       <span
                         className="w-2.5 h-2.5 rounded-full shrink-0"
-                        style={{ backgroundColor: category.color || '#09AE5B' }}
+                        style={{ backgroundColor: category.color || '#D97757' }}
                       />
                       <div className="min-w-0">
-                        <span className="font-medium text-xs sm:text-sm text-[#EDEDED] group-hover/title:text-white transition-colors truncate block">
+                        <span className="font-medium text-xs sm:text-sm text-[#FAF9F5] group-hover/title:text-white transition-colors truncate block">
                           {category.name}
                         </span>
                         <span className="text-[11px] text-neutral-500 font-mono">
@@ -246,7 +247,7 @@ export const CollectionsPage: React.FC = () => {
                       className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
                       title="Rename & edit color"
                     >
-                      <Edit2 className="w-3.5 h-3.5" />
+                      <Flaticon name="pencil" className="text-xs" />
                     </button>
 
                     <button
@@ -254,7 +255,7 @@ export const CollectionsPage: React.FC = () => {
                       className="p-1.5 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
                       title="Delete category"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Flaticon name="trash" className="text-xs" />
                     </button>
 
                     <Link
@@ -262,17 +263,17 @@ export const CollectionsPage: React.FC = () => {
                       className="p-1.5 rounded-md text-neutral-500 hover:text-white transition-colors"
                       title="View all resources"
                     >
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <Flaticon name="angle-small-right" className="text-xs" />
                     </Link>
                   </div>
                 </div>
 
                 {/* Expanded Accordion Body */}
                 {isExpanded && (
-                  <div className="border-t border-white/[0.06] bg-[#0E0F12] p-3.5 pt-3 animate-in fade-in duration-150">
+                  <div className="border-t border-[#3E3E38] bg-[#262624] p-3.5 pt-3 animate-in fade-in duration-150">
                     {preview?.isLoading ? (
                       <div className="flex items-center justify-center py-6 text-neutral-400 text-xs gap-2">
-                        <Loader2 className="w-4 h-4 animate-spin text-[#09AE5B]" />
+                        <Flaticon name="refresh" className="text-xs animate-spin text-[#D97757]" />
                         <span>Loading resources...</span>
                       </div>
                     ) : preview && preview.resources.length > 0 ? (
@@ -291,13 +292,13 @@ export const CollectionsPage: React.FC = () => {
                             return (
                               <div
                                 key={res._id}
-                                className="group/item flex items-center justify-between p-2 rounded bg-[#121316] border border-white/[0.05] hover:border-white/15 transition-colors"
+                                className="group/item flex items-center justify-between p-2 rounded bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 transition-colors"
                               >
                                 <Link
                                   to={`/library/${res._id}`}
                                   className="flex items-center gap-2.5 min-w-0 flex-1 mr-2"
                                 >
-                                  <div className="w-6 h-6 rounded bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0 text-neutral-400 group-hover/item:text-white">
+                                  <div className="w-6 h-6 rounded bg-white/[0.04] border border-[#3E3E38] flex items-center justify-center shrink-0 text-neutral-400 group-hover/item:text-white">
                                     <TypeIcon className="w-3 h-3" />
                                   </div>
                                   <div className="min-w-0 flex-1">
@@ -320,7 +321,7 @@ export const CollectionsPage: React.FC = () => {
                                     className="p-1 rounded text-neutral-500 hover:text-white transition-colors shrink-0"
                                     title="Open link in new tab"
                                   >
-                                    <ExternalLink className="w-3 h-3" />
+                                    <Flaticon name="arrow-up-right" className="text-xs" />
                                   </a>
                                 )}
                               </div>
@@ -331,12 +332,12 @@ export const CollectionsPage: React.FC = () => {
                         <div className="pt-2 flex justify-end">
                           <Link
                             to={`/categories/${category._id}`}
-                            className="inline-flex items-center gap-1.5 text-xs text-[#09AE5B] hover:text-[#09AE5B]/80 font-medium transition-colors"
+                            className="inline-flex items-center gap-1.5 text-xs text-[#D97757] hover:text-[#EE8360] font-medium transition-colors"
                           >
                             <span>
                               View all {category.resourceCount || preview.resources.length} resources in {category.name}
                             </span>
-                            <ArrowRight className="w-3 h-3" />
+                            <Flaticon name="angle-small-right" className="text-xs" />
                           </Link>
                         </div>
                       </div>
@@ -352,14 +353,14 @@ export const CollectionsPage: React.FC = () => {
           })}
         </div>
       ) : (
-        <div className="py-14 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316] space-y-3">
-          <h3 className="text-sm font-medium text-[#EDEDED]">
+        <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B] space-y-3">
+          <h3 className="text-sm font-medium text-[#FAF9F5]">
             No categories yet
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto">
             Create simple categories to group and organize your saved developer tools and references.
           </p>
-          <Button size="xs" leftIcon={<Plus className="w-3.5 h-3.5" />} onClick={openCreateModal}>
+          <Button size="xs" leftIcon={<Flaticon name="plus" className="text-xs" />} onClick={openCreateModal}>
             New Category
           </Button>
         </div>
@@ -403,7 +404,7 @@ export const CollectionsPage: React.FC = () => {
                   onClick={() => setColor(c)}
                   className={cn(
                     'w-6 h-6 rounded-full transition-transform cursor-pointer',
-                    color === c && 'ring-2 ring-white ring-offset-2 ring-offset-[#121316]'
+                    color === c && 'ring-2 ring-white ring-offset-2 ring-offset-[#1C1C1B]'
                   )}
                   style={{ backgroundColor: c }}
                 />
@@ -411,7 +412,7 @@ export const CollectionsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-3 border-t border-white/[0.08] flex justify-end gap-2">
+          <div className="pt-3 border-t border-[#3E3E38] flex justify-end gap-2">
             <Button
               type="button"
               variant="outline"

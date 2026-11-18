@@ -1,19 +1,6 @@
 ﻿import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  FolderKanban,
-  Plus,
-  Layers,
-  Edit2,
-  Trash2,
-  ArrowRight,
-  Search,
-  Archive,
-  ArchiveRestore,
-  ExternalLink,
-  MoreVertical,
-  X,
-} from 'lucide-react';
+import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Project } from '../types';
 import { Button } from '../components/ui/Button';
@@ -187,7 +174,7 @@ export const ProjectsPage: React.FC = () => {
 
         <Button
           onClick={openCreateModal}
-          leftIcon={<Plus className="w-3.5 h-3.5" />}
+          leftIcon={<Flaticon name="plus" className="text-xs" />}
           size="sm"
           className="self-start sm:self-auto shrink-0"
         >
@@ -199,26 +186,26 @@ export const ProjectsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
         {/* Search Input */}
         <div className="relative flex-1 max-w-sm">
-          <Search className="w-3.5 h-3.5 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Flaticon name="search" className="text-xs text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search projects..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-8 py-1.5 text-xs bg-[#121316] border border-white/[0.08] rounded-md text-[#EDEDED] placeholder:text-neutral-500 focus:outline-none focus:border-white/20"
+            className="w-full pl-9 pr-8 py-1.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded-md text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500"
           />
           {search && (
             <button
               onClick={() => setSearch('')}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white"
             >
-              <X className="w-3.5 h-3.5" />
+              <Flaticon name="cross" className="text-[10px]" />
             </button>
           )}
         </div>
 
         {/* Status Filter Tabs */}
-        <div className="flex items-center gap-1 p-0.5 bg-[#121316] border border-white/[0.08] rounded-md self-start sm:self-auto">
+        <div className="flex items-center gap-1 p-0.5 bg-[#1C1C1B] border border-[#3E3E38] rounded-md self-start sm:self-auto">
           <button
             onClick={() => setStatusFilter('active')}
             className={`px-2.5 py-1 text-xs rounded transition-colors cursor-pointer ${
@@ -258,7 +245,7 @@ export const ProjectsPage: React.FC = () => {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="h-64 rounded-md bg-[#121316] animate-pulse border border-white/[0.08]"
+              className="h-64 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
             />
           ))}
         </div>
@@ -267,11 +254,11 @@ export const ProjectsPage: React.FC = () => {
           {filteredProjects.map((project) => (
             <div
               key={project._id}
-              className="group flex flex-col justify-between bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors overflow-hidden"
+              className="group flex flex-col justify-between bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 rounded-md transition-colors overflow-hidden"
             >
               <div>
                 {/* Cover Image or Fallback Visual (16:9 aspect ratio) */}
-                <div className="w-full aspect-[16/9] bg-[#0E0F10] border-b border-white/[0.06] relative overflow-hidden flex items-center justify-center">
+                <div className="w-full aspect-[16/9] bg-[#262624] border-b border-[#3E3E38] relative overflow-hidden flex items-center justify-center">
                   {project.imageUrl ? (
                     <img
                       src={project.imageUrl}
@@ -282,9 +269,9 @@ export const ProjectsPage: React.FC = () => {
                       }}
                     />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#16171b] to-[#0E0F10] text-neutral-500 p-4">
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#1C1C1B] to-[#262624] text-neutral-500 p-4">
                       <div className="w-10 h-10 rounded-full bg-white/[0.04] flex items-center justify-center text-neutral-400 mb-1.5">
-                        <FolderKanban className="w-5 h-5" />
+                        <Flaticon name="folder-open" className="text-base" />
                       </div>
                       <span className="text-[11px] font-mono tracking-wider uppercase text-neutral-500">
                         Project
@@ -305,13 +292,13 @@ export const ProjectsPage: React.FC = () => {
                   <div className="flex items-center justify-between gap-2">
                     <Link
                       to={`/projects/${project._id}`}
-                      className="font-medium text-sm text-[#EDEDED] hover:text-[#09AE5B] truncate block transition-colors"
+                      className="font-medium text-sm text-[#FAF9F5] hover:text-[#D97757] truncate block transition-colors"
                     >
                       {project.name}
                     </Link>
 
-                    <span className="inline-flex items-center gap-1 font-mono text-[11px] text-neutral-400 bg-white/[0.04] px-1.5 py-0.5 rounded border border-white/[0.06] shrink-0">
-                      <Layers className="w-3 h-3 text-[#09AE5B]" />
+                    <span className="inline-flex items-center gap-1 font-mono text-[11px] text-neutral-400 bg-white/[0.04] px-1.5 py-0.5 rounded border border-[#3E3E38] shrink-0">
+                      <Flaticon name="layers" className="text-xs text-[#D97757]" />
                       <span>{project.resourceCount || 0}</span>
                     </span>
                   </div>
@@ -326,7 +313,7 @@ export const ProjectsPage: React.FC = () => {
               </div>
 
               {/* Card Footer: Last Updated & Compact Actions */}
-              <div className="px-4 py-2.5 border-t border-white/[0.06] bg-[#0E0F10]/50 flex items-center justify-between text-[11px] text-neutral-500">
+              <div className="px-4 py-2.5 border-t border-[#3E3E38] bg-[#262624]/50 flex items-center justify-between text-[11px] text-neutral-500">
                 <span>
                   Updated {formatRelativeTime(project.updatedAt || project.createdAt)}
                 </span>
@@ -337,7 +324,7 @@ export const ProjectsPage: React.FC = () => {
                     className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
                     title="Edit project"
                   >
-                    <Edit2 className="w-3.5 h-3.5" />
+                    <Flaticon name="pencil" className="text-xs" />
                   </button>
 
                   <button
@@ -346,9 +333,9 @@ export const ProjectsPage: React.FC = () => {
                     title={project.isArchived ? 'Unarchive project' : 'Archive project'}
                   >
                     {project.isArchived ? (
-                      <ArchiveRestore className="w-3.5 h-3.5 text-amber-400" />
+                      <Flaticon name="refresh" className="text-xs text-amber-400" />
                     ) : (
-                      <Archive className="w-3.5 h-3.5" />
+                      <Flaticon name="box-alt" className="text-xs" />
                     )}
                   </button>
 
@@ -357,7 +344,7 @@ export const ProjectsPage: React.FC = () => {
                     className="p-1 rounded text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
                     title="Delete project"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Flaticon name="trash" className="text-xs" />
                   </button>
 
                   <Link
@@ -366,7 +353,7 @@ export const ProjectsPage: React.FC = () => {
                     title="Open project"
                   >
                     <span>Open</span>
-                    <ArrowRight className="w-3 h-3" />
+                    <Flaticon name="angle-small-right" className="text-xs" />
                   </Link>
                 </div>
               </div>
@@ -375,11 +362,11 @@ export const ProjectsPage: React.FC = () => {
         </div>
       ) : (
         /* Empty State */
-        <div className="py-16 text-center rounded-md border border-white/[0.08] p-8 bg-[#121316]">
+        <div className="py-16 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B]">
           <div className="w-10 h-10 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center mx-auto mb-3 text-neutral-400">
-            <FolderKanban className="w-5 h-5" />
+            <Flaticon name="folder-open" className="text-lg" />
           </div>
-          <h3 className="text-sm font-medium text-[#EDEDED] mb-1">
+          <h3 className="text-sm font-medium text-[#FAF9F5] mb-1">
             {search
               ? 'No matching projects found'
               : statusFilter === 'archived'
@@ -401,7 +388,7 @@ export const ProjectsPage: React.FC = () => {
             <Button
               size="xs"
               onClick={openCreateModal}
-              leftIcon={<Plus className="w-3.5 h-3.5" />}
+              leftIcon={<Flaticon name="plus" className="text-xs" />}
             >
               Create Project
             </Button>
@@ -442,7 +429,7 @@ export const ProjectsPage: React.FC = () => {
             </label>
             <textarea
               rows={2}
-              className="w-full rounded-md p-2.5 text-xs bg-[#121316] border border-white/[0.08] text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-white/20 transition-colors"
+              className="w-full rounded-md p-2.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
               placeholder="What is this project about?"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -458,7 +445,7 @@ export const ProjectsPage: React.FC = () => {
               onChange={(e) => setImageUrl(e.target.value)}
             />
             {imageUrl && (
-              <div className="mt-2 rounded border border-white/10 overflow-hidden h-24 bg-[#0E0F10] flex items-center justify-center">
+              <div className="mt-2 rounded border border-[#3E3E38] overflow-hidden h-24 bg-[#262624] flex items-center justify-center">
                 <img
                   src={imageUrl}
                   alt="Preview"

@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import App from './App';
 import './index.css';
+import '@flaticon/flaticon-uicons/css/all/all.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {

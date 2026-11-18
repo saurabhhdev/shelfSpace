@@ -1,13 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Star,
-  ExternalLink,
-  Trash2,
-  Edit2,
-  Globe,
-  FolderMinus,
-} from 'lucide-react';
+import { Flaticon } from '../ui/Flaticon';
 import type { Resource } from '../../types';
 import { Badge } from '../ui/Badge';
 import { getResourceTypeLabel, getResourceTypeIcon } from '../../lib/resourceTypes';
@@ -55,7 +48,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   const renderPlaceholder = (isSmall = false) => (
     <div
       className={cn(
-        'w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#16171b] to-[#0E0F10] text-neutral-500 border border-white/[0.04]',
+        'w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#1C1C1B] to-[#262624] text-neutral-500 border border-[#3E3E38]',
         isSmall ? 'p-1.5' : 'p-4'
       )}
     >
@@ -73,10 +66,10 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   // ==================== LIST VIEW LAYOUT ====================
   if (viewMode === 'list') {
     return (
-      <div className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors gap-3 font-sans">
+      <div className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 rounded-md transition-colors gap-3 font-sans">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           {/* Thumbnail Preview (Left) */}
-          <div className="w-24 sm:w-28 h-16 sm:h-18 rounded-md overflow-hidden shrink-0 border border-white/[0.06] bg-[#0E0F10] relative">
+          <div className="w-24 sm:w-28 h-16 sm:h-18 rounded-md overflow-hidden shrink-0 border border-[#3E3E38] bg-[#262624] relative">
             {resource.previewImage && !imageError ? (
               <img
                 src={resource.previewImage}
@@ -95,7 +88,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             <div className="flex flex-wrap items-center gap-2">
               <Link
                 to={`/library/${resource._id}`}
-                className="font-medium text-xs sm:text-sm text-[#EDEDED] hover:text-white truncate transition-colors"
+                className="font-medium text-xs sm:text-sm text-[#FAF9F5] hover:text-white truncate transition-colors"
               >
                 {resource.title}
               </Link>
@@ -106,10 +99,10 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               </Badge>
 
               {categoryName && (
-                <span className="inline-flex items-center gap-1 text-[11px] text-neutral-400 bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/[0.06]">
+                <span className="inline-flex items-center gap-1 text-[11px] text-neutral-400 bg-white/[0.03] px-1.5 py-0.5 rounded border border-[#3E3E38]">
                   <span
                     className="w-1.5 h-1.5 rounded-full shrink-0"
-                    style={{ backgroundColor: categoryColor || '#09AE5B' }}
+                    style={{ backgroundColor: categoryColor || '#D97757' }}
                   />
                   <span className="truncate max-w-[100px]">{categoryName}</span>
                 </span>
@@ -129,7 +122,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/[0.04]">
+        <div className="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#3E3E38]">
           <span className="text-[11px] text-neutral-500 mr-1 font-mono">
             {formatRelativeTime(resource.createdAt)}
           </span>
@@ -143,7 +136,11 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               )}
               title={resource.isFavourite ? 'Remove favorite' : 'Add to favorites'}
             >
-              <Star className={cn('w-3.5 h-3.5', resource.isFavourite && 'fill-amber-400')} />
+              <Flaticon
+                name="star"
+                variant={resource.isFavourite ? 'sr' : 'rr'}
+                className={cn('text-xs', resource.isFavourite && 'text-amber-400')}
+              />
             </button>
 
             {resource.url && (
@@ -154,7 +151,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
                 className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
                 title="Open website in new tab"
               >
-                <ExternalLink className="w-3.5 h-3.5" />
+                <Flaticon name="arrow-up-right" className="text-xs" />
               </a>
             )}
 
@@ -163,7 +160,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               className="p-1.5 rounded-md text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
               title="Edit resource"
             >
-              <Edit2 className="w-3.5 h-3.5" />
+              <Flaticon name="pencil" className="text-xs" />
             </button>
 
             {onRemoveFromProject && (
@@ -172,7 +169,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
                 className="p-1.5 rounded-md text-neutral-400 hover:text-amber-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
                 title="Remove from project"
               >
-                <FolderMinus className="w-3.5 h-3.5" />
+                <Flaticon name="folder-minus" className="text-xs" />
               </button>
             )}
 
@@ -181,7 +178,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               className="p-1.5 rounded-md text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
               title="Delete resource"
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <Flaticon name="trash" className="text-xs" />
             </button>
           </div>
         </div>
@@ -191,10 +188,10 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
 
   // ==================== GRID VIEW LAYOUT ====================
   return (
-    <div className="group flex flex-col justify-between bg-[#121316] border border-white/[0.08] hover:border-white/20 rounded-md transition-colors font-sans overflow-hidden">
+    <div className="group flex flex-col justify-between bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 rounded-md transition-colors font-sans overflow-hidden">
       <div>
         {/* 1. Preview Image (Top, consistent 16:9 aspect ratio) */}
-        <div className="w-full aspect-[16/9] bg-[#0E0F10] border-b border-white/[0.06] relative overflow-hidden">
+        <div className="w-full aspect-[16/9] bg-[#262624] border-b border-[#3E3E38] relative overflow-hidden">
           {resource.previewImage && !imageError ? (
             <img
               src={resource.previewImage}
@@ -216,7 +213,11 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             )}
             title={resource.isFavourite ? 'Remove favorite' : 'Add to favorites'}
           >
-            <Star className={cn('w-3.5 h-3.5', resource.isFavourite && 'fill-amber-400')} />
+            <Flaticon
+              name="star"
+              variant={resource.isFavourite ? 'sr' : 'rr'}
+              className={cn('text-xs', resource.isFavourite && 'text-amber-400')}
+            />
           </button>
         </div>
 
@@ -230,10 +231,10 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             </Badge>
 
             {categoryName && (
-              <span className="inline-flex items-center gap-1 text-[10px] text-neutral-400 bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/[0.06]">
+              <span className="inline-flex items-center gap-1 text-[10px] text-neutral-400 bg-white/[0.03] px-1.5 py-0.5 rounded border border-[#3E3E38]">
                 <span
                   className="w-1.5 h-1.5 rounded-full shrink-0"
-                  style={{ backgroundColor: categoryColor || '#09AE5B' }}
+                  style={{ backgroundColor: categoryColor || '#D97757' }}
                 />
                 <span className="truncate max-w-[110px]">{categoryName}</span>
               </span>
@@ -243,7 +244,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           {/* Resource Title */}
           <Link
             to={`/library/${resource._id}`}
-            className="font-medium text-sm text-[#EDEDED] hover:text-white line-clamp-1 block transition-colors pt-0.5"
+            className="font-medium text-sm text-[#FAF9F5] hover:text-white line-clamp-1 block transition-colors pt-0.5"
           >
             {resource.title}
           </Link>
@@ -261,7 +262,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
                   }}
                 />
               ) : (
-                <Globe className="w-3 h-3 text-neutral-500" />
+                <Flaticon name="globe" className="text-[11px] text-neutral-500" />
               )}
               <span className="truncate">{domain}</span>
             </div>
@@ -278,7 +279,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               {resource.tags.slice(0, 3).map((tag, idx) => (
                 <span
                   key={idx}
-                  className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.04] text-neutral-400 border border-white/[0.06]"
+                  className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.04] text-neutral-400 border border-[#3E3E38]"
                 >
                   #{tag}
                 </span>
@@ -294,7 +295,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
       </div>
 
       {/* 3. Card Footer: Date & Actions */}
-      <div className="px-4 py-2.5 border-t border-white/[0.06] bg-[#0E0F10]/50 flex items-center justify-between text-[11px] text-neutral-500">
+      <div className="px-4 py-2.5 border-t border-[#3E3E38] bg-[#262624]/50 flex items-center justify-between text-[11px] text-neutral-500">
         <span>{formatRelativeTime(resource.createdAt)}</span>
 
         <div className="flex items-center gap-1">
@@ -306,7 +307,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors"
               title="Open website"
             >
-              <ExternalLink className="w-3.5 h-3.5" />
+              <Flaticon name="arrow-up-right" className="text-xs" />
             </a>
           )}
 
@@ -315,7 +316,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             className="p-1 rounded text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
             title="Edit"
           >
-            <Edit2 className="w-3.5 h-3.5" />
+            <Flaticon name="pencil" className="text-xs" />
           </button>
 
           {onRemoveFromProject && (
@@ -324,7 +325,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               className="p-1 rounded text-neutral-400 hover:text-amber-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
               title="Remove from project"
             >
-              <FolderMinus className="w-3.5 h-3.5" />
+              <Flaticon name="folder-minus" className="text-xs" />
             </button>
           )}
 
@@ -333,7 +334,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             className="p-1 rounded text-neutral-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors cursor-pointer"
             title="Delete"
           >
-            <Trash2 className="w-3.5 h-3.5" />
+            <Flaticon name="trash" className="text-xs" />
           </button>
         </div>
       </div>

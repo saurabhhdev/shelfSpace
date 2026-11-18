@@ -3,16 +3,16 @@ import { Link } from 'react-router-dom';
 
 export const OssiumFooter: React.FC = () => {
   return (
-    <footer className="bg-transparent border-t border-white/[0.06] pt-16 pb-12 text-[#8E8E93] text-sm">
+    <footer className="bg-transparent border-t border-[#3E3E38] pt-16 pb-12 text-[#B7B5A9] text-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand Info */}
           <div className="col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded-none bg-neutral-800 border border-white/10 flex items-center justify-center">
-                <span className="w-2 h-2 rounded-none bg-[#09AE5B]"></span>
+              <div className="w-6 h-6 rounded-none bg-[#1C1C1B] border border-[#3E3E38] flex items-center justify-center">
+                <span className="w-2 h-2 rounded-none bg-[#D97757]"></span>
               </div>
-              <span className="text-base font-bold text-[#E5E5E5] tracking-tight">shelfspace</span>
+              <span className="text-base font-bold text-[#FAF9F5] tracking-tight">shelfspace</span>
             </Link>
             <p className="text-xs text-neutral-400 max-w-sm leading-relaxed mb-4">
               The developer-first digital bookmark manager and technical knowledge repository. Designed for speed, taxonomy, and clean curation.
@@ -67,7 +67,7 @@ export const OssiumFooter: React.FC = () => {
 
           {/* Product links */}
           <div>
-            <div className="text-xs font-semibold text-[#E5E5E5] uppercase tracking-wider mb-3">
+            <div className="text-xs font-semibold text-[#FAF9F5] uppercase tracking-wider mb-3">
               Platform
             </div>
             <ul className="space-y-2 text-xs">
@@ -81,7 +81,7 @@ export const OssiumFooter: React.FC = () => {
 
           {/* Resources links */}
           <div>
-            <div className="text-xs font-semibold text-[#E5E5E5] uppercase tracking-wider mb-3">
+            <div className="text-xs font-semibold text-[#FAF9F5] uppercase tracking-wider mb-3">
               Resources
             </div>
             <ul className="space-y-2 text-xs">
@@ -94,7 +94,7 @@ export const OssiumFooter: React.FC = () => {
 
           {/* Legal links */}
           <div>
-            <div className="text-xs font-semibold text-[#E5E5E5] uppercase tracking-wider mb-3">
+            <div className="text-xs font-semibold text-[#FAF9F5] uppercase tracking-wider mb-3">
               Company
             </div>
             <ul className="space-y-2 text-xs">
@@ -107,7 +107,7 @@ export const OssiumFooter: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/[0.06] flex items-center justify-between text-xs text-neutral-400">
+        <div className="pt-8 border-t border-[#3E3E38] flex items-center justify-between text-xs text-neutral-400">
           <div>
             © {new Date().getFullYear()} Shelfspace. All rights reserved.
           </div>

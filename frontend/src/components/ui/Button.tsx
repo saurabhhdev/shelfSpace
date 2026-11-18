@@ -28,37 +28,37 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       'inline-flex items-center justify-center font-medium transition-all duration-150 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 disabled:opacity-50 disabled:pointer-events-none cursor-pointer rounded-md';
 
     const variants = {
-      // Primary: Tactile Chalk White with Charcoal Black typography & crisp micro-shadow
+      // Primary: Tactile Off-White with Charcoal typography & crisp micro-shadow (MX Icons)
       primary:
-        'bg-[#EDEDED] hover:bg-white text-[#0E0F10] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.7)] border border-white/40 hover:border-white active:scale-[0.99]',
+        'bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium shadow-[0_1px_2px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.7)] border border-white/40 hover:border-white active:scale-[0.99]',
 
-      // Secondary: Chrome Grey with Charcoal depth & Chalk White typography
+      // Secondary: MX Icons Surface with subtle border
       secondary:
-        'bg-[#18191d] hover:bg-[#202127] text-[#EDEDED] hover:text-white font-medium border border-white/[0.12] hover:border-white/[0.22] shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)] active:scale-[0.99]',
+        'bg-[#1C1C1B] hover:bg-[#1A1915] text-[#FAF9F5] hover:text-white font-medium border border-[#3E3E38] hover:border-neutral-500 shadow-[0_1px_2px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)] active:scale-[0.99]',
 
-      // Chrome: Explicit metallic Chrome Grey with gradient bevel
+      // Chrome: Explicit metallic Charcoal with subtle border
       chrome:
-        'bg-gradient-to-b from-[#25272e] to-[#18191d] hover:from-[#2c2e36] hover:to-[#1f2126] text-[#EDEDED] hover:text-white font-medium border border-white/[0.16] hover:border-white/[0.28] shadow-[0_1px_2px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.08)] active:scale-[0.99]',
+        'bg-[#1C1C1B] hover:bg-[#1A1915] text-[#FAF9F5] hover:text-white font-medium border border-[#3E3E38] hover:border-neutral-500 shadow-[0_1px_2px_rgba(0,0,0,0.4)] active:scale-[0.99]',
 
-      // Outline: Matte Charcoal outline with subtle chrome border
+      // Outline: Matte Charcoal outline with subtle border
       outline:
-        'bg-transparent hover:bg-white/[0.04] text-[#A1A1AA] hover:text-[#EDEDED] border border-white/[0.08] hover:border-white/[0.18] active:scale-[0.99]',
+        'bg-transparent hover:bg-white/[0.04] text-[#B7B5A9] hover:text-[#FAF9F5] border border-[#3E3E38] hover:border-neutral-500 active:scale-[0.99]',
 
-      // Ghost: Visually quiet text-only button with soft charcoal hover
+      // Ghost: Visually quiet text-only button with soft hover
       ghost:
-        'bg-transparent hover:bg-white/[0.05] text-[#8E8E93] hover:text-[#EDEDED]',
+        'bg-transparent hover:bg-white/[0.05] text-[#B7B5A9] hover:text-[#FAF9F5]',
 
       // Danger: Charcoal Black with soft Crimson accent
       danger:
         'bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 border border-rose-500/20 hover:border-rose-500/35 active:scale-[0.99]',
 
-      // Subtle: Charcoal surface with muted chrome text
+      // Subtle: Charcoal surface with muted text
       subtle:
-        'bg-[#141518] hover:bg-[#1a1b20] text-[#A1A1AA] hover:text-[#EDEDED] border border-white/[0.06] hover:border-white/[0.12] active:scale-[0.99]',
+        'bg-[#1B1B19] hover:bg-[#1A1915] text-[#B7B5A9] hover:text-[#FAF9F5] border border-[#3E3E38] active:scale-[0.99]',
 
-      // Emerald: Preserved for specific green actions if requested
+      // Emerald / Accent: MX Icons signature terracotta accent
       emerald:
-        'bg-[#09AE5B] hover:bg-[#089E52] text-white font-medium shadow-xs border border-emerald-400/30 active:scale-[0.99]',
+        'bg-[#D97757] hover:bg-[#EE8360] text-white font-medium shadow-xs border border-[#D97757]/40 active:scale-[0.99]',
     };
 
     const sizes = {

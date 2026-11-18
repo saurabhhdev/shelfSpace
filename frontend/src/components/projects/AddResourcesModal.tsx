@@ -127,13 +127,13 @@ export const AddResourcesModal: React.FC<AddResourcesModalProps> = ({
             placeholder="Search resources by title, tag, or domain..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs bg-[#121316] border border-white/[0.08] rounded-md text-[#EDEDED] placeholder:text-neutral-500 focus:outline-none focus:border-white/20"
+            className="w-full pl-9 pr-4 py-2 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded-md text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500"
           />
         </div>
 
         {/* Resources Selection List */}
-        <div className="border border-white/[0.08] rounded-md bg-[#0E0F10] overflow-hidden">
-          <div className="px-3 py-2 bg-white/[0.02] border-b border-white/[0.06] flex items-center justify-between text-xs text-neutral-400">
+        <div className="border border-[#3E3E38] rounded-md bg-[#262624] overflow-hidden">
+          <div className="px-3 py-2 bg-white/[0.02] border-b border-[#3E3E38] flex items-center justify-between text-xs text-neutral-400">
             <span>
               {availableResources.length} available in library{' '}
               {search && `(${filteredResources.length} matching)`}
@@ -142,7 +142,7 @@ export const AddResourcesModal: React.FC<AddResourcesModalProps> = ({
               <button
                 type="button"
                 onClick={handleSelectAllVisible}
-                className="text-[11px] text-[#09AE5B] hover:underline cursor-pointer"
+                className="text-[11px] text-[#D97757] hover:underline cursor-pointer"
               >
                 {filteredResources.every((r) => selectedIds.includes(r._id))
                   ? 'Deselect all'
@@ -151,10 +151,10 @@ export const AddResourcesModal: React.FC<AddResourcesModalProps> = ({
             )}
           </div>
 
-          <div className="max-h-64 overflow-y-auto divide-y divide-white/[0.04]">
+          <div className="max-h-64 overflow-y-auto divide-y divide-[#3E3E38]">
             {isLoading ? (
               <div className="py-12 flex flex-col items-center justify-center text-xs text-neutral-500 gap-2">
-                <Loader2 className="w-4 h-4 animate-spin text-[#09AE5B]" />
+                <Loader2 className="w-4 h-4 animate-spin text-[#D97757]" />
                 <span>Loading library resources...</span>
               </div>
             ) : filteredResources.length > 0 ? (
@@ -178,7 +178,7 @@ export const AddResourcesModal: React.FC<AddResourcesModalProps> = ({
                     onClick={() => toggleSelect(resource._id)}
                     className={`flex items-center gap-3 px-3 py-2.5 text-xs cursor-pointer transition-colors select-none ${
                       isSelected
-                        ? 'bg-[#09AE5B]/10 hover:bg-[#09AE5B]/15'
+                        ? 'bg-[#D97757]/10 hover:bg-[#D97757]/15'
                         : 'hover:bg-white/[0.03]'
                     }`}
                   >
@@ -186,7 +186,7 @@ export const AddResourcesModal: React.FC<AddResourcesModalProps> = ({
                     <div
                       className={`w-4 h-4 rounded shrink-0 flex items-center justify-center border transition-colors ${
                         isSelected
-                          ? 'bg-[#09AE5B] border-[#09AE5B] text-black'
+                          ? 'bg-[#D97757] border-[#D97757] text-white'
                           : 'border-white/20 bg-white/[0.04]'
                       }`}
                     >
@@ -194,7 +194,7 @@ export const AddResourcesModal: React.FC<AddResourcesModalProps> = ({
                     </div>
 
                     {/* Thumbnail / Icon */}
-                    <div className="w-7 h-7 rounded bg-[#16171b] border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+                    <div className="w-7 h-7 rounded bg-[#1C1C1B] border border-[#3E3E38] flex items-center justify-center shrink-0 overflow-hidden">
                       {resource.previewImage ? (
                         <img
                           src={resource.previewImage}
@@ -208,7 +208,7 @@ export const AddResourcesModal: React.FC<AddResourcesModalProps> = ({
 
                     {/* Title and Domain */}
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-[#EDEDED] truncate">
+                      <div className="font-medium text-[#FAF9F5] truncate">
                         {resource.title}
                       </div>
                       <div className="flex items-center gap-2 text-[10px] text-neutral-500 mt-0.5">

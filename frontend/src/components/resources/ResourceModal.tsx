@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { Flaticon } from '../ui/Flaticon';
 import {
   Wrench,
   GitBranch,
@@ -40,7 +41,7 @@ export interface ResourceModalProps {
 }
 
 const MUTED_COLORS = [
-  '#09AE5B', // Emerald
+  '#D97757', // Terracotta (MX Icons)
   '#3b82f6', // Blue
   '#8b5cf6', // Purple
   '#f59e0b', // Amber
@@ -453,7 +454,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
         <div className="font-sans space-y-4">
           {/* 1. Workflow Mode Segmented Switcher (Only when adding new resource) */}
           {!isEdit && (
-            <div className="flex items-center p-1 bg-[#0E0F10] border border-white/[0.08] rounded-md">
+            <div className="flex items-center p-1 bg-[#262624] border border-[#3E3E38] rounded-md">
               <button
                 type="button"
                 onClick={() => {
@@ -467,7 +468,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                     : 'text-neutral-400 hover:text-white'
                 )}
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#09AE5B]" />
+                <Flaticon name="sparkles" className="text-xs text-[#D97757]" />
                 <span>Auto Add</span>
                 <span className="text-[10px] text-neutral-500 font-normal hidden sm:inline">
                   (Retrieve via URL)
@@ -487,7 +488,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                     : 'text-neutral-400 hover:text-white'
                 )}
               >
-                <PenLine className="w-3.5 h-3.5" />
+                <Flaticon name="pencil" className="text-xs" />
                 <span>Manual Add</span>
                 <span className="text-[10px] text-neutral-500 font-normal hidden sm:inline">
                   (Complete control)
@@ -499,7 +500,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
           {/* Duplicate URL Warning Banner */}
           {duplicateWarning && (
             <div className="p-3 rounded-md bg-amber-950/20 border border-amber-900/40 text-xs text-amber-300 flex items-start gap-2.5">
-              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+              <Flaticon name="exclamation" className="text-xs shrink-0 text-amber-400 mt-0.5" />
               <div className="flex-1">
                 <span className="font-medium">Duplicate URL detected:</span> A resource with this URL already exists in your library ({duplicateWarning.title}). You can still save it if this duplicate is intentional.
               </div>
@@ -509,17 +510,17 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
           {/* Form Error Banner */}
           {formError && (
             <div className="p-3 rounded-md bg-rose-950/20 border border-rose-900/40 text-xs text-rose-400 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+              <Flaticon name="info" className="text-xs shrink-0" />
               <span>{formError}</span>
             </div>
           )}
 
           {/* ==================== AUTO ADD: STEP 1 (INITIAL URL INPUT) ==================== */}
           {mode === 'auto' && !isEdit && !hasFetchedMeta && !isFetchingMeta && (
-            <div className="p-4 rounded-md bg-[#0E0F10] border border-white/[0.08] space-y-3">
+            <div className="p-4 rounded-md bg-[#262624] border border-[#3E3E38] space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-medium text-neutral-300 flex items-center gap-1.5">
-                  <Globe className="w-3.5 h-3.5 text-[#09AE5B]" />
+                  <Flaticon name="globe" className="text-xs text-[#D97757]" />
                   <span>Enter Resource URL *</span>
                 </label>
                 <span className="text-[11px] text-neutral-500">
@@ -548,7 +549,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                   size="sm"
                   onClick={handleFetchMetadata}
                   disabled={!url.trim() || isFetchingMeta}
-                  leftIcon={<Sparkles className="w-3.5 h-3.5" />}
+                  leftIcon={<Flaticon name="sparkles" className="text-xs" />}
                   className="shrink-0"
                 >
                   Fetch Details
@@ -558,7 +559,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
               {/* Retrieval Notice / Fallback Message */}
               {fetchMetaError && (
                 <div className="text-[11px] text-amber-400/90 flex items-center gap-1.5 pt-1">
-                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <Flaticon name="info" className="text-xs shrink-0" />
                   <span>{fetchMetaError}</span>
                 </div>
               )}
@@ -579,11 +580,11 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
 
           {/* ==================== AUTO ADD: LOADING SKELETON ==================== */}
           {mode === 'auto' && isFetchingMeta && (
-            <div className="p-6 rounded-md bg-[#0E0F10] border border-white/[0.08] space-y-3 text-center">
-              <div className="w-8 h-8 rounded-full bg-[#16171b] border border-white/10 flex items-center justify-center mx-auto text-[#09AE5B]">
-                <Loader2 className="w-4 h-4 animate-spin" />
+            <div className="p-6 rounded-md bg-[#262624] border border-[#3E3E38] space-y-3 text-center">
+              <div className="w-8 h-8 rounded-full bg-[#1C1C1B] border border-[#3E3E38] flex items-center justify-center mx-auto text-[#D97757]">
+                <Flaticon name="refresh" className="text-sm animate-spin" />
               </div>
-              <div className="text-xs font-medium text-[#EDEDED]">
+              <div className="text-xs font-medium text-[#FAF9F5]">
                 Retrieving resource metadata & classifying...
               </div>
               <p className="text-[11px] text-neutral-400 max-w-sm mx-auto">
@@ -597,9 +598,9 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Auto Mode: Top bar to change URL or re-fetch */}
               {mode === 'auto' && !isEdit && (
-                <div className="flex items-center justify-between p-2.5 rounded-md bg-[#0E0F10] border border-white/[0.08] text-xs">
+                <div className="flex items-center justify-between p-2.5 rounded-md bg-[#262624] border border-[#3E3E38] text-xs">
                   <div className="flex items-center gap-2 truncate mr-2">
-                    <Globe className="w-3.5 h-3.5 text-[#09AE5B] shrink-0" />
+                    <Flaticon name="globe" className="text-xs text-[#D97757] shrink-0" />
                     <span className="text-neutral-400 truncate">{url}</span>
                   </div>
                   <button
@@ -608,7 +609,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                     className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-white shrink-0 cursor-pointer"
                     title="Change URL"
                   >
-                    <RotateCcw className="w-3 h-3" />
+                    <Flaticon name="refresh" className="text-[10px]" />
                     <span>Change URL</span>
                   </button>
                 </div>
@@ -616,7 +617,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
 
               {/* Preview Image Banner (if available) */}
               {previewImage && (
-                <div className="relative w-full aspect-[16/9] max-h-44 rounded-md bg-[#0E0F10] border border-white/[0.08] overflow-hidden group">
+                <div className="relative w-full aspect-[16/9] max-h-44 rounded-md bg-[#262624] border border-[#3E3E38] overflow-hidden group">
                   <img
                     src={previewImage}
                     alt="Preview"
@@ -633,7 +634,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                       className="p-1 rounded-md bg-black/70 text-neutral-300 hover:text-rose-400 transition-colors cursor-pointer"
                       title="Remove preview image"
                     >
-                      <X className="w-4 h-4" />
+                      <Flaticon name="cross" className="text-xs" />
                     </button>
                   </div>
                 </div>
@@ -679,7 +680,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                     Resource Type *
                   </label>
                   {suggestedType && (
-                    <span className="text-[10px] text-[#09AE5B] flex items-center gap-1 font-mono">
+                    <span className="text-[10px] text-[#D97757] flex items-center gap-1 font-mono">
                       <Sparkles className="w-2.5 h-2.5" />
                       Suggested based on website
                     </span>
@@ -698,14 +699,14 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                         className={cn(
                           'flex items-center gap-2 p-2 rounded-md border text-xs text-left transition-colors cursor-pointer',
                           isSelected
-                            ? 'bg-[#09AE5B]/10 border-[#09AE5B] text-white font-medium'
-                            : 'bg-[#121316] border-white/[0.08] text-neutral-400 hover:text-white hover:border-white/20'
+                            ? 'bg-[#D97757]/10 border-[#D97757] text-white font-medium'
+                            : 'bg-[#1C1C1B] border-[#3E3E38] text-neutral-400 hover:text-white hover:border-neutral-500'
                         )}
                       >
                         <Icon
                           className={cn(
                             'w-3.5 h-3.5 shrink-0',
-                            isSelected ? 'text-[#09AE5B]' : 'text-neutral-500'
+                            isSelected ? 'text-[#D97757]' : 'text-neutral-500'
                           )}
                         />
                         <span className="truncate">{t.label}</span>
@@ -722,7 +723,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                 </label>
                 <textarea
                   rows={2}
-                  className="w-full rounded-md p-2.5 text-xs bg-[#121316] border border-white/[0.08] text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-white/20 transition-colors"
+                  className="w-full rounded-md p-2.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
                   placeholder="Brief summary of what this resource provides..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -740,7 +741,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setIsCreatingCategory(true)}
-                      className="text-[11px] text-[#09AE5B] hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-[11px] text-[#D97757] hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <Plus className="w-3 h-3" />
                       <span>New Category</span>
@@ -750,15 +751,15 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
 
                 {/* Inline Category Creator */}
                 {isCreatingCategory ? (
-                  <div className="p-3 bg-[#0E0F10] border border-white/[0.08] rounded-md space-y-2 mb-2">
-                    <div className="text-xs font-medium text-[#EDEDED]">Create Category</div>
+                  <div className="p-3 bg-[#262624] border border-[#3E3E38] rounded-md space-y-2 mb-2">
+                    <div className="text-xs font-medium text-[#FAF9F5]">Create Category</div>
                     <div className="flex items-center gap-2">
                       <input
                         type="text"
                         placeholder="Category name..."
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
-                        className="flex-1 px-2.5 py-1 text-xs bg-[#121316] border border-white/[0.08] rounded text-[#EDEDED] focus:outline-none"
+                        className="flex-1 px-2.5 py-1 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded text-[#FAF9F5] focus:outline-none"
                       />
                       <div className="flex items-center gap-1">
                         {MUTED_COLORS.map((c) => (
@@ -797,7 +798,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                   <select
                     value={categoryId}
                     onChange={(e) => setCategoryId(e.target.value)}
-                    className="w-full px-2.5 py-2 text-xs bg-[#121316] border border-white/[0.08] rounded-md text-[#EDEDED] focus:outline-none focus:border-white/20 cursor-pointer"
+                    className="w-full px-2.5 py-2 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded-md text-[#FAF9F5] focus:outline-none focus:border-neutral-500 cursor-pointer"
                   >
                     <option value="">No Category</option>
                     {categories.map((cat) => (
@@ -810,7 +811,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
 
                 {/* Suggested Category Matching / Creation Banner */}
                 {suggestedCategory?.isExisting && categoryId === suggestedCategory.categoryId && (
-                  <div className="mt-1.5 flex items-center gap-1.5 text-[11px] p-2 rounded bg-[#09AE5B]/10 border border-[#09AE5B]/20 text-[#09AE5B]">
+                  <div className="mt-1.5 flex items-center gap-1.5 text-[11px] p-2 rounded bg-[#D97757]/10 border border-[#D97757]/20 text-[#D97757]">
                     <Check className="w-3.5 h-3.5 shrink-0" />
                     <span>
                       Recommended: <strong>{suggestedCategory.name}</strong> ({suggestedCategory.reason || 'matched existing category'})
@@ -819,9 +820,9 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                 )}
 
                 {suggestedCategory && !suggestedCategory.isExisting && !categoryId && !isCreatingCategory && (
-                  <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] p-2 rounded bg-white/[0.02] border border-white/[0.08]">
+                  <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] p-2 rounded bg-white/[0.02] border border-[#3E3E38]">
                     <div className="flex items-center gap-1.5 text-neutral-300 truncate">
-                      <Sparkles className="w-3.5 h-3.5 text-[#09AE5B] shrink-0" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#D97757] shrink-0" />
                       <span className="truncate">
                         Suggested Category: <strong className="text-white">{suggestedCategory.name}</strong>
                       </span>
@@ -829,7 +830,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                     <button
                       type="button"
                       onClick={() => handleQuickCreateCategory(suggestedCategory.name)}
-                      className="text-[#09AE5B] hover:underline font-medium shrink-0 cursor-pointer"
+                      className="text-[#D97757] hover:underline font-medium shrink-0 cursor-pointer"
                     >
                       + Create & Assign
                     </button>
@@ -867,7 +868,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                   {tags.map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-white/[0.04] text-[#EDEDED] border border-white/[0.08]"
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-white/[0.04] text-[#FAF9F5] border border-[#3E3E38]"
                     >
                       <span>#{tag}</span>
                       <button
@@ -894,7 +895,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                         handleAddTag(tagInput);
                       }
                     }}
-                    className="flex-1 px-2.5 py-1.5 text-xs bg-[#121316] border border-white/[0.08] rounded-md text-[#EDEDED] placeholder:text-neutral-500 focus:outline-none focus:border-white/20"
+                    className="flex-1 px-2.5 py-1.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded-md text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500"
                   />
                   <Button
                     type="button"
@@ -919,7 +920,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                       {selectedProjectIds.length} selected
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-[#0E0F10] border border-white/[0.08] rounded-md">
+                  <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-[#262624] border border-[#3E3E38] rounded-md">
                     {availableProjects.map((p) => {
                       const isAssigned = selectedProjectIds.includes(p._id);
                       return (
@@ -930,18 +931,18 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                           className={cn(
                             'flex items-center gap-1.5 px-2 py-1 rounded text-xs border transition-colors cursor-pointer select-none',
                             isAssigned
-                              ? 'bg-[#09AE5B]/10 border-[#09AE5B] text-white font-medium'
-                              : 'bg-[#121316] border-white/[0.06] text-neutral-400 hover:text-white'
+                              ? 'bg-[#D97757]/10 border-[#D97757] text-white font-medium'
+                              : 'bg-[#1C1C1B] border-[#3E3E38] text-neutral-400 hover:text-white'
                           )}
                         >
                           <FolderKanban
                             className={cn(
                               'w-3 h-3',
-                              isAssigned ? 'text-[#09AE5B]' : 'text-neutral-500'
+                              isAssigned ? 'text-[#D97757]' : 'text-neutral-500'
                             )}
                           />
                           <span>{p.name}</span>
-                          {isAssigned && <Check className="w-2.5 h-2.5 ml-0.5 text-[#09AE5B]" />}
+                          {isAssigned && <Check className="w-2.5 h-2.5 ml-0.5 text-[#D97757]" />}
                         </button>
                       );
                     })}
@@ -956,7 +957,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                 </label>
                 <textarea
                   rows={2}
-                  className="w-full rounded-md p-2.5 text-xs bg-[#121316] border border-white/[0.08] text-[#E5E5E5] placeholder:text-neutral-500 focus:outline-none focus:border-white/20 transition-colors"
+                  className="w-full rounded-md p-2.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
                   placeholder="Installation notes, quick usage commands, or personal reminders..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
@@ -976,7 +977,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
               </div>
 
               {/* Sticky Footer Actions */}
-              <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between sticky bottom-0 bg-[#121316] pb-1 z-10">
+              <div className="pt-3 border-t border-[#3E3E38] flex items-center justify-between sticky bottom-0 bg-[#1C1C1B] pb-1 z-10">
                 <Button
                   type="button"
                   variant="ghost"

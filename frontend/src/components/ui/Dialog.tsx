@@ -58,7 +58,7 @@ export const Dialog: React.FC<DialogProps> = ({
         role="dialog"
         aria-modal="true"
         className={cn(
-          'relative w-full max-h-[90vh] flex flex-col bg-[#121316] border border-white/[0.08] rounded-lg shadow-2xl z-10 text-[#E5E5E5] overflow-hidden',
+          'relative w-full max-h-[90vh] flex flex-col bg-[#1C1C1B] border border-[#3E3E38] rounded-lg shadow-2xl z-10 text-[#FAF9F5] overflow-hidden',
           'animate-in zoom-in-95 duration-150',
           maxWidths[maxWidth]
         )}
@@ -72,8 +72,8 @@ export const Dialog: React.FC<DialogProps> = ({
         </button>
 
         {title && (
-          <div className="p-6 pb-3 shrink-0 border-b border-white/[0.04]">
-            <h3 className="text-base font-semibold text-[#E5E5E5] pr-8">{title}</h3>
+          <div className="p-6 pb-3 shrink-0 border-b border-[#3E3E38]">
+            <h3 className="text-base font-semibold text-[#FAF9F5] pr-8">{title}</h3>
             {description && (
               <p className="text-xs text-neutral-400 mt-0.5 pr-8">{description}</p>
             )}

@@ -23,9 +23,9 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0E0F10] text-[#E5E5E5]">
-        <div className="w-8 h-8 rounded-md bg-[#16171b] border border-white/[0.08] flex items-center justify-center mb-3">
-          <span className="w-2.5 h-2.5 rounded-sm bg-[#09AE5B] animate-pulse"></span>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#262624] text-[#FAF9F5]">
+        <div className="w-8 h-8 rounded-md bg-[#1C1C1B] border border-[#3E3E38] flex items-center justify-center mb-3">
+          <span className="w-2.5 h-2.5 rounded-sm bg-[#D97757] animate-pulse"></span>
         </div>
         <div className="text-xs text-neutral-400 font-sans">
           Loading Shelfspace...
