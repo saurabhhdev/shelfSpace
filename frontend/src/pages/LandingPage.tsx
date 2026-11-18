@@ -11,11 +11,11 @@ export const LandingPage: React.FC = () => {
   const [isTourOpen, setIsTourOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#262624] text-[#FAF9F5] relative selection:bg-[#D97757] selection:text-white">
+    <div className="min-h-screen flex flex-col justify-between bg-[#262624] text-[#FAF9F5] relative selection:bg-[#D97757] selection:text-white">
       {/* Ossium Sticky/Fixed Navbar */}
       <OssiumNavbar />
 
-      <main className="relative z-10">
+      <main className="relative z-10 flex-1">
         {/* Ossium Hero with Showcase Frame */}
         <OssiumHero onExploreClick={() => setIsTourOpen(true)} />
 

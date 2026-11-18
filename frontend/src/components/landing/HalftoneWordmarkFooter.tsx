@@ -167,12 +167,12 @@ const HWF_CSS = `
 .hwf-root {
   position: relative; width: 100%; overflow: hidden; isolation: isolate;
   background: var(--hwf-bg); color: var(--hwf-ink); -webkit-font-smoothing: antialiased;
-  border-top: 1px solid #3E3E38;
+  border-top: 1px solid rgba(62, 62, 56, 0.6);
 }
 .hwf-root canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; max-width: none; }
 .hwf-top {
   position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.25fr) repeat(3, minmax(0, 1fr));
-  gap: 24px; padding: clamp(24px, 3.4vw, 44px) clamp(20px, 3.4vw, 48px) 0;
+  gap: 24px; padding: clamp(18px, 2.4vw, 28px) clamp(20px, 3.4vw, 48px) 0;
   font-family: var(--hwf-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; line-height: 1.75;
 }
 .hwf-brand strong { display: block; font-weight: 600; color: #FAF9F5; }

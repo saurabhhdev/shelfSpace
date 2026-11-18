@@ -6,7 +6,7 @@ export const OssiumCTA: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <section className="py-24 sm:py-32 bg-[#1C1C1B]/35 border-t border-[#3E3E38] relative overflow-hidden">
+    <section className="pt-20 sm:pt-28 pb-10 sm:pb-12 bg-[#1C1C1B]/35 border-t border-[#3E3E38] relative overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Strong Editorial Headline */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#FAF9F5] leading-[1.12] max-w-2xl mx-auto">
