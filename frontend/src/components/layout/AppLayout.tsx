@@ -152,7 +152,7 @@ export const AppLayout: React.FC = () => {
               <div className="flex items-center justify-between w-full">
                 <Link
                   to="/dashboard"
-                  className="flex items-center gap-2.5 px-1 py-1 rounded-md hover:bg-white/[0.04] transition-colors truncate"
+                  className="flex items-center gap-2.5 px-1 py-1 rounded-md select-none truncate"
                   title="Shelfspace Dashboard"
                 >
                   <ShelfspaceLogoIcon size={18} />

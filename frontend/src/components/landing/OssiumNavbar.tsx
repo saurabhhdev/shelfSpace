@@ -78,11 +78,11 @@ export const OssiumNavbar: React.FC = () => {
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Logo (Concept #6: Books on Shelf) */}
-        <Link to="/" className="flex items-center gap-2.5 group select-none py-1" title="Shelfspace">
-          <ShelfspaceLogoIcon size={24} className="group-hover:scale-105 transition-transform" />
-          <span className="text-base sm:text-lg font-bold tracking-tight text-[#FAF9F5] group-hover:text-white transition-colors">
-            <SplitText hoverColor="text-white">Shelfspace</SplitText>
+        {/* Brand Logo (Concept #6: Books on Shelf - Fixed without hover effects) */}
+        <Link to="/" className="flex items-center gap-2.5 select-none py-1" title="Shelfspace">
+          <ShelfspaceLogoIcon size={24} />
+          <span className="text-base sm:text-lg font-bold tracking-tight text-[#FAF9F5]">
+            Shelfspace
           </span>
         </Link>
 

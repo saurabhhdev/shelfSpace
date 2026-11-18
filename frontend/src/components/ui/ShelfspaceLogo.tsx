@@ -111,7 +111,7 @@ export const ShelfspaceLogo: React.FC<ShelfspaceLogoProps> = ({
       {!iconOnly && (
         <span
           className={cn(
-            'font-sans font-semibold tracking-tight text-[#FAF9F5] transition-colors leading-none',
+            'font-sans font-semibold tracking-tight text-[#FAF9F5] leading-none',
             currentSize.text,
             textClassName
           )}

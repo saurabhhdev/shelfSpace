@@ -14,10 +14,10 @@ export const HalftoneWordmarkFooter: React.FC<FooterProps> = ({ className = '' }
     <footer
       className={`relative w-full bg-[#1C1C1B] border-t border-[#3E3E38]/50 pt-16 pb-20 sm:pt-20 sm:pb-24 px-4 sm:px-6 flex flex-col items-center justify-center text-center select-none ${className}`}
     >
-      {/* 1. Shelfspace Brand Mark & Wordmark (Concept #6: Books on Shelf) */}
-      <Link to="/" className="flex items-center gap-3 justify-center mb-1 group" title="Shelfspace">
-        <ShelfspaceLogoIcon size={32} className="group-hover:scale-105 transition-transform" />
-        <span className="font-sans text-xl sm:text-2xl font-bold tracking-tight text-[#FAF9F5] group-hover:text-white transition-colors">
+      {/* 1. Shelfspace Brand Mark & Wordmark (Concept #6: Books on Shelf - Fixed without hover effects) */}
+      <Link to="/" className="flex items-center gap-3 justify-center mb-1 select-none" title="Shelfspace">
+        <ShelfspaceLogoIcon size={32} />
+        <span className="font-sans text-xl sm:text-2xl font-bold tracking-tight text-[#FAF9F5]">
           Shelfspace
         </span>
       </Link>
