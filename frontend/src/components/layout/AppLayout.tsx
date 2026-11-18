@@ -14,6 +14,7 @@ import { CreateProjectModal } from '../projects/CreateProjectModal';
 import { apiClient } from '../../api/client';
 import type { Collection } from '../../types';
 import { cn } from '../../lib/utils';
+import { ShelfspaceLogoIcon } from '../ui/ShelfspaceLogo';
 
 export const AppLayout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -152,10 +153,9 @@ export const AppLayout: React.FC = () => {
                 <Link
                   to="/dashboard"
                   className="flex items-center gap-2.5 px-1 py-1 rounded-md hover:bg-white/[0.04] transition-colors truncate"
+                  title="Shelfspace Dashboard"
                 >
-                  <div className="w-5 h-5 rounded-md bg-[#1B1B19] border border-[#3E3E38] flex items-center justify-center shrink-0">
-                    <span className="w-2 h-2 rounded-full bg-[#D97757]"></span>
-                  </div>
+                  <ShelfspaceLogoIcon size={18} />
                   <span className="text-xs font-semibold text-[#FAF9F5] tracking-tight truncate">
                     Shelfspace
                   </span>

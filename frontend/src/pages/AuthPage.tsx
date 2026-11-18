@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import { cn } from '../lib/utils';
+import { ShelfspaceLogoIcon } from '../components/ui/ShelfspaceLogo';
 
 export const AuthPage: React.FC = () => {
   const location = useLocation();
@@ -82,8 +83,8 @@ export const AuthPage: React.FC = () => {
       <div className="w-full max-w-sm">
         {/* Brand header */}
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-8 h-8 rounded-md bg-[#1C1C1B] border border-[#3E3E38] flex items-center justify-center mb-3">
-            <span className="w-2.5 h-2.5 rounded-sm bg-[#D97757]"></span>
+          <div className="mb-3">
+            <ShelfspaceLogoIcon size={36} />
           </div>
           <h1 className="text-xl font-semibold tracking-tight text-white">
             {isLogin ? 'Sign in to Shelfspace' : 'Create an account'}

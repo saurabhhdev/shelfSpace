@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Flaticon } from '../ui/Flaticon';
 import { useAuth } from '../../context/AuthContext';
 import { SplitText } from '../ui/SplitText';
+import { ShelfspaceLogoIcon } from '../ui/ShelfspaceLogo';
 import { VscGithubAlt } from 'react-icons/vsc';
 import { FiUser } from 'react-icons/fi';
 
@@ -77,13 +78,11 @@ export const OssiumNavbar: React.FC = () => {
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group select-none py-1">
-          <div className="w-7 h-7 rounded-md bg-[#1C1C1B] border border-[#3E3E38] flex items-center justify-center group-hover:border-[#D97757]/60 transition-colors">
-            <span className="w-2.5 h-2.5 rounded-xs bg-[#D97757]" />
-          </div>
+        {/* Brand Logo (Concept #6: Books on Shelf) */}
+        <Link to="/" className="flex items-center gap-2.5 group select-none py-1" title="Shelfspace">
+          <ShelfspaceLogoIcon size={24} className="group-hover:scale-105 transition-transform" />
           <span className="text-base sm:text-lg font-bold tracking-tight text-[#FAF9F5] group-hover:text-white transition-colors">
-            <SplitText hoverColor="text-white">shelfspace</SplitText>
+            <SplitText hoverColor="text-white">Shelfspace</SplitText>
           </span>
         </Link>
 

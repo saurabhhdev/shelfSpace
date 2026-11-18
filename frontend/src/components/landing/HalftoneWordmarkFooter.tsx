@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { ShelfspaceLogoIcon } from '../ui/ShelfspaceLogo';
 import { VscGithubAlt } from 'react-icons/vsc';
 import { FiLinkedin } from 'react-icons/fi';
 import { RiTwitterXLine } from 'react-icons/ri';
@@ -13,19 +14,12 @@ export const HalftoneWordmarkFooter: React.FC<FooterProps> = ({ className = '' }
     <footer
       className={`relative w-full bg-[#1C1C1B] border-t border-[#3E3E38]/50 pt-16 pb-20 sm:pt-20 sm:pb-24 px-4 sm:px-6 flex flex-col items-center justify-center text-center select-none ${className}`}
     >
-      {/* 1. Shelfspace Terracotta Brand Mark */}
-      <Link to="/" className="flex items-center justify-center mb-3 group" title="Shelfspace">
-        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#141413] border border-[#3E3E38] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_2px_4px_0_rgba(0,0,0,0.4)] flex items-center justify-center group-hover:border-[#D97757]/70 transition-all duration-200">
-          <span className="w-3.5 h-3.5 rounded-xs bg-[#D97757] shadow-[0_0_12px_rgba(217,119,87,0.45)] group-hover:scale-110 transition-transform duration-200" />
-        </div>
-      </Link>
-
-      {/* 2. Brand Name */}
-      <Link
-        to="/"
-        className="font-mono text-base sm:text-lg font-semibold tracking-tight text-[#FAF9F5] hover:text-white transition-colors"
-      >
-        shelfspace
+      {/* 1. Shelfspace Brand Mark & Wordmark (Concept #6: Books on Shelf) */}
+      <Link to="/" className="flex items-center gap-3 justify-center mb-1 group" title="Shelfspace">
+        <ShelfspaceLogoIcon size={32} className="group-hover:scale-105 transition-transform" />
+        <span className="font-sans text-xl sm:text-2xl font-bold tracking-tight text-[#FAF9F5] group-hover:text-white transition-colors">
+          Shelfspace
+        </span>
       </Link>
 
       {/* 3. Shelfspace Tagline / Description */}
