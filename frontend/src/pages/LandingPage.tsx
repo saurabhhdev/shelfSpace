@@ -11,7 +11,27 @@ export const LandingPage: React.FC = () => {
   const [isTourOpen, setIsTourOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-[#262624] text-[#FAF9F5] relative selection:bg-[#D97757] selection:text-white">
+    <div
+      style={{ minHeight: '100vh', width: '100%', position: 'relative' }}
+      className="flex flex-col justify-between bg-[#262624] text-[#FAF9F5] selection:bg-[#D97757] selection:text-white"
+    >
+      {/* Dotted Structure Background Layer (Preserves #262624 theme intact) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          transform: 'translate(0px, 0px) rotate(0deg) scale(1)',
+          backgroundBlendMode: 'overlay',
+          backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.13) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+        }}
+      />
+
       {/* Ossium Sticky/Fixed Navbar */}
       <OssiumNavbar />
 
