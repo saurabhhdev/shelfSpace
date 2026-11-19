@@ -162,7 +162,7 @@ export const OssiumFeatures: React.FC = () => {
           {/* Section Header */}
           <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-20">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#FAF9F5] leading-tight font-sans">
-              Built to Keep You Organized
+              Features
             </h2>
             <p className="mt-3.5 text-sm sm:text-base text-[#B7B5A9] leading-relaxed">
               Everything you need to manage your developer resources, without the unnecessary complexity.
