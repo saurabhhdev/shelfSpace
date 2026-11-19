@@ -14,6 +14,7 @@ export const OssiumNavbar: React.FC = () => {
 
   const [featuresOpen, setFeaturesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileFeaturesOpen, setMobileFeaturesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const featuresRef = useRef<HTMLDivElement>(null);
@@ -97,40 +98,41 @@ export const OssiumNavbar: React.FC = () => {
             <SplitText hoverColor="text-white">What You Can Do</SplitText>
           </a>
 
-          {/* Features Dropdown + Anchor */}
-          <div className="relative" ref={featuresRef}>
-            <div className="flex items-center">
-              <a
-                href="#features"
-                className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-l-md transition-colors inline-flex items-center"
-              >
-                <SplitText hoverColor="text-white">Features</SplitText>
-              </a>
-              <button
-                type="button"
-                onClick={() => setFeaturesOpen(!featuresOpen)}
-                aria-label="Toggle Features Menu"
-                className="px-1.5 py-2 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-r-md transition-colors cursor-pointer"
-              >
-                <Flaticon
-                  name="angle-small-down"
-                  className={`text-[10px] transition-transform duration-200 ${
-                    featuresOpen ? 'rotate-180 text-[#D97757]' : 'text-neutral-400'
-                  }`}
-                />
-              </button>
-            </div>
+          {/* Features Dropdown Menu (Non-scrolling, interactive in-place preview) */}
+          <div
+            className="relative"
+            ref={featuresRef}
+            onMouseEnter={() => setFeaturesOpen(true)}
+            onMouseLeave={() => setFeaturesOpen(false)}
+          >
+            <button
+              type="button"
+              onClick={() => setFeaturesOpen(!featuresOpen)}
+              aria-label="Features"
+              aria-expanded={featuresOpen}
+              className={`px-3 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-colors inline-flex items-center gap-1.5 cursor-pointer ${
+                featuresOpen
+                  ? 'text-[#FAF9F5] bg-white/[0.06]'
+                  : 'text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04]'
+              }`}
+            >
+              <SplitText hoverColor="text-white">Features</SplitText>
+              <Flaticon
+                name="angle-small-down"
+                className={`text-[10px] transition-transform duration-200 ${
+                  featuresOpen ? 'rotate-180 text-[#D97757]' : 'text-neutral-400'
+                }`}
+              />
+            </button>
 
             {featuresOpen && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2.5 w-[540px] max-w-[90vw] animate-fade-in">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[540px] max-w-[90vw] animate-fade-in">
                 <div className="bg-[#1C1C1B] border border-[#3E3E38] rounded-lg p-3 shadow-2xl backdrop-blur-xl">
                   <div className="grid grid-cols-2 gap-1.5">
                     {features.map((feature) => (
-                      <a
+                      <div
                         key={feature.title}
-                        href="#features"
-                        onClick={() => setFeaturesOpen(false)}
-                        className="flex items-start gap-2.5 p-2.5 rounded-md hover:bg-white/[0.04] transition-colors group"
+                        className="flex items-start gap-2.5 p-2.5 rounded-md hover:bg-white/[0.04] transition-colors group select-none"
                       >
                         <div className="w-7 h-7 rounded-md bg-[#262624] border border-[#3E3E38] flex items-center justify-center text-[#D97757] group-hover:border-[#52514A] shrink-0 mt-0.5">
                           <Flaticon name={feature.iconName} className="text-xs" />
@@ -143,23 +145,15 @@ export const OssiumNavbar: React.FC = () => {
                             {feature.description}
                           </div>
                         </div>
-                      </a>
+                      </div>
                     ))}
                   </div>
 
                   <div className="mt-2 pt-2.5 border-t border-[#3E3E38] flex items-center justify-between text-xs px-1 text-[#B7B5A9]">
                     <span className="text-[11px]">6 core tools built to keep you organized</span>
-                    <a
-                      href="#features"
-                      onClick={() => setFeaturesOpen(false)}
-                      className="text-[11px] text-[#D97757] hover:text-[#EE8360] font-medium flex items-center gap-1 group"
-                    >
-                      View all features
-                      <Flaticon
-                        name="angle-small-right"
-                        className="text-xs group-hover:translate-x-0.5 transition-transform"
-                      />
-                    </a>
+                    <span className="text-[11px] text-[#D97757] font-medium flex items-center gap-1">
+                      Free & Open Source
+                    </span>
                   </div>
                 </div>
               </div>
@@ -232,13 +226,33 @@ export const OssiumNavbar: React.FC = () => {
             >
               <SplitText hoverColor="text-[#D97757]">What You Can Do</SplitText>
             </a>
-            <a
-              href="#features"
-              onClick={() => setMobileMenuOpen(false)}
-              className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
-            >
-              <SplitText hoverColor="text-[#D97757]">Features</SplitText>
-            </a>
+            <div className="space-y-1">
+              <button
+                type="button"
+                onClick={() => setMobileFeaturesOpen(!mobileFeaturesOpen)}
+                className="group flex items-center justify-between w-full px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06] cursor-pointer"
+              >
+                <SplitText hoverColor="text-[#D97757]">Features</SplitText>
+                <Flaticon
+                  name="angle-small-down"
+                  className={`text-xs transition-transform duration-200 ${
+                    mobileFeaturesOpen ? 'rotate-180 text-[#D97757]' : 'text-neutral-400'
+                  }`}
+                />
+              </button>
+              {mobileFeaturesOpen && (
+                <div className="pl-3 pr-2 py-1.5 space-y-1.5 bg-[#1C1C1B]/60 rounded-md border border-[#3E3E38]/50 my-1">
+                  {features.map((feature) => (
+                    <div key={feature.title} className="flex items-center gap-2.5 py-1 text-xs text-[#B7B5A9]">
+                      <div className="w-5 h-5 rounded bg-[#262624] border border-[#3E3E38] flex items-center justify-center text-[#D97757] shrink-0">
+                        <Flaticon name={feature.iconName} className="text-[10px]" />
+                      </div>
+                      <span className="font-medium text-[#FAF9F5] text-xs">{feature.title}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <a
               href="#faq"
               onClick={() => setMobileMenuOpen(false)}
