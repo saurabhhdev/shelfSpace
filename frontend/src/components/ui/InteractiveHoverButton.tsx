@@ -12,7 +12,7 @@ export interface InteractiveHoverButtonProps
 
 /**
  * Shelfspace Theme Action Button
- * Clean, flat, high-contrast action button matching the website's warm amber theme (#D4A373 -> #DEB285).
+ * Clean, flat, high-contrast action button matching the website's warm ivory theme (#FAF9F5 -> #EDE9DE).
  */
 export const InteractiveHoverButton = React.forwardRef<
   HTMLButtonElement,
@@ -39,7 +39,7 @@ export const InteractiveHoverButton = React.forwardRef<
     );
 
     const baseClasses = cn(
-      'group inline-flex items-center justify-center h-8 cursor-pointer rounded-md bg-[#D4A373] hover:bg-[#DEB285] px-3.5 text-xs sm:text-sm font-semibold text-[#141413] shadow-[0_1px_2px_rgba(0,0,0,0.25)] transition-all duration-150 select-none active:scale-[0.98]',
+      'group inline-flex items-center justify-center h-8 cursor-pointer rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-3.5 text-xs sm:text-sm font-semibold text-[#141413] shadow-[0_1px_2px_rgba(0,0,0,0.25)] transition-all duration-150 select-none active:scale-[0.98]',
       className
     );
 
