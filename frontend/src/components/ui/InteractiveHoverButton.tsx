@@ -11,8 +11,8 @@ export interface InteractiveHoverButtonProps
 }
 
 /**
- * Clean & Simple Minimalist Button
- * Flat, modern, non-3D design with zero gradients and a smooth, clean hover effect.
+ * Shelfspace Theme Action Button
+ * Clean, flat, non-3D primary button matching the website's terracotta orange theme (#D97757 -> #EE8360).
  */
 export const InteractiveHoverButton = React.forwardRef<
   HTMLButtonElement,
@@ -32,14 +32,14 @@ export const InteractiveHoverButton = React.forwardRef<
     const label = children || text;
 
     const content = (
-      <span className="inline-flex items-center gap-1.5 font-medium tracking-tight text-[#FAF9F5] group-hover:text-white transition-colors duration-150">
+      <span className="inline-flex items-center gap-1.5 font-medium tracking-tight text-white">
         <span>{label}</span>
-        <ArrowRight className="w-3.5 h-3.5 text-[#B7B5A9] group-hover:text-[#D97757] group-hover:translate-x-0.5 transition-all duration-150 shrink-0" />
+        <ArrowRight className="w-3.5 h-3.5 text-white/90 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-150 shrink-0" />
       </span>
     );
 
     const baseClasses = cn(
-      'group inline-flex items-center justify-center h-8 cursor-pointer rounded-md border border-[#3E3E38] hover:border-[#D97757] bg-[#1C1C1B] hover:bg-[#262624] px-3.5 text-xs sm:text-sm transition-all duration-150 select-none active:scale-[0.98]',
+      'group inline-flex items-center justify-center h-8 cursor-pointer rounded-md bg-[#D97757] hover:bg-[#EE8360] px-3.5 text-xs sm:text-sm font-medium text-white transition-colors duration-150 select-none active:scale-[0.98]',
       className
     );
 
