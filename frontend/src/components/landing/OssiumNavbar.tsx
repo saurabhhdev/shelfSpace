@@ -4,6 +4,7 @@ import { Flaticon } from '../ui/Flaticon';
 import { useAuth } from '../../context/AuthContext';
 import { SplitText } from '../ui/SplitText';
 import { ShelfspaceLogoIcon } from '../ui/ShelfspaceLogo';
+import { InteractiveHoverButton } from '../ui/InteractiveHoverButton';
 import { VscGithubAlt } from 'react-icons/vsc';
 import { FiUser } from 'react-icons/fi';
 
@@ -189,34 +190,20 @@ export const OssiumNavbar: React.FC = () => {
           </a>
         </nav>
 
-        {/* Right CTA Cluster — Login/Signup */}
+        {/* Right CTA Cluster — Login/Signup (21st.dev Interactive Hover Button) */}
         <div className="flex items-center gap-2.5">
           {!isAuthenticated ? (
-            <Link
+            <InteractiveHoverButton
               to="/login"
-              className="group inline-flex items-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
-              title="Log in or create an account"
-            >
-              <FiUser className="text-[13px] text-[#141413] shrink-0" />
-              <span className="flex items-center gap-1 font-semibold">
-                <span>Login</span>
-                <span className="text-[#141413]/40 font-mono text-[10px]">/</span>
-                <span>Signup</span>
-              </span>
-              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#141413] text-[10px] font-mono">
-                ↗
-              </span>
-            </Link>
+              text="Login / Signup"
+              className="h-8 px-3.5 text-xs font-semibold"
+            />
           ) : (
-            <Link
+            <InteractiveHoverButton
               to="/dashboard"
-              className="group inline-flex items-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-4 py-1.5 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
-            >
-              <span>Dashboard</span>
-              <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#141413] text-[10px] font-mono">
-                ↗
-              </span>
-            </Link>
+              text="Dashboard"
+              className="h-8 px-4 text-xs font-semibold"
+            />
           )}
 
           {/* Mobile menu trigger */}
@@ -278,24 +265,19 @@ export const OssiumNavbar: React.FC = () => {
 
           <div className="pt-3 border-t border-[#3E3E38] flex flex-col gap-2">
             {!isAuthenticated ? (
-              <Link
+              <InteractiveHoverButton
                 to="/login"
+                text="Login / Signup"
+                className="w-full h-10 text-sm font-semibold justify-center"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full inline-flex items-center justify-center gap-2 py-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium text-sm border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all"
-              >
-                <FiUser className="text-sm" />
-                <span className="font-semibold">Login / Signup</span>
-                <span className="text-xs font-mono">↗</span>
-              </Link>
+              />
             ) : (
-              <Link
+              <InteractiveHoverButton
                 to="/dashboard"
+                text="Dashboard"
+                className="w-full h-10 text-sm font-semibold justify-center"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full inline-flex items-center justify-center gap-2 py-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] font-medium text-sm border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all"
-              >
-                <span>Dashboard</span>
-                <span className="text-xs font-mono">↗</span>
-              </Link>
+              />
             )}
           </div>
         </div>
