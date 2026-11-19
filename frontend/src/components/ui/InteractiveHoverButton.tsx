@@ -46,16 +46,16 @@ export const InteractiveHoverButton = React.forwardRef<
           aria-hidden="true"
         />
 
-        {/* Button Content: Text + Micro-nudge Arrow */}
+        {/* Button Content: Text + Warm Terracotta Micro-nudge Arrow */}
         <span className="relative z-10 inline-flex items-center gap-1.5 font-medium tracking-tight text-[#FAF9F5] group-hover:text-white transition-colors">
           <span>{label}</span>
-          <ArrowRight className="w-3.5 h-3.5 text-[#B7B5A9] group-hover:text-white transition-all duration-200 group-hover:translate-x-0.5 shrink-0" />
+          <ArrowRight className="w-3.5 h-3.5 text-[#D97757] group-hover:text-[#EE8360] group-hover:translate-x-1 transition-all duration-200 shrink-0" />
         </span>
       </>
     );
 
     const baseClasses = cn(
-      'group relative inline-flex items-center justify-center h-8 cursor-pointer overflow-hidden rounded-md border border-[#3E3E38] hover:border-[#525149] bg-[#1C1C1B] hover:bg-[#262624] px-3.5 text-xs sm:text-sm shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.35)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.3)] transition-all duration-200 select-none active:scale-[0.98]',
+      'group relative inline-flex items-center justify-center h-8 cursor-pointer overflow-hidden rounded-md border border-[#3E3E38] hover:border-[#D97757]/60 bg-gradient-to-b from-[#262624] to-[#1C1C1B] hover:from-[#2F2F2C] hover:to-[#222220] px-3.5 text-xs sm:text-sm shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_1px_3px_0_rgba(0,0,0,0.35)] hover:shadow-[0_2px_8px_rgba(217,119,87,0.18)] transition-all duration-200 select-none active:scale-[0.98]',
       className
     );
 

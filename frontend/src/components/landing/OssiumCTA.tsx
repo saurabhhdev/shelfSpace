@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export const OssiumCTA: React.FC = () => {
@@ -18,16 +19,14 @@ export const OssiumCTA: React.FC = () => {
           Save the tools, repositories, components and references you find useful. Keep them organized in one place and come back whenever you need them.
         </p>
 
-        {/* CTA Button */}
+        {/* CTA Button - Visually appealing, refined terracotta without excessive shine */}
         <div className="mt-8 flex items-center justify-center">
           <Link
             to={isAuthenticated ? "/dashboard" : "/register"}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-7 h-10 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
+            className="group relative inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-b from-[#E07452] to-[#D97757] hover:from-[#EE8360] hover:to-[#DE7250] text-white px-7 h-11 text-sm font-semibold tracking-tight shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25),0_2px_8px_rgba(0,0,0,0.35),0_0_16px_rgba(217,119,87,0.25)] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.35),0_4px_16px_rgba(217,119,87,0.35)] border border-[#EE8360]/40 transition-all duration-200 active:scale-[0.98]"
           >
             <span>{isAuthenticated ? 'Go to Dashboard' : 'Get Started Free'}</span>
-            <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#141413] text-[11px] font-mono">
-              ↗
-            </span>
+            <ArrowRight className="w-4 h-4 text-white/90 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
           </Link>
         </div>
       </div>
