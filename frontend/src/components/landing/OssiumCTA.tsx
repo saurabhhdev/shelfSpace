@@ -23,7 +23,7 @@ export const OssiumCTA: React.FC = () => {
         <div className="mt-8 flex items-center justify-center">
           <Link
             to={isAuthenticated ? "/dashboard" : "/register"}
-            className="group inline-flex items-center justify-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] text-[#141413] px-6 h-10 text-sm font-semibold tracking-tight shadow-[0_1px_2px_rgba(0,0,0,0.25)] transition-all duration-150 active:scale-[0.98]"
+            className="group inline-flex items-center justify-center gap-2 rounded-md bg-[#D4A373] hover:bg-[#DEB285] text-[#141413] px-6 h-10 text-sm font-semibold tracking-tight shadow-[0_1px_2px_rgba(0,0,0,0.25)] transition-all duration-150 active:scale-[0.98]"
           >
             <span>{isAuthenticated ? 'Go to Dashboard' : 'Get Started Free'}</span>
             <ArrowRight className="w-4 h-4 text-[#141413]/80 group-hover:text-[#141413] group-hover:translate-x-1 transition-all duration-150" />

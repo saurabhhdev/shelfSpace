@@ -26,7 +26,7 @@ export const OssiumHero: React.FC<OssiumHeroProps> = ({ onExploreClick }) => {
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
           <Link
             to={isAuthenticated ? "/dashboard" : "/register"}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-5 py-2 text-xs sm:text-sm font-semibold text-[#141413] shadow-[0_1px_2px_rgba(0,0,0,0.25)] transition-all duration-150 active:scale-[0.98]"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#D4A373] hover:bg-[#DEB285] px-5 py-2 text-xs sm:text-sm font-semibold text-[#141413] shadow-[0_1px_2px_rgba(0,0,0,0.25)] transition-all duration-150 active:scale-[0.98]"
           >
             <span>{isAuthenticated ? 'Go to Dashboard' : 'Start Collecting'}</span>
             <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-[#141413]/10 text-[#141413] text-[11px] font-mono">
