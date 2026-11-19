@@ -8,16 +8,12 @@ export interface InteractiveHoverButtonProps
   text?: string;
   to?: string;
   className?: string;
-  dotColor?: string;
-  hoverBgColor?: string;
-  textColor?: string;
-  hoverTextColor?: string;
 }
 
 /**
- * Interactive Hover Button (from 21st.dev / Magic UI)
- * Features a glowing accent indicator that smoothly expands on hover,
- * seamlessly transitioning the text and revealing an animated arrow.
+ * 21st.dev Refined Dark Button
+ * Clean, minimal, non-flashy dark CTA with subtle border highlight,
+ * micro-nudge arrow animation, and soft surface sheen.
  */
 export const InteractiveHoverButton = React.forwardRef<
   HTMLButtonElement,
@@ -29,10 +25,7 @@ export const InteractiveHoverButton = React.forwardRef<
       to,
       className,
       children,
-      dotColor = 'bg-[#D97757]',
-      hoverBgColor = 'group-hover:bg-[#D97757]',
-      textColor = 'text-[#FAF9F5]',
-      hoverTextColor = 'text-white',
+      onClick,
       ...props
     },
     ref
@@ -41,41 +34,28 @@ export const InteractiveHoverButton = React.forwardRef<
 
     const content = (
       <>
-        {/* Resting Content with glowing terracotta indicator */}
-        <div className="flex items-center gap-2">
-          <div
-            className={cn(
-              'h-1.5 w-1.5 rounded-full transition-all duration-300 ease-out group-hover:scale-[65]',
-              dotColor,
-              hoverBgColor,
-              'shadow-[0_0_8px_rgba(217,119,87,0.8)] shrink-0'
-            )}
-          />
-          <span
-            className={cn(
-              'inline-flex items-center gap-1 font-medium tracking-tight transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0',
-              textColor
-            )}
-          >
-            {label}
-          </span>
-        </div>
+        {/* Subtle top edge specular highlight (21st.dev signature bevel) */}
+        <span
+          className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none"
+          aria-hidden="true"
+        />
 
-        {/* Hover Content (slides in from left to center as terracotta expands) */}
-        <div
-          className={cn(
-            'absolute inset-0 z-10 flex h-full w-full translate-x-10 items-center justify-center gap-1.5 opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 font-semibold tracking-tight',
-            hoverTextColor
-          )}
-        >
+        {/* Subtle hover surface illumination */}
+        <span
+          className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+          aria-hidden="true"
+        />
+
+        {/* Button Content: Text + Micro-nudge Arrow */}
+        <span className="relative z-10 inline-flex items-center gap-1.5 font-medium tracking-tight text-[#FAF9F5] group-hover:text-white transition-colors">
           <span>{label}</span>
-          <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0" />
-        </div>
+          <ArrowRight className="w-3.5 h-3.5 text-[#B7B5A9] group-hover:text-white transition-all duration-200 group-hover:translate-x-0.5 shrink-0" />
+        </span>
       </>
     );
 
     const baseClasses = cn(
-      'group relative inline-flex items-center justify-center h-8 cursor-pointer overflow-hidden rounded-md border border-[#3E3E38] hover:border-[#D97757]/80 bg-[#1C1C1B] px-3.5 text-xs sm:text-sm shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.35)] hover:shadow-[0_0_15px_rgba(217,119,87,0.25)] transition-all duration-300 select-none active:scale-[0.98]',
+      'group relative inline-flex items-center justify-center h-8 cursor-pointer overflow-hidden rounded-md border border-[#3E3E38] hover:border-[#525149] bg-[#1C1C1B] hover:bg-[#262624] px-3.5 text-xs sm:text-sm shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.35)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.3)] transition-all duration-200 select-none active:scale-[0.98]',
       className
     );
 
@@ -83,7 +63,7 @@ export const InteractiveHoverButton = React.forwardRef<
       return (
         <Link
           to={to}
-          onClick={props.onClick as any}
+          onClick={onClick as any}
           className={baseClasses}
           title={typeof label === 'string' ? label : 'Action'}
         >
@@ -93,7 +73,7 @@ export const InteractiveHoverButton = React.forwardRef<
     }
 
     return (
-      <button ref={ref} className={baseClasses} {...props}>
+      <button ref={ref} onClick={onClick} className={baseClasses} {...props}>
         {content}
       </button>
     );
