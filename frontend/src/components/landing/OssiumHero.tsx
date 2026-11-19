@@ -22,11 +22,11 @@ export const OssiumHero: React.FC<OssiumHeroProps> = ({ onExploreClick }) => {
           Bring all your essential developer tools, GitHub repositories, UI components, code snippets and useful references together. Organize the resources you discover, keep them within reach and easily find what you need for your next idea or project.
         </p>
 
-        {/* Dual CTA Button Cluster - Symmetrical, evenly spaced, side-by-side with mobile stacking */}
+        {/* Dual CTA Button Cluster - Clean, flat, non-3D with smooth hover */}
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
           <Link
             to={isAuthenticated ? "/dashboard" : "/register"}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-5 py-2 text-xs sm:text-sm font-medium text-[#141413] border border-white/60 hover:border-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_1px_3px_0_rgba(0,0,0,0.35)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#FAF9F5] hover:bg-[#EDE9DE] px-5 py-2 text-xs sm:text-sm font-medium text-[#141413] transition-colors duration-150 active:scale-[0.98]"
           >
             <span>{isAuthenticated ? 'Go to Dashboard' : 'Start Collecting'}</span>
             <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-black/10 text-[#141413] text-[11px] font-mono">
@@ -38,14 +38,14 @@ export const OssiumHero: React.FC<OssiumHeroProps> = ({ onExploreClick }) => {
             <button
               type="button"
               onClick={onExploreClick}
-              className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-[#1C1C1B] hover:bg-[#262624] px-5 py-2 text-xs sm:text-sm font-medium text-[#FAF9F5] hover:text-white border border-[#3E3E38] hover:border-[#52514A] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.3)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px] cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-[#1C1C1B] hover:bg-[#262624] px-5 py-2 text-xs sm:text-sm font-medium text-[#FAF9F5] hover:text-white border border-[#3E3E38] hover:border-[#52514A] transition-colors duration-150 active:scale-[0.98] cursor-pointer"
             >
               View Live Preview
             </button>
           ) : (
             <a
               href="#features"
-              className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-[#1C1C1B] hover:bg-[#262624] px-5 py-2 text-xs sm:text-sm font-medium text-[#FAF9F5] hover:text-white border border-[#3E3E38] hover:border-[#52514A] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_1px_2px_0_rgba(0,0,0,0.3)] transition-all duration-150 active:scale-[0.98] active:translate-y-[0.5px]"
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-[#1C1C1B] hover:bg-[#262624] px-5 py-2 text-xs sm:text-sm font-medium text-[#FAF9F5] hover:text-white border border-[#3E3E38] hover:border-[#52514A] transition-colors duration-150 active:scale-[0.98]"
             >
               View Live Preview
             </a>

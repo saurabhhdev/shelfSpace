@@ -19,14 +19,14 @@ export const OssiumCTA: React.FC = () => {
           Save the tools, repositories, components and references you find useful. Keep them organized in one place and come back whenever you need them.
         </p>
 
-        {/* CTA Button - Visually appealing, refined terracotta without excessive shine */}
+        {/* CTA Button - Clean, simple, non-3D with smooth hover */}
         <div className="mt-8 flex items-center justify-center">
           <Link
             to={isAuthenticated ? "/dashboard" : "/register"}
-            className="group relative inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-b from-[#E07452] to-[#D97757] hover:from-[#EE8360] hover:to-[#DE7250] text-white px-7 h-11 text-sm font-semibold tracking-tight shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25),0_2px_8px_rgba(0,0,0,0.35),0_0_16px_rgba(217,119,87,0.25)] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.35),0_4px_16px_rgba(217,119,87,0.35)] border border-[#EE8360]/40 transition-all duration-200 active:scale-[0.98]"
+            className="group inline-flex items-center justify-center gap-2 rounded-md bg-[#D97757] hover:bg-[#EE8360] text-white px-6 h-10 text-sm font-medium tracking-tight transition-colors duration-150 active:scale-[0.98]"
           >
             <span>{isAuthenticated ? 'Go to Dashboard' : 'Get Started Free'}</span>
-            <ArrowRight className="w-4 h-4 text-white/90 group-hover:text-white group-hover:translate-x-1 transition-all duration-200" />
+            <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform duration-150" />
           </Link>
         </div>
       </div>
