@@ -1,23 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Flaticon } from '../ui/Flaticon';
 import { useAuth } from '../../context/AuthContext';
 import { SplitText } from '../ui/SplitText';
 import { ShelfspaceLogoIcon } from '../ui/ShelfspaceLogo';
 import { InteractiveHoverButton } from '../ui/InteractiveHoverButton';
 import { VscGithubAlt } from 'react-icons/vsc';
-import { FiUser } from 'react-icons/fi';
 
 export const OssiumNavbar: React.FC = () => {
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
 
-  const [featuresOpen, setFeaturesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileFeaturesOpen, setMobileFeaturesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  const featuresRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,50 +20,6 @@ export const OssiumNavbar: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Close menus on outside click
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (featuresRef.current && !featuresRef.current.contains(e.target as Node)) {
-        setFeaturesOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const features = [
-    {
-      title: 'Resource Collection',
-      description: 'Bookmark repos, UI components, snippets, and tools.',
-      iconName: 'boxes',
-    },
-    {
-      title: 'Project Organization',
-      description: 'Attach libraries and references to specific builds.',
-      iconName: 'folder-open',
-    },
-    {
-      title: 'Smart Auto Add',
-      description: 'Auto-fetch title, description, and preview image from URL.',
-      iconName: 'sparkles',
-    },
-    {
-      title: 'Auto Categorization & Tags',
-      description: 'Get relevant tag and category suggestions instantly.',
-      iconName: 'tags',
-    },
-    {
-      title: 'Quick Search & Filters',
-      description: 'Find items by keyword, type, tags, and custom categories.',
-      iconName: 'settings-sliders',
-    },
-    {
-      title: 'Favorites',
-      description: 'Pin high-frequency utilities and docs at the top.',
-      iconName: 'star',
-    },
-  ];
 
   return (
     <header
@@ -98,67 +48,13 @@ export const OssiumNavbar: React.FC = () => {
             <SplitText hoverColor="text-white">What You Can Do</SplitText>
           </a>
 
-          {/* Features Dropdown Menu (Non-scrolling, interactive in-place preview) */}
-          <div
-            className="relative"
-            ref={featuresRef}
-            onMouseEnter={() => setFeaturesOpen(true)}
-            onMouseLeave={() => setFeaturesOpen(false)}
+          {/* Features Anchor */}
+          <a
+            href="#features"
+            className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
           >
-            <button
-              type="button"
-              onClick={() => setFeaturesOpen(!featuresOpen)}
-              aria-label="Features"
-              aria-expanded={featuresOpen}
-              className={`px-3 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-colors inline-flex items-center gap-1.5 cursor-pointer ${
-                featuresOpen
-                  ? 'text-[#FAF9F5] bg-white/[0.06]'
-                  : 'text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04]'
-              }`}
-            >
-              <SplitText hoverColor="text-white">Features</SplitText>
-              <Flaticon
-                name="angle-small-down"
-                className={`text-[10px] transition-transform duration-200 ${
-                  featuresOpen ? 'rotate-180 text-[#D97757]' : 'text-neutral-400'
-                }`}
-              />
-            </button>
-
-            {featuresOpen && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[540px] max-w-[90vw] animate-fade-in">
-                <div className="bg-[#1C1C1B] border border-[#3E3E38] rounded-lg p-3 shadow-2xl backdrop-blur-xl">
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {features.map((feature) => (
-                      <div
-                        key={feature.title}
-                        className="flex items-start gap-2.5 p-2.5 rounded-md hover:bg-white/[0.04] transition-colors group select-none"
-                      >
-                        <div className="w-7 h-7 rounded-md bg-[#262624] border border-[#3E3E38] flex items-center justify-center text-[#D97757] group-hover:border-[#52514A] shrink-0 mt-0.5">
-                          <Flaticon name={feature.iconName} className="text-xs" />
-                        </div>
-                        <div>
-                          <div className="text-xs font-semibold text-[#FAF9F5] group-hover:text-white">
-                            {feature.title}
-                          </div>
-                          <div className="text-[11px] text-[#B7B5A9] line-clamp-1 mt-0.5">
-                            {feature.description}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-2 pt-2.5 border-t border-[#3E3E38] flex items-center justify-between text-xs px-1 text-[#B7B5A9]">
-                    <span className="text-[11px]">6 core tools built to keep you organized</span>
-                    <span className="text-[11px] text-[#D97757] font-medium flex items-center gap-1">
-                      Free & Open Source
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+            <SplitText hoverColor="text-white">Features</SplitText>
+          </a>
 
           {/* FAQ Anchor */}
           <a
@@ -226,33 +122,13 @@ export const OssiumNavbar: React.FC = () => {
             >
               <SplitText hoverColor="text-[#D97757]">What You Can Do</SplitText>
             </a>
-            <div className="space-y-1">
-              <button
-                type="button"
-                onClick={() => setMobileFeaturesOpen(!mobileFeaturesOpen)}
-                className="group flex items-center justify-between w-full px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06] cursor-pointer"
-              >
-                <SplitText hoverColor="text-[#D97757]">Features</SplitText>
-                <Flaticon
-                  name="angle-small-down"
-                  className={`text-xs transition-transform duration-200 ${
-                    mobileFeaturesOpen ? 'rotate-180 text-[#D97757]' : 'text-neutral-400'
-                  }`}
-                />
-              </button>
-              {mobileFeaturesOpen && (
-                <div className="pl-3 pr-2 py-1.5 space-y-1.5 bg-[#1C1C1B]/60 rounded-md border border-[#3E3E38]/50 my-1">
-                  {features.map((feature) => (
-                    <div key={feature.title} className="flex items-center gap-2.5 py-1 text-xs text-[#B7B5A9]">
-                      <div className="w-5 h-5 rounded bg-[#262624] border border-[#3E3E38] flex items-center justify-center text-[#D97757] shrink-0">
-                        <Flaticon name={feature.iconName} className="text-[10px]" />
-                      </div>
-                      <span className="font-medium text-[#FAF9F5] text-xs">{feature.title}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <a
+              href="#features"
+              onClick={() => setMobileMenuOpen(false)}
+              className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
+            >
+              <SplitText hoverColor="text-[#D97757]">Features</SplitText>
+            </a>
             <a
               href="#faq"
               onClick={() => setMobileMenuOpen(false)}
