@@ -6,7 +6,8 @@ export class CollectionController {
   static async list(req: Request, res: Response) {
     try {
       const userId = req.user!.userId;
-      const collections = await CollectionService.list(userId);
+      const type = req.query.type as string | undefined;
+      const collections = await CollectionService.list(userId, type);
       return sendSuccess(res, collections, 'Collections retrieved');
     } catch (err: any) {
       return sendError(res, err.message || 'Error listing collections', 500);

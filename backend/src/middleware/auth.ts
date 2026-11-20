@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
+import { eq } from 'drizzle-orm';
 import { verifyAccessToken, TokenPayload } from '../utils/tokens';
 import { sendError } from '../utils/apiResponse';
-import { Session } from '../modules/auth/session.model';
-import { User } from '../modules/auth/user.model';
+import { db } from '../db';
+import { sessions, users } from '../db/schema';
 
 declare global {
   namespace Express {
@@ -34,22 +35,32 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     }
 
     // Verify session in database
-    const session = await Session.findById(payload.sessionId);
+    const [session] = await db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.id, payload.sessionId));
+
     if (!session || session.isRevoked) {
       sendError(res, 'Session has expired or was revoked. Please log in again.', 401);
       return;
     }
 
     // Check if user is not deleted
-    const user = await User.findById(payload.userId);
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, payload.userId));
+
     if (!user || user.deletedAt) {
       sendError(res, 'User account not found or has been deactivated.', 401);
       return;
     }
 
     // Update session last active time asynchronously
-    session.lastActiveAt = new Date();
-    session.save().catch(() => {});
+    db.update(sessions)
+      .set({ lastActiveAt: new Date(), updatedAt: new Date() })
+      .where(eq(sessions.id, session.id))
+      .catch(() => {});
 
     req.user = payload;
     next();

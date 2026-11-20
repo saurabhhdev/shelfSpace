@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import { ResourceType } from './resource.model';
+import { ResourceType } from './resource.service';
 
 export interface UserCategoryInfo {
   _id: string;

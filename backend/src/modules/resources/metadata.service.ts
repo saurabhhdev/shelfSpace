@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import { URL } from 'url';
 import { validateSafeUrl } from '../../utils/ssrf';
-import { ResourceType } from './resource.model';
+import { ResourceType } from './resource.service';
 import { logger } from '../../utils/logger';
 import { ClassificationService, ClassificationContext } from './classification.service';
 

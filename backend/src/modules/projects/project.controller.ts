@@ -54,7 +54,7 @@ export class ProjectController {
       const userId = req.user!.userId;
       const { projectId } = req.params;
       const project = await ProjectService.toggleArchive(userId, projectId);
-      const msg = project.isArchived ? 'Project archived' : 'Project unarchived';
+      const msg = project?.isArchived ? 'Project archived' : 'Project unarchived';
       return sendSuccess(res, project, msg);
     } catch (err: any) {
       return sendError(res, err.message || 'Error toggling project archive status', 400);

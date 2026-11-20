@@ -1,128 +1,127 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { env } from '../config/env';
+import { eq } from 'drizzle-orm';
+import { db, closeDB } from '../db';
+import {
+  users,
+  collections,
+  projects,
+  resources,
+  resourceTags,
+  projectResources,
+  collectionResources,
+} from '../db/schema';
 
 async function seed() {
-  console.log('[Seed] Connecting to MongoDB at:', env.MONGODB_URI);
-  await mongoose.connect(env.MONGODB_URI);
-  console.log('[Seed] Connected!');
+  console.log('[Seed] Seeding Neon PostgreSQL database...');
 
-  const db = mongoose.connection.db;
-  if (!db) {
-    throw new Error('Database connection not established.');
-  }
-
-  // 1. Create or find Demo User
-  const usersCol = db.collection('users');
   const demoEmail = 'demo@shelfspace.dev';
-  let demoUser = await usersCol.findOne({ email: demoEmail });
 
-  if (!demoUser) {
+  // 1. Find or create demo user
+  const [existingUser] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, demoEmail));
+
+  let userId: string;
+  if (!existingUser) {
     const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash('Password123!', salt);
-    const result = await usersCol.insertOne({
-      name: 'Alex Rivera',
-      email: demoEmail,
-      passwordHash,
-      emailVerifiedAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-    demoUser = { _id: result.insertedId, name: 'Alex Rivera', email: demoEmail };
+    const [created] = await db
+      .insert(users)
+      .values({
+        name: 'Alex Rivera',
+        email: demoEmail,
+        passwordHash,
+        emailVerifiedAt: new Date(),
+      })
+      .returning();
+    userId = created.id;
     console.log('[Seed] Created Demo User:', demoEmail, 'Password: Password123!');
   } else {
+    userId = existingUser.id;
     console.log('[Seed] Using existing Demo User:', demoEmail);
   }
 
-  const userId = demoUser._id;
+  // 2. Clear old demo data for clean repeatable seeds
+  await db.delete(collections).where(eq(collections.userId, userId));
+  await db.delete(projects).where(eq(projects.userId, userId));
+  await db.delete(resources).where(eq(resources.userId, userId));
 
-  // 2. Collections
-  const collectionsCol = db.collection('collections');
-  await collectionsCol.deleteMany({ userId });
+  // 3. Seed Collections
+  const insertedCollections = await db
+    .insert(collections)
+    .values([
+      {
+        userId,
+        name: 'Design Systems & UI',
+        description: 'Handpicked component directories, icons, and UI primitives for production apps.',
+        color: '#3b82f6',
+        type: 'collection',
+      },
+      {
+        userId,
+        name: 'Palettes & Visuals',
+        description: 'Color themes, contrast tokens, and dark mode inspiration.',
+        color: '#8b5cf6',
+        type: 'collection',
+      },
+      {
+        userId,
+        name: 'Developer Tooling',
+        description: 'High-performance libraries, repos, and utility crates.',
+        color: '#10b981',
+        type: 'collection',
+      },
+      {
+        userId,
+        name: 'Public APIs & Datasets',
+        description: 'Reliable data backends and dummy testing endpoints.',
+        color: '#f59e0b',
+        type: 'collection',
+      },
+    ])
+    .returning();
 
-  const insertedCollections = await collectionsCol.insertMany([
-    {
-      userId,
-      name: 'Design Systems & UI',
-      description: 'Handpicked component directories, icons, and UI primitives for production apps.',
-      color: '#3b82f6',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      userId,
-      name: 'Palettes & Visuals',
-      description: 'Color themes, contrast tokens, and dark mode inspiration.',
-      color: '#8b5cf6',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      userId,
-      name: 'Developer Tooling',
-      description: 'High-performance libraries, repos, and utility crates.',
-      color: '#10b981',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      userId,
-      name: 'Public APIs & Datasets',
-      description: 'Reliable data backends and dummy testing endpoints.',
-      color: '#f59e0b',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
-
-  const colMap: Record<string, any> = {};
-  for (const doc of Object.values(insertedCollections.insertedIds)) {
-    const found = await collectionsCol.findOne({ _id: doc });
-    if (found) colMap[found.name] = found._id;
+  const colMap = new Map<string, string>();
+  for (const c of insertedCollections) {
+    colMap.set(c.name, c.id);
   }
 
-  // 3. Projects
-  const projectsCol = db.collection('projects');
-  await projectsCol.deleteMany({ userId });
+  // 4. Seed Projects
+  const insertedProjects = await db
+    .insert(projects)
+    .values([
+      {
+        userId,
+        name: 'Shelfspace Workspace',
+        description: 'Building the fastest developer resource manager for modern engineering teams.',
+        isArchived: false,
+      },
+      {
+        userId,
+        name: 'NextGen SaaS Dashboard',
+        description: 'High-density admin console with dark mode, real-time metrics, and tactile controls.',
+        isArchived: false,
+      },
+    ])
+    .returning();
 
-  const insertedProjects = await projectsCol.insertMany([
-    {
-      userId,
-      name: 'Shelfspace Workspace',
-      description: 'Building the fastest developer resource manager for modern engineering teams.',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      userId,
-      name: 'NextGen SaaS Dashboard',
-      description: 'High-density admin console with dark mode, real-time metrics, and tactile controls.',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
-
-  const projMap: Record<string, any> = {};
-  for (const doc of Object.values(insertedProjects.insertedIds)) {
-    const found = await projectsCol.findOne({ _id: doc });
-    if (found) projMap[found.name] = found._id;
+  const projMap = new Map<string, string>();
+  for (const p of insertedProjects) {
+    projMap.set(p.name, p.id);
   }
 
-  // 4. Resources
-  const resourcesCol = db.collection('resources');
-  await resourcesCol.deleteMany({ userId });
-
+  // 5. Seed Resources
   const sampleResources = [
     {
-      userId,
       type: 'ui',
       title: 'Lineicons — Handcrafted 8,400+ Vector Icons',
       url: 'https://lineicons.com/',
       normalizedUrl: 'https://lineicons.com',
       description: 'Comprehensive icon library featuring modern line, fill, and duotone icons with SVG, React, and Web Component support.',
       tags: ['icons', 'ui', 'vector', 'svg', 'design-system'],
-      projectIds: [projMap['Shelfspace Workspace'], projMap['NextGen SaaS Dashboard']],
-      collectionIds: [colMap['Design Systems & UI']],
+      projectNames: ['Shelfspace Workspace', 'NextGen SaaS Dashboard'],
+      collectionNames: ['Design Systems & UI'],
       notes: '### Lineicons Integration Note\n- Perfect for developer tools and minimal dashboards.\n- Supports 1px stroke weight and dark mode contrast.',
       metadata: {
         framework: 'React / SVG / WebFont',
@@ -131,21 +130,17 @@ async function seed() {
       },
       previewImage: 'https://lineicons.com/images/og-image.jpg',
       favicon: 'https://lineicons.com/favicon.ico',
-      status: 'active',
       isFavourite: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     },
     {
-      userId,
       type: 'ui',
       title: '21st.dev — Curated Component Inspiration & Registry',
       url: 'https://21st.dev/',
       normalizedUrl: 'https://21st.dev',
       description: 'The open-source registry of beautifully crafted React and Tailwind components, micro-interactions, and shaders.',
       tags: ['components', '21st.dev', 'react', 'tailwind', 'shadcn'],
-      projectIds: [projMap['Shelfspace Workspace']],
-      collectionIds: [colMap['Design Systems & UI']],
+      projectNames: ['Shelfspace Workspace'],
+      collectionNames: ['Design Systems & UI'],
       notes: 'Check 21st.dev for command palette designs, tactile buttons, and clean side drawers.',
       metadata: {
         framework: 'React / Tailwind CSS',
@@ -153,21 +148,17 @@ async function seed() {
       },
       previewImage: 'https://21st.dev/og.png',
       favicon: 'https://21st.dev/favicon.ico',
-      status: 'active',
       isFavourite: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     },
     {
-      userId,
       type: 'design',
       title: 'Dribbble — Developer Dashboard UI/UX Design Direction',
       url: 'https://dribbble.com/tags/developer-dashboard',
       normalizedUrl: 'https://dribbble.com/tags/developer-dashboard',
       description: 'Top curated developer dashboard concepts, dark mode elevation guides, and minimalist workspace aesthetics.',
       tags: ['dribbble', 'inspiration', 'dark-mode', 'dashboard', 'minimalism'],
-      projectIds: [projMap['NextGen SaaS Dashboard']],
-      collectionIds: [colMap['Palettes & Visuals']],
+      projectNames: ['NextGen SaaS Dashboard'],
+      collectionNames: ['Palettes & Visuals'],
       notes: 'Observed trends:\n- Slate/Zinc high contrast borders\n- Subtle glow on interactive badges\n- No bloated gradients',
       metadata: {
         colors: ['#09090b', '#18181b', '#27272a', '#3b82f6', '#10b981'],
@@ -175,21 +166,17 @@ async function seed() {
       },
       previewImage: 'https://cdn.dribbble.com/assets/dribbble-ball-icon-e3170e6a4b.svg',
       favicon: 'https://dribbble.com/favicon.ico',
-      status: 'active',
       isFavourite: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     },
     {
-      userId,
       type: 'development',
       title: 'facebook/react',
       url: 'https://github.com/facebook/react',
       normalizedUrl: 'https://github.com/facebook/react',
       description: 'The library for web and native user interfaces.',
       tags: ['react', 'javascript', 'frontend', 'ui-library'],
-      projectIds: [projMap['Shelfspace Workspace']],
-      collectionIds: [colMap['Developer Tooling']],
+      projectNames: ['Shelfspace Workspace'],
+      collectionNames: ['Developer Tooling'],
       notes: 'Using React 19 concurrent features and Server Components.',
       metadata: {
         repository: 'facebook/react',
@@ -201,41 +188,33 @@ async function seed() {
       },
       previewImage: 'https://opengraph.githubassets.com/1/facebook/react',
       favicon: 'https://github.githubassets.com/favicons/favicon.png',
-      status: 'active',
       isFavourite: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     },
     {
-      userId,
       type: 'design',
       title: 'Nordic Dark & Electric Emerald Palette',
       url: '',
       normalizedUrl: '',
       description: 'Tactile high-contrast palette tailored for code editors, logs, and terminals.',
       tags: ['palette', 'dark-mode', 'emerald', 'zinc'],
-      projectIds: [projMap['Shelfspace Workspace']],
-      collectionIds: [colMap['Palettes & Visuals']],
+      projectNames: ['Shelfspace Workspace'],
+      collectionNames: ['Palettes & Visuals'],
       notes: 'Base: #09090b\nSurface: #121215\nBorder: #27272a\nAccent: #10b981\nText: #f4f4f5',
       metadata: {
         colors: ['#09090b', '#121215', '#27272a', '#10b981', '#f4f4f5'],
         paletteName: 'Nordic Slate',
       },
-      status: 'active',
       isFavourite: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     },
     {
-      userId,
       type: 'data',
       title: 'GitHub REST API v3',
       url: 'https://docs.github.com/en/rest',
       normalizedUrl: 'https://docs.github.com/en/rest',
       description: 'Comprehensive public API to query repositories, stars, commit activity, and user metadata.',
       tags: ['api', 'github', 'rest', 'json'],
-      projectIds: [projMap['Shelfspace Workspace']],
-      collectionIds: [colMap['Public APIs & Datasets']],
+      projectNames: ['Shelfspace Workspace'],
+      collectionNames: ['Public APIs & Datasets'],
       notes: 'Rate limit: 60 req/hour unauthenticated, 5000 req/hour with token.',
       metadata: {
         format: 'JSON / REST',
@@ -244,57 +223,79 @@ async function seed() {
       },
       previewImage: 'https://github.githubassets.com/favicons/favicon.png',
       favicon: 'https://github.githubassets.com/favicons/favicon.png',
-      status: 'active',
       isFavourite: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     },
     {
-      userId,
       type: 'learning',
       title: 'Building Modern Developer Workspaces with TanStack & Tailwind',
       url: 'https://tanstack.com/query/latest',
       normalizedUrl: 'https://tanstack.com/query/latest',
       description: 'Powerful asynchronous state management, server-state caching, optimistic updates, and background refetching.',
       tags: ['tanstack-query', 'learning', 'react', 'state-management'],
-      projectIds: [projMap['Shelfspace Workspace']],
-      collectionIds: [colMap['Developer Tooling']],
+      projectNames: ['Shelfspace Workspace'],
+      collectionNames: ['Developer Tooling'],
       notes: 'Key pattern: Invalidate queries on mutation for seamless UI updates.',
       metadata: {
         platform: 'TanStack Docs',
         estimatedTime: '20 min read',
       },
       favicon: 'https://tanstack.com/favicons/favicon.ico',
-      status: 'active',
       isFavourite: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      userId,
-      type: 'personal',
-      title: 'Quick Snippet: MongoDB Compound Index for Per-User Uniqueness',
-      url: '',
-      normalizedUrl: '',
-      description: 'How to enforce per-user unique URLs while allowing multiple users to save the same link.',
-      tags: ['snippet', 'mongodb', 'mongoose', 'indexing'],
-      projectIds: [projMap['Shelfspace Workspace']],
-      collectionIds: [],
-      notes: '```typescript\nResourceSchema.index({ userId: 1, normalizedUrl: 1 });\n// Enforced in service layer across non-trashed statuses\n```',
-      metadata: {
-        snippetLanguage: 'typescript',
-      },
-      status: 'active',
-      isFavourite: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     },
   ];
 
-  await resourcesCol.insertMany(sampleResources);
-  console.log(`[Seed] Seeded ${sampleResources.length} rich developer resources successfully!`);
+  for (const s of sampleResources) {
+    const [created] = await db
+      .insert(resources)
+      .values({
+        userId,
+        type: s.type,
+        title: s.title,
+        url: s.url,
+        normalizedUrl: s.normalizedUrl,
+        description: s.description,
+        notes: s.notes || '',
+        metadata: s.metadata || {},
+        previewImage: s.previewImage || '',
+        favicon: s.favicon || '',
+        isFavourite: s.isFavourite,
+        status: 'active',
+      })
+      .returning();
 
-  await mongoose.disconnect();
+    // Tags
+    if (s.tags.length > 0) {
+      await db
+        .insert(resourceTags)
+        .values(s.tags.map((tag) => ({ resourceId: created.id, tag })))
+        .onConflictDoNothing();
+    }
+
+    // Projects
+    for (const pName of s.projectNames) {
+      const pId = projMap.get(pName);
+      if (pId) {
+        await db
+          .insert(projectResources)
+          .values({ projectId: pId, resourceId: created.id })
+          .onConflictDoNothing();
+      }
+    }
+
+    // Collections
+    for (const cName of s.collectionNames) {
+      const cId = colMap.get(cName);
+      if (cId) {
+        await db
+          .insert(collectionResources)
+          .values({ collectionId: cId, resourceId: created.id })
+          .onConflictDoNothing();
+      }
+    }
+  }
+
+  console.log(`[Seed] Seeded ${sampleResources.length} rich developer resources successfully!`);
+  await closeDB();
   console.log('[Seed] Seeding complete! You can log in with:');
   console.log('[Seed] Email: demo@shelfspace.dev');
   console.log('[Seed] Password: Password123!');

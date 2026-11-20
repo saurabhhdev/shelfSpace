@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
+import { eq, and, ne } from 'drizzle-orm';
 import { ResourceService } from './resource.service';
 import { MetadataService, normalizeUrl } from './metadata.service';
-import { Resource } from './resource.model';
-import { Collection } from '../collections/collection.model';
+import { db } from '../../db';
+import { resources, collections, resourceTags } from '../../db/schema';
 import { sendSuccess, sendError } from '../../utils/apiResponse';
 
 export class ResourceController {
@@ -58,16 +59,22 @@ export class ResourceController {
         return sendSuccess(res, { isDuplicate: false });
       }
       const normalized = normalizeUrl(rawUrl);
-      const existing = await Resource.findOne({
-        userId,
-        normalizedUrl: normalized,
-        status: { $ne: 'trashed' },
-      });
+      const [existing] = await db
+        .select()
+        .from(resources)
+        .where(
+          and(
+            eq(resources.userId, userId),
+            eq(resources.normalizedUrl, normalized),
+            ne(resources.status, 'trashed')
+          )
+        );
       if (existing) {
         return sendSuccess(res, {
           isDuplicate: true,
           existing: {
-            _id: existing._id,
+            _id: existing.id,
+            id: existing.id,
             title: existing.title,
             type: existing.type,
             createdAt: existing.createdAt,
@@ -89,18 +96,25 @@ export class ResourceController {
       const userId = req.user!.userId;
 
       // Fetch user's existing categories and established tags
-      const [userCategories, userTags] = await Promise.all([
-        Collection.find({ userId }).select('_id name color'),
-        Resource.distinct('tags', { userId, status: 'active' }),
+      const [userCategories, userTagRows] = await Promise.all([
+        db
+          .select({ id: collections.id, name: collections.name, color: collections.color })
+          .from(collections)
+          .where(eq(collections.userId, userId)),
+        db
+          .selectDistinct({ tag: resourceTags.tag })
+          .from(resourceTags)
+          .innerJoin(resources, eq(resourceTags.resourceId, resources.id))
+          .where(and(eq(resources.userId, userId), eq(resources.status, 'active'))),
       ]);
 
       const extracted = await MetadataService.extract(rawUrl, {
         userCategories: userCategories.map((c) => ({
-          _id: c._id.toString(),
+          _id: c.id,
           name: c.name,
           color: c.color,
         })),
-        userExistingTags: (userTags || []) as string[],
+        userExistingTags: userTagRows.map((t) => t.tag),
       });
 
       return sendSuccess(res, extracted, 'Metadata extracted');
@@ -147,7 +161,7 @@ export class ResourceController {
       const userId = req.user!.userId;
       const { resourceId } = req.params;
       const resource = await ResourceService.toggleFavourite(userId, resourceId);
-      return sendSuccess(res, resource, resource.isFavourite ? 'Added to favourites' : 'Removed from favourites');
+      return sendSuccess(res, resource, resource?.isFavourite ? 'Added to favourites' : 'Removed from favourites');
     } catch (err: any) {
       return sendError(res, err.message || 'Failed to update favourite status', 400);
     }
@@ -158,7 +172,7 @@ export class ResourceController {
       const userId = req.user!.userId;
       const { resourceId } = req.params;
       const resource = await ResourceService.archive(userId, resourceId);
-      return sendSuccess(res, resource, resource.status === 'archived' ? 'Resource archived' : 'Resource unarchived');
+      return sendSuccess(res, resource, resource?.status === 'archived' ? 'Resource archived' : 'Resource unarchived');
     } catch (err: any) {
       return sendError(res, err.message || 'Failed to archive resource', 400);
     }

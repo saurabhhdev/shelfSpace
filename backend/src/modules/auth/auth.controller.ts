@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
+import { eq } from 'drizzle-orm';
 import { AuthService } from './auth.service';
 import { sendSuccess, sendError } from '../../utils/apiResponse';
 import { env } from '../../config/env';
-import { User } from './user.model';
+import { db } from '../../db';
+import { users } from '../../db/schema';
+import { formatUser } from '../../utils/formatters';
 
 const isProduction = env.isProduction;
 
@@ -62,7 +65,7 @@ export class AuthController {
         {
           user: loginResult.user,
           accessToken: loginResult.accessToken,
-          verificationToken: user.emailVerificationToken, // Provided for easy dev verification
+          verificationToken: user?.emailVerificationToken, // Provided for easy dev verification
         },
         'Registration successful! Welcome to Shelfspace.',
         201
@@ -140,12 +143,15 @@ export class AuthController {
         return sendError(res, 'Unauthorized', 401);
       }
 
-      const user = await User.findById(req.user.userId);
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, req.user.userId));
       if (!user) {
         return sendError(res, 'User not found', 404);
       }
 
-      return sendSuccess(res, { user, sessionId: req.user.sessionId }, 'Current user profile');
+      return sendSuccess(res, { user: formatUser(user), sessionId: req.user.sessionId }, 'Current user profile');
     } catch (err: any) {
       return sendError(res, err.message || 'Error fetching user', 500);
     }

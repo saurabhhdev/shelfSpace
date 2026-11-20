@@ -1,6 +1,8 @@
-import mongoose from 'mongoose';
-import { Project, IProject } from './project.model';
-import { Resource } from '../resources/resource.model';
+import { eq, and, sql, desc, ilike, or, inArray } from 'drizzle-orm';
+import { db } from '../../db';
+import { projects, projectResources, resources } from '../../db/schema';
+import { formatProject } from '../../utils/formatters';
+import { populateResources } from '../collections/collection.service';
 
 export interface ListProjectsFilter {
   search?: string;
@@ -9,70 +11,95 @@ export interface ListProjectsFilter {
 
 export class ProjectService {
   static async list(userId: string, filter?: ListProjectsFilter) {
-    const query: any = { userId: new mongoose.Types.ObjectId(userId) };
+    const conditions = [eq(projects.userId, userId)];
 
     if (filter?.status === 'archived') {
-      query.isArchived = true;
+      conditions.push(eq(projects.isArchived, true));
     } else if (filter?.status === 'active') {
-      query.isArchived = { $ne: true };
+      conditions.push(eq(projects.isArchived, false));
     }
 
     if (filter?.search && filter.search.trim()) {
-      const q = filter.search.trim();
-      query.$or = [
-        { name: { $regex: q, $options: 'i' } },
-        { description: { $regex: q, $options: 'i' } },
-      ];
+      const q = `%${filter.search.trim()}%`;
+      conditions.push(
+        or(
+          ilike(projects.name, q),
+          ilike(projects.description, q)
+        )!
+      );
     }
 
-    const projects = await Project.find(query).sort({ updatedAt: -1, createdAt: -1 });
+    const projectItems = await db
+      .select()
+      .from(projects)
+      .where(and(...conditions))
+      .orderBy(desc(projects.updatedAt), desc(projects.createdAt));
 
-    // Aggregate resource count per project for this user
-    const counts = await Resource.aggregate([
-      { $match: { userId: new mongoose.Types.ObjectId(userId), status: 'active' } },
-      { $unwind: '$projectIds' },
-      { $group: { _id: '$projectIds', count: { $sum: 1 } } },
-    ]);
+    // Aggregate active resource count per project for this user
+    const counts = await db
+      .select({
+        projectId: projectResources.projectId,
+        count: sql<number>`count(distinct ${resources.id})::int`,
+      })
+      .from(projectResources)
+      .innerJoin(resources, eq(projectResources.resourceId, resources.id))
+      .where(and(eq(resources.userId, userId), eq(resources.status, 'active')))
+      .groupBy(projectResources.projectId);
 
-    const countMap = new Map(counts.map((c) => [c._id.toString(), c.count]));
+    const countMap = new Map<string, number>();
+    for (const c of counts) {
+      countMap.set(c.projectId, c.count);
+    }
 
-    return projects.map((p) => ({
-      ...p.toObject(),
-      resourceCount: countMap.get(p._id.toString()) || 0,
-    }));
+    return projectItems.map((p) => formatProject(p, countMap.get(p.id) || 0));
   }
 
   static async getById(userId: string, projectId: string) {
-    const project = await Project.findOne({ _id: projectId, userId });
+    const [project] = await db
+      .select()
+      .from(projects)
+      .where(and(eq(projects.id, projectId), eq(projects.userId, userId)));
+
     if (!project) throw new Error('Project not found.');
 
-    const resources = await Resource.find({
-      userId,
-      projectIds: projectId,
-      status: 'active',
-    })
-      .populate('collectionIds', 'name color')
-      .populate('projectIds', 'name imageUrl')
-      .sort({ createdAt: -1 });
+    const resourceRows = await db
+      .select({
+        resource: resources,
+      })
+      .from(projectResources)
+      .innerJoin(resources, eq(projectResources.resourceId, resources.id))
+      .where(
+        and(
+          eq(projectResources.projectId, projectId),
+          eq(resources.userId, userId),
+          eq(resources.status, 'active')
+        )
+      )
+      .orderBy(desc(resources.createdAt));
+
+    const resourceList = resourceRows.map((r) => r.resource);
+    const populated = await populateResources(userId, resourceList);
 
     return {
-      project: {
-        ...project.toObject(),
-        resourceCount: resources.length,
-      },
-      resources,
-      resourceCount: resources.length,
+      project: formatProject(project, populated.length),
+      resources: populated,
+      resourceCount: populated.length,
     };
   }
 
   static async create(userId: string, data: { name: string; description?: string; imageUrl?: string }) {
-    return Project.create({
-      userId,
-      name: data.name.trim(),
-      description: data.description || '',
-      imageUrl: data.imageUrl || '',
-      isArchived: false,
-    });
+    const [created] = await db
+      .insert(projects)
+      .values({
+        userId,
+        name: data.name.trim(),
+        description: data.description || '',
+        imageUrl: data.imageUrl || '',
+        isArchived: false,
+      })
+      .returning();
+
+    return formatProject(created, 0);
   }
 
   static async update(
@@ -80,80 +107,119 @@ export class ProjectService {
     projectId: string,
     data: { name?: string; description?: string; imageUrl?: string; isArchived?: boolean }
   ) {
-    const project = await Project.findOne({ _id: projectId, userId });
+    const [project] = await db
+      .select()
+      .from(projects)
+      .where(and(eq(projects.id, projectId), eq(projects.userId, userId)));
+
     if (!project) throw new Error('Project not found.');
 
-    if (data.name !== undefined) project.name = data.name.trim();
-    if (data.description !== undefined) project.description = data.description.trim();
-    if (data.imageUrl !== undefined) project.imageUrl = data.imageUrl.trim();
-    if (data.isArchived !== undefined) project.isArchived = Boolean(data.isArchived);
+    const updates: any = { updatedAt: new Date() };
+    if (data.name !== undefined) updates.name = data.name.trim();
+    if (data.description !== undefined) updates.description = data.description.trim();
+    if (data.imageUrl !== undefined) updates.imageUrl = data.imageUrl.trim();
+    if (data.isArchived !== undefined) updates.isArchived = Boolean(data.isArchived);
 
-    await project.save();
-    return project;
+    const [updated] = await db
+      .update(projects)
+      .set(updates)
+      .where(eq(projects.id, projectId))
+      .returning();
+
+    return formatProject(updated);
   }
 
   static async toggleArchive(userId: string, projectId: string) {
-    const project = await Project.findOne({ _id: projectId, userId });
+    const [project] = await db
+      .select()
+      .from(projects)
+      .where(and(eq(projects.id, projectId), eq(projects.userId, userId)));
+
     if (!project) throw new Error('Project not found.');
 
-    project.isArchived = !project.isArchived;
-    await project.save();
-    return project;
+    const [updated] = await db
+      .update(projects)
+      .set({
+        isArchived: !project.isArchived,
+        updatedAt: new Date(),
+      })
+      .where(eq(projects.id, projectId))
+      .returning();
+
+    return formatProject(updated);
   }
 
   static async delete(userId: string, projectId: string) {
-    const project = await Project.findOneAndDelete({ _id: projectId, userId });
+    const [project] = await db
+      .select()
+      .from(projects)
+      .where(and(eq(projects.id, projectId), eq(projects.userId, userId)));
+
     if (!project) throw new Error('Project not found.');
 
-    // Safe deletion: remove project association from resources, but RETAIN the resources
-    await Resource.updateMany(
-      { userId, projectIds: projectId },
-      { $pull: { projectIds: projectId } }
-    );
+    // Cascade delete on project_resources safely removes relationships, retaining the original resources
+    await db
+      .delete(projects)
+      .where(eq(projects.id, projectId));
 
-    return project;
+    return formatProject(project);
   }
 
   static async addResources(userId: string, projectId: string, resourceIds: string[]) {
-    const project = await Project.findOne({ _id: projectId, userId });
+    const [project] = await db
+      .select()
+      .from(projects)
+      .where(and(eq(projects.id, projectId), eq(projects.userId, userId)));
+
     if (!project) throw new Error('Project not found.');
 
-    const objectIds = resourceIds
-      .filter((id) => mongoose.Types.ObjectId.isValid(id))
-      .map((id) => new mongoose.Types.ObjectId(id));
-
-    if (objectIds.length === 0) {
+    const validIds = resourceIds.filter(Boolean);
+    if (validIds.length === 0) {
       throw new Error('No valid resource IDs provided.');
     }
 
-    const result = await Resource.updateMany(
-      { _id: { $in: objectIds }, userId },
-      { $addToSet: { projectIds: project._id } }
-    );
+    // Verify all resources belong to user
+    const userResources = await db
+      .select({ id: resources.id })
+      .from(resources)
+      .where(and(eq(resources.userId, userId), inArray(resources.id, validIds)));
+
+    let modifiedCount = 0;
+    for (const res of userResources) {
+      const resInsert = await db
+        .insert(projectResources)
+        .values({
+          projectId: project.id,
+          resourceId: res.id,
+        })
+        .onConflictDoNothing()
+        .returning();
+      if (resInsert.length > 0) modifiedCount++;
+    }
 
     return {
-      modifiedCount: result.modifiedCount,
+      modifiedCount,
       projectId,
     };
   }
 
   static async removeResource(userId: string, projectId: string, resourceId: string) {
-    const project = await Project.findOne({ _id: projectId, userId });
+    const [project] = await db
+      .select()
+      .from(projects)
+      .where(and(eq(projects.id, projectId), eq(projects.userId, userId)));
+
     if (!project) throw new Error('Project not found.');
 
-    if (!mongoose.Types.ObjectId.isValid(resourceId)) {
-      throw new Error('Invalid resource ID.');
-    }
+    await db
+      .delete(projectResources)
+      .where(
+        and(
+          eq(projectResources.projectId, projectId),
+          eq(projectResources.resourceId, resourceId)
+        )
+      );
 
-    await Resource.updateOne(
-      { _id: resourceId, userId },
-      { $pull: { projectIds: project._id } }
-    );
-
-    return {
-      removed: true,
-      resourceId,
-      projectId,
-    };
+    return { success: true };
   }
 }

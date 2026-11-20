@@ -5,6 +5,7 @@ export interface ICollection extends Document {
   name: string;
   description: string;
   color: string;
+  type: 'category' | 'collection';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,12 +35,18 @@ const CollectionSchema = new Schema<ICollection>(
       default: '#3b82f6', // Clean vibrant accent
       trim: true,
     },
+    type: {
+      type: String,
+      enum: ['category', 'collection'],
+      default: 'category',
+      index: true,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-CollectionSchema.index({ userId: 1, name: 1 });
+CollectionSchema.index({ userId: 1, type: 1, name: 1 });
 
 export const Collection = mongoose.model<ICollection>('Collection', CollectionSchema);

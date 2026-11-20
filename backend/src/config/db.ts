@@ -1,18 +1,13 @@
-import mongoose from 'mongoose';
-import { env } from './env';
+import { testConnection, closeDB } from '../db';
 
-export async function connectDB(): Promise<typeof mongoose> {
-  try {
-    mongoose.set('strictQuery', true);
-    const conn = await mongoose.connect(env.MONGODB_URI);
-    console.log(`[Database] MongoDB Connected: ${conn.connection.host}/${conn.connection.name}`);
-    return conn;
-  } catch (error) {
-    console.error('[Database] MongoDB connection error:', error);
+export async function connectDB(): Promise<void> {
+  const success = await testConnection();
+  if (!success) {
+    console.error('[Database] Neon PostgreSQL connection failed.');
     process.exit(1);
   }
 }
 
 export async function disconnectDB(): Promise<void> {
-  await mongoose.disconnect();
+  await closeDB();
 }

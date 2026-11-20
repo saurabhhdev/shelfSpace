@@ -2,30 +2,28 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import app from '../app';
 import { connectDB, disconnectDB } from '../config/db';
-import { User } from '../modules/auth/user.model';
-import { Session } from '../modules/auth/session.model';
-import { Resource } from '../modules/resources/resource.model';
-import { Project } from '../modules/projects/project.model';
-import { Collection } from '../modules/collections/collection.model';
+import { db } from '../db';
+import { users, resources, projects, collections } from '../db/schema';
+import { ilike } from 'drizzle-orm';
 import { validateSafeUrl, isPrivateIP } from '../utils/ssrf';
 import { normalizeUrl } from '../modules/resources/metadata.service';
 import { ClassificationService } from '../modules/resources/classification.service';
 
-describe('Shelfspace Backend Core Integration Tests', () => {
+async function cleanupTestData() {
+  await db.delete(users).where(ilike(users.email, '%@test-shelfspace.dev'));
+  await db.delete(resources).where(ilike(resources.title, 'TEST_%'));
+  await db.delete(projects).where(ilike(projects.name, 'TEST_%'));
+  await db.delete(collections).where(ilike(collections.name, 'TEST_%'));
+}
+
+describe('Shelfspace Backend Core Integration Tests', { timeout: 30000 }, () => {
   beforeAll(async () => {
     await connectDB();
-    // Clean test data
-    await User.deleteMany({ email: /@test-shelfspace\.dev$/ });
-    await Resource.deleteMany({ title: /^TEST_/ });
-    await Project.deleteMany({ name: /^TEST_/ });
-    await Collection.deleteMany({ name: /^TEST_/ });
+    await cleanupTestData();
   });
 
   afterAll(async () => {
-    await User.deleteMany({ email: /@test-shelfspace\.dev$/ });
-    await Resource.deleteMany({ title: /^TEST_/ });
-    await Project.deleteMany({ name: /^TEST_/ });
-    await Collection.deleteMany({ name: /^TEST_/ });
+    await cleanupTestData();
     await disconnectDB();
   });
 
