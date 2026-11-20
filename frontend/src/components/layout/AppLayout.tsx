@@ -29,6 +29,7 @@ export const AppLayout: React.FC = () => {
   // Collection and Project creation modals
   const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
   const [collectionModalTab, setCollectionModalTab] = useState<'premade' | 'custom'>('premade');
+  const [collectionModalType, setCollectionModalType] = useState<'category' | 'collection'>('collection');
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
 
   // Expandable categories state in sidebar
@@ -43,7 +44,7 @@ export const AppLayout: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await apiClient.get('/collections');
+      const res = await apiClient.get('/collections', { params: { type: 'category' } });
       if (res.data?.success) setCategories(res.data.data);
     } catch (err) {
       console.error('Failed to load categories', err);
@@ -110,11 +111,12 @@ export const AppLayout: React.FC = () => {
     };
   }, []);
 
-  // Navigation items with Projects between All Resources and Categories
+  // Navigation items: Projects, Collections, Categories visually distinct
   const navItems = [
     { to: '/dashboard', label: 'Dashboard', iconName: 'apps' },
     { to: '/library', label: 'All Resources', iconName: 'layers' },
     { to: '/projects', label: 'Projects', iconName: 'folder-open' },
+    { to: '/collections', label: 'Collections', iconName: 'boxes' },
     { to: '/categories', label: 'Categories', iconName: 'bookmark' },
     { to: '/favourites', label: 'Favorites', iconName: 'star' },
   ];
@@ -221,6 +223,45 @@ export const AppLayout: React.FC = () => {
                         }}
                         className="absolute right-1.5 p-1 rounded hover:bg-white/[0.08] text-neutral-400 hover:text-white transition-opacity cursor-pointer opacity-70 hover:opacity-100"
                         title="Create New Project"
+                        aria-label="Create New Project"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  );
+                }
+
+                // Collections Item with Quick Create Action
+                if (item.to === '/collections' && !isCollapsed) {
+                  return (
+                    <div key={item.to} className="group relative flex items-center">
+                      <NavLink
+                        to={item.to}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={({ isActive }) =>
+                          cn(
+                            'flex items-center gap-2.5 px-2.5 py-2 rounded-md text-xs font-medium transition-colors duration-150 flex-1 min-w-0 pr-8',
+                            isActive
+                              ? 'bg-white/[0.08] text-white border-l-2 border-[#D97757] pl-2 shadow-xs'
+                              : 'text-neutral-400 hover:bg-white/[0.04] hover:text-white'
+                          )
+                        }
+                      >
+                        <Flaticon name={item.iconName} className="text-sm shrink-0" />
+                        <span className="truncate">{item.label}</span>
+                      </NavLink>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setCollectionModalTab('premade');
+                          setCollectionModalType('collection');
+                          setIsCollectionModalOpen(true);
+                        }}
+                        className="absolute right-1.5 p-1 rounded hover:bg-white/[0.08] text-neutral-400 hover:text-white transition-opacity cursor-pointer opacity-70 hover:opacity-100"
+                        title="New Collection"
+                        aria-label="New Collection"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -230,9 +271,7 @@ export const AppLayout: React.FC = () => {
 
                 // Expandable Categories Navigation Item with Quick Add and Template Actions
                 if (item.to === '/categories' && !isCollapsed) {
-                  const isCatSectionActive =
-                    location.pathname.startsWith('/categories') ||
-                    location.pathname.startsWith('/collections');
+                  const isCatSectionActive = location.pathname.startsWith('/categories');
                   return (
                     <div key={item.to} className="space-y-0.5">
                       <div
@@ -259,10 +298,12 @@ export const AppLayout: React.FC = () => {
                               e.preventDefault();
                               e.stopPropagation();
                               setCollectionModalTab('premade');
+                              setCollectionModalType('category');
                               setIsCollectionModalOpen(true);
                             }}
                             className="p-1 rounded hover:bg-white/[0.08] text-neutral-400 hover:text-white transition-colors cursor-pointer"
-                            title="New Collection"
+                            title="New Category"
+                            aria-label="New Category"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -275,7 +316,8 @@ export const AppLayout: React.FC = () => {
                               setIsCategoriesExpanded(!isCategoriesExpanded);
                             }}
                             className="p-1 -mr-1 rounded hover:bg-white/[0.08] text-neutral-400 hover:text-white transition-colors cursor-pointer"
-                            title={isCategoriesExpanded ? 'Collapse collections' : 'Expand collections'}
+                            title={isCategoriesExpanded ? 'Collapse categories' : 'Expand categories'}
+                            aria-label={isCategoriesExpanded ? 'Collapse categories' : 'Expand categories'}
                           >
                             <ChevronDown
                               className={cn(
@@ -497,11 +539,12 @@ export const AppLayout: React.FC = () => {
         }}
       />
 
-      {/* Create Collection Modal (Pre-made 1-click & Custom) */}
+      {/* Create Collection / Category Modal (Pre-made 1-click & Custom) */}
       <CreateCollectionModal
         isOpen={isCollectionModalOpen}
         onClose={() => setIsCollectionModalOpen(false)}
         initialTab={collectionModalTab}
+        type={collectionModalType}
         onSuccess={() => {
           fetchCategories();
         }}

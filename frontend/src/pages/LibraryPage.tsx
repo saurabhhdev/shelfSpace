@@ -3,6 +3,7 @@ import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Resource, ResourceType, Collection } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
+import { ResourceCardSkeleton } from '../components/ui/LoadingState';
 import { ResourceModal } from '../components/resources/ResourceModal';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { Button } from '../components/ui/Button';
@@ -311,16 +312,68 @@ export const LibraryPage: React.FC = () => {
             </button>
           )}
         </div>
+
+        {/* Active Applied Filters Indicators */}
+        {hasActiveFilters && (
+          <div className="flex flex-wrap items-center gap-1.5 pt-1 text-xs">
+            <span className="text-[11px] text-neutral-400 mr-0.5">Applied filters:</span>
+            {search && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/[0.04] text-neutral-300 border border-[#3E3E38] text-[11px]">
+                Search: "{search}"
+                <button
+                  onClick={() => setSearch('')}
+                  className="hover:text-white cursor-pointer ml-0.5 text-neutral-400"
+                  title="Remove search filter"
+                >
+                  <Flaticon name="cross" className="text-[8px]" />
+                </button>
+              </span>
+            )}
+            {typeFilter !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/[0.04] text-neutral-300 border border-[#3E3E38] text-[11px]">
+                Type: {RESOURCE_TYPES.find((t) => t.id === typeFilter)?.label || typeFilter}
+                <button
+                  onClick={() => setTypeFilter('all')}
+                  className="hover:text-white cursor-pointer ml-0.5 text-neutral-400"
+                  title="Remove type filter"
+                >
+                  <Flaticon name="cross" className="text-[8px]" />
+                </button>
+              </span>
+            )}
+            {categoryFilter !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/[0.04] text-neutral-300 border border-[#3E3E38] text-[11px]">
+                Category: {categories.find((c) => c._id === categoryFilter)?.name || categoryFilter}
+                <button
+                  onClick={() => setCategoryFilter('all')}
+                  className="hover:text-white cursor-pointer ml-0.5 text-neutral-400"
+                  title="Remove category filter"
+                >
+                  <Flaticon name="cross" className="text-[8px]" />
+                </button>
+              </span>
+            )}
+            {onlyFavorites && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[11px]">
+                Favorites only
+                <button
+                  onClick={() => setOnlyFavorites(false)}
+                  className="hover:text-white cursor-pointer ml-0.5 text-amber-400"
+                  title="Remove favorites filter"
+                >
+                  <Flaticon name="cross" className="text-[8px]" />
+                </button>
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Resource Collection */}
       {isLoading ? (
         <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3' : 'space-y-2')}>
-          {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="h-16 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
-            />
+          {[...Array(6)].map((_, i) => (
+            <ResourceCardSkeleton key={i} viewMode={viewMode} />
           ))}
         </div>
       ) : resources.length > 0 ? (

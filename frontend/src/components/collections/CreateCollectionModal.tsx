@@ -24,6 +24,7 @@ export interface CreateCollectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialTab?: 'premade' | 'custom';
+  type?: 'category' | 'collection';
   onSuccess?: (created: Collection) => void;
 }
 
@@ -31,11 +32,15 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
   isOpen,
   onClose,
   initialTab = 'premade',
+  type = 'collection',
   onSuccess,
 }) => {
   const { notify } = useNotification();
   const [activeTab, setActiveTab] = useState<'premade' | 'custom'>(initialTab);
   const [existingCategories, setExistingCategories] = useState<Collection[]>([]);
+
+  const isCategory = type === 'category';
+  const itemLabel = isCategory ? 'Category' : 'Collection';
 
   // Custom creation state
   const [customName, setCustomName] = useState('');
@@ -49,7 +54,7 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setActiveTab(initialTab);
+      setActiveTab(isCategory ? initialTab : 'custom');
       setCustomName('');
       setCustomDescription('');
       setCustomColor(MUTED_COLORS[0]);
@@ -57,11 +62,13 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
       setCreatingPreMadeName(null);
       fetchExisting();
     }
-  }, [isOpen, initialTab]);
+  }, [isOpen, initialTab, type, isCategory]);
 
   const fetchExisting = async () => {
     try {
-      const res = await apiClient.get('/collections');
+      const res = await apiClient.get('/collections', {
+        params: { type },
+      });
       if (res.data?.success) {
         setExistingCategories(res.data.data);
       }
@@ -74,7 +81,7 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
     return new Set(existingCategories.map((c) => c.name.trim().toLowerCase()));
   }, [existingCategories]);
 
-  // 1-Click Pre-made Collection Creation
+  // 1-Click Pre-made Creation
   const handleSelectPreMade = async (item: PreMadeCollection) => {
     if (existingNamesSet.has(item.name.toLowerCase())) return;
 
@@ -85,10 +92,11 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
       const res = await apiClient.post('/collections', {
         name: item.name,
         color: item.color,
+        type,
       });
 
       if (res.data?.success) {
-        notify(`Collection "${item.name}" created`, 'success');
+        notify(`${itemLabel} "${item.name}" created`, 'success');
         window.dispatchEvent(new CustomEvent('categories-updated'));
         onSuccess?.(res.data.data);
         onClose();
@@ -100,17 +108,17 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
     }
   };
 
-  // Custom Collection Creation
+  // Custom Creation
   const handleCreateCustom = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = customName.trim();
     if (!trimmed) {
-      setError('Collection name is required.');
+      setError(`${itemLabel} name is required.`);
       return;
     }
 
     if (existingNamesSet.has(trimmed.toLowerCase())) {
-      setError(`A collection named "${trimmed}" already exists.`);
+      setError(`A ${itemLabel.toLowerCase()} named "${trimmed}" already exists.`);
       return;
     }
 
@@ -122,16 +130,17 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
         name: trimmed,
         description: customDescription.trim() || undefined,
         color: customColor,
+        type,
       });
 
       if (res.data?.success) {
-        notify(`Collection "${trimmed}" created`, 'success');
+        notify(`${itemLabel} "${trimmed}" created`, 'success');
         window.dispatchEvent(new CustomEvent('categories-updated'));
         onSuccess?.(res.data.data);
         onClose();
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create collection.');
+      setError(err.response?.data?.message || `Failed to create ${itemLabel.toLowerCase()}.`);
     } finally {
       setIsSubmittingCustom(false);
     }
@@ -141,44 +150,50 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="New Collection"
-      description="Create a collection to organize your bookmarks and resources."
+      title={`New ${itemLabel}`}
+      description={
+        isCategory
+          ? 'Create a category to classify your developer resources by domain or topic.'
+          : 'Create a collection to curate personal playlists or topic-focused sets.'
+      }
       maxWidth="sm"
     >
       <div className="font-sans space-y-4 pt-1">
-        {/* Simple Two-Option Segmented Control */}
-        <div className="flex items-center p-1 rounded-md bg-[#262624] border border-[#3E3E38] text-xs">
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('premade');
-              setError('');
-            }}
-            className={cn(
-              'flex-1 py-1.5 px-3 rounded font-medium transition-colors text-center cursor-pointer',
-              activeTab === 'premade'
-                ? 'bg-white/[0.1] text-white shadow-xs'
-                : 'text-neutral-400 hover:text-white'
-            )}
-          >
-            Pre-made Collections
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('custom');
-              setError('');
-            }}
-            className={cn(
-              'flex-1 py-1.5 px-3 rounded font-medium transition-colors text-center cursor-pointer',
-              activeTab === 'custom'
-                ? 'bg-white/[0.1] text-white shadow-xs'
-                : 'text-neutral-400 hover:text-white'
-            )}
-          >
-            Create Custom
-          </button>
-        </div>
+        {/* Tab switcher: Only shown for Categories */}
+        {isCategory && (
+          <div className="flex items-center p-1 rounded-md bg-[#262624] border border-[#3E3E38] text-xs">
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('premade');
+                setError('');
+              }}
+              className={cn(
+                'flex-1 py-1.5 px-3 rounded font-medium transition-colors text-center cursor-pointer',
+                activeTab === 'premade'
+                  ? 'bg-white/[0.1] text-white shadow-xs'
+                  : 'text-neutral-400 hover:text-white'
+              )}
+            >
+              Pre-made Categories
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('custom');
+                setError('');
+              }}
+              className={cn(
+                'flex-1 py-1.5 px-3 rounded font-medium transition-colors text-center cursor-pointer',
+                activeTab === 'custom'
+                  ? 'bg-white/[0.1] text-white shadow-xs'
+                  : 'text-neutral-400 hover:text-white'
+              )}
+            >
+              Create Custom
+            </button>
+          </div>
+        )}
 
         {error && (
           <div className="p-2.5 rounded-md bg-red-500/10 border border-red-500/20 text-xs text-red-400">
@@ -186,8 +201,8 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
           </div>
         )}
 
-        {/* 1. Pre-made Collections List (Immediate One-Click Creation) */}
-        {activeTab === 'premade' ? (
+        {/* 1. Pre-made Categories List (Only when creating Category & on premade tab) */}
+        {isCategory && activeTab === 'premade' ? (
           <div className="space-y-1 max-h-[360px] overflow-y-auto pr-1">
             {PRE_MADE_COLLECTIONS.map((item) => {
               const isExisting = existingNamesSet.has(item.name.toLowerCase());
@@ -236,12 +251,16 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
             })}
           </div>
         ) : (
-          /* 2. Custom Collection Form */
+          /* 2. Custom Creation Form (Direct for Collections, and on custom tab for Categories) */
           <form onSubmit={handleCreateCustom} className="space-y-3.5">
             <div>
               <Input
-                label="Collection Name"
-                placeholder="e.g. Learning, Tools, Design"
+                label={`${itemLabel} Name`}
+                placeholder={
+                  isCategory
+                    ? 'e.g. Frontend, Backend, DevOps'
+                    : 'e.g. Design Inspo, Reading List, Core Stack'
+                }
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
                 required
@@ -255,7 +274,7 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
               </label>
               <textarea
                 rows={2}
-                placeholder="Brief summary of what this collection is for..."
+                placeholder={`Brief summary of what this ${itemLabel.toLowerCase()} is for...`}
                 value={customDescription}
                 onChange={(e) => setCustomDescription(e.target.value)}
                 className="w-full rounded-md p-2.5 text-xs bg-[#262624] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-hidden focus:border-[#D97757] transition-colors resize-none"
@@ -287,7 +306,7 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
                 Cancel
               </Button>
               <Button type="submit" variant="primary" size="sm" isLoading={isSubmittingCustom}>
-                Create Collection
+                Create {itemLabel}
               </Button>
             </div>
           </form>

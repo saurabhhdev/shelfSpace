@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { AppLayout } from './components/layout/AppLayout';
+import { LoadingScreen } from './components/ui/LoadingState';
 import { LandingPage } from './pages/LandingPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { AuthPage } from './pages/AuthPage';
@@ -22,16 +23,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const location = useLocation();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#262624] text-[#FAF9F5]">
-        <div className="w-8 h-8 rounded-md bg-[#1C1C1B] border border-[#3E3E38] flex items-center justify-center mb-3">
-          <span className="w-2.5 h-2.5 rounded-sm bg-[#D97757] animate-pulse"></span>
-        </div>
-        <div className="text-xs text-neutral-400 font-sans">
-          Loading Shelfspace...
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!isAuthenticated) {

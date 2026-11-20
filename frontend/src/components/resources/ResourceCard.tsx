@@ -41,7 +41,10 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   const typeLabel = getResourceTypeLabel(resource.type);
 
   // Category info if assigned
-  const category = (resource.collectionIds || [])[0];
+  const category =
+    (resource.collectionIds || []).find(
+      (c: any) => typeof c === 'object' && c !== null && (c.type === 'category' || !c.type)
+    ) || (resource.collectionIds || [])[0];
   const categoryName = typeof category === 'object' && category !== null ? category.name : null;
   const categoryColor = typeof category === 'object' && category !== null ? category.color : null;
 

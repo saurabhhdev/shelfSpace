@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { Badge } from '../components/ui/Badge';
 import { formatRelativeTime } from '../lib/utils';
+import { ResourceCardSkeleton } from '../components/ui/LoadingState';
 
 export const TrashPage: React.FC = () => {
   const [trashedResources, setTrashedResources] = useState<Resource[]>([]);
@@ -101,11 +102,8 @@ export const TrashPage: React.FC = () => {
       {/* Trash Items List */}
       {isLoading ? (
         <div className="space-y-2">
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="h-16 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
-            />
+          {[...Array(4)].map((_, i) => (
+            <ResourceCardSkeleton key={i} viewMode="list" />
           ))}
         </div>
       ) : trashedResources.length > 0 ? (

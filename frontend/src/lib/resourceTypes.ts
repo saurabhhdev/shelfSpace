@@ -5,6 +5,7 @@ import type { ResourceType } from '../types';
 export interface ResourceTypeConfig {
   id: ResourceType;
   label: string;
+  description: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
@@ -13,12 +14,42 @@ const createFlaticonComponent = (name: string): React.FC<{ className?: string }>
 };
 
 export const RESOURCE_TYPES: ResourceTypeConfig[] = [
-  { id: 'tools', label: 'Tools', icon: createFlaticonComponent('tools') },
-  { id: 'repositories', label: 'Repositories', icon: createFlaticonComponent('code-branch') },
-  { id: 'components', label: 'Components', icon: createFlaticonComponent('layers') },
-  { id: 'snippets', label: 'Code Snippets', icon: createFlaticonComponent('file-code') },
-  { id: 'design', label: 'Design Resources', icon: createFlaticonComponent('palette') },
-  { id: 'references', label: 'References', icon: createFlaticonComponent('book-alt') },
+  {
+    id: 'tools',
+    label: 'Tools',
+    description: 'Apps and utilities you use.',
+    icon: createFlaticonComponent('tools'),
+  },
+  {
+    id: 'repositories',
+    label: 'Repositories',
+    description: 'Code projects and GitHub repositories.',
+    icon: createFlaticonComponent('code-branch'),
+  },
+  {
+    id: 'components',
+    label: 'Components',
+    description: 'Reusable UI elements.',
+    icon: createFlaticonComponent('layers'),
+  },
+  {
+    id: 'snippets',
+    label: 'Code Snippets',
+    description: 'Small pieces of reusable code.',
+    icon: createFlaticonComponent('file-code'),
+  },
+  {
+    id: 'design',
+    label: 'Design Resources',
+    description: 'Design files, assets and inspiration.',
+    icon: createFlaticonComponent('palette'),
+  },
+  {
+    id: 'references',
+    label: 'References',
+    description: 'Documentation, guides and useful articles.',
+    icon: createFlaticonComponent('book-alt'),
+  },
 ];
 
 export const normalizeResourceType = (type: string): ResourceType => {

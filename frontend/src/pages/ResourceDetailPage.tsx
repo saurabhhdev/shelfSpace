@@ -19,6 +19,7 @@ import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { getResourceTypeLabel, getResourceTypeIcon } from '../lib/resourceTypes';
 import { useNotification } from '../context/NotificationContext';
 import { formatDate, cn } from '../lib/utils';
+import { DetailPageSkeleton } from '../components/ui/LoadingState';
 
 export const ResourceDetailPage: React.FC = () => {
   const { resourceId } = useParams<{ resourceId: string }>();
@@ -93,11 +94,7 @@ export const ResourceDetailPage: React.FC = () => {
   };
 
   if (isLoading || !resource) {
-    return (
-      <div className="py-20 text-center text-xs text-neutral-400 font-sans">
-        Loading resource details...
-      </div>
-    );
+    return <DetailPageSkeleton />;
   }
 
   const TypeIcon = getResourceTypeIcon(resource.type);

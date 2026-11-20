@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Collection, Resource } from '../types';
@@ -11,6 +11,7 @@ import { CreateCollectionModal } from '../components/collections/CreateCollectio
 import { useNotification } from '../context/NotificationContext';
 import { getResourceTypeIcon } from '../lib/resourceTypes';
 import { cn, formatRelativeTime } from '../lib/utils';
+import { CollectionRowSkeleton, LoadingInline } from '../components/ui/LoadingState';
 
 const MUTED_COLORS = [
   '#D97757', // Terracotta (MX Icons)
@@ -25,6 +26,10 @@ const MUTED_COLORS = [
 
 export const CollectionsPage: React.FC = () => {
   const { notify } = useNotification();
+  const location = useLocation();
+  const isCollectionsRoute = location.pathname.startsWith('/collections');
+  const currentType: 'category' | 'collection' = isCollectionsRoute ? 'collection' : 'category';
+
   const [categories, setCategories] = useState<Collection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -84,7 +89,9 @@ export const CollectionsPage: React.FC = () => {
   const fetchCategories = async () => {
     setIsLoading(true);
     try {
-      const res = await apiClient.get('/collections');
+      const res = await apiClient.get('/collections', {
+        params: { type: currentType },
+      });
       if (res.data?.success) {
         setCategories(res.data.data);
       }
@@ -100,7 +107,7 @@ export const CollectionsPage: React.FC = () => {
     const handleUpdate = () => fetchCategories();
     window.addEventListener('categories-updated', handleUpdate);
     return () => window.removeEventListener('categories-updated', handleUpdate);
-  }, []);
+  }, [location.pathname]);
 
   const openCreateModal = (tab: 'premade' | 'custom' = 'premade') => {
     setCreateModalTab(tab);
@@ -163,33 +170,32 @@ export const CollectionsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-[#EDEDED]">
-            Categories
+          <h1 className="text-xl font-semibold tracking-tight text-[#FAF9F5]">
+            {isCollectionsRoute ? 'Collections' : 'Categories'}
           </h1>
           <p className="text-xs text-neutral-400 mt-1">
-            Group your resources with simple categories ({categories.length} total).
+            {isCollectionsRoute
+              ? "Group resources around a topic or purpose."
+              : "Classify resources by type or topic."}
           </p>
         </div>
 
         <Button
           type="button"
-          onClick={() => openCreateModal('premade')}
+          onClick={() => openCreateModal(isCollectionsRoute ? 'custom' : 'premade')}
           leftIcon={<Flaticon name="plus" className="text-xs" />}
           size="sm"
           className="self-start sm:self-auto shrink-0"
         >
-          New Category
+          {isCollectionsRoute ? 'New Collection' : 'New Category'}
         </Button>
       </div>
 
       {/* Clean List */}
       {isLoading ? (
         <div className="space-y-2">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="h-14 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
-            />
+          {[...Array(5)].map((_, i) => (
+            <CollectionRowSkeleton key={i} />
           ))}
         </div>
       ) : categories.length > 0 ? (
@@ -271,10 +277,7 @@ export const CollectionsPage: React.FC = () => {
                 {isExpanded && (
                   <div className="border-t border-[#3E3E38] bg-[#262624] p-3.5 pt-3 animate-in fade-in duration-150">
                     {preview?.isLoading ? (
-                      <div className="flex items-center justify-center py-6 text-neutral-400 text-xs gap-2">
-                        <Flaticon name="refresh" className="text-xs animate-spin text-[#D97757]" />
-                        <span>Loading resources...</span>
-                      </div>
+                      <LoadingInline label="Loading resources..." className="py-6" />
                     ) : preview && preview.resources.length > 0 ? (
                       <div className="space-y-2">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -350,18 +353,20 @@ export const CollectionsPage: React.FC = () => {
       ) : (
         <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B] space-y-3">
           <h3 className="text-sm font-medium text-[#FAF9F5]">
-            No categories yet
+            {isCollectionsRoute ? 'No collections yet' : 'No categories yet'}
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto">
-            Create simple categories or pick from pre-made collections to organize your saved resources.
+            {isCollectionsRoute
+              ? 'Create curated sets or playlists of resources around a specific topic or theme.'
+              : 'Classify your developer tools, snippets, and references by domain or discipline.'}
           </p>
           <div className="pt-2 flex items-center justify-center gap-2">
             <Button
               size="xs"
               leftIcon={<Flaticon name="plus" className="text-xs" />}
-              onClick={() => openCreateModal('premade')}
+              onClick={() => openCreateModal(isCollectionsRoute ? 'custom' : 'premade')}
             >
-              New Category
+              {isCollectionsRoute ? 'New Collection' : 'New Category'}
             </Button>
           </div>
         </div>
@@ -372,17 +377,22 @@ export const CollectionsPage: React.FC = () => {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         initialTab={createModalTab}
+        type={currentType}
         onSuccess={() => {
           fetchCategories();
         }}
       />
 
-      {/* Edit Category Name & Color Modal */}
+      {/* Edit Category/Collection Name & Color Modal */}
       <Dialog
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        title="Edit Category"
-        description="Update category name and color accent."
+        title={isCollectionsRoute ? 'Edit Collection' : 'Edit Category'}
+        description={
+          isCollectionsRoute
+            ? 'Update collection name and color accent.'
+            : 'Update category name and color accent.'
+        }
         maxWidth="sm"
       >
         <form onSubmit={handleSaveEdit} className="space-y-4 font-sans pt-1">

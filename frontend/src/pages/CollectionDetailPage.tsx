@@ -4,6 +4,7 @@ import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Collection, Resource } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
+import { ResourceCardSkeleton } from '../components/ui/LoadingState';
 import { Button } from '../components/ui/Button';
 import { ResourceModal } from '../components/resources/ResourceModal';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
@@ -82,16 +83,21 @@ export const CollectionDetailPage: React.FC = () => {
     }
   };
 
+  const isCollection = collection?.type === 'collection';
+  const parentRoute = isCollection ? '/collections' : '/categories';
+  const parentLabel = isCollection ? 'All Collections' : 'All Categories';
+  const typeLabel = isCollection ? 'collection' : 'category';
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12 font-sans">
       {/* Header */}
       <div className="space-y-4">
         <Link
-          to="/categories"
+          to={parentRoute}
           className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white transition-colors"
         >
           <Flaticon name="angle-small-left" className="text-xs" />
-          <span>All Categories</span>
+          <span>{parentLabel}</span>
         </Link>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#3E3E38]">
@@ -102,10 +108,10 @@ export const CollectionDetailPage: React.FC = () => {
             />
             <div>
               <h1 className="text-xl font-semibold tracking-tight text-[#FAF9F5]">
-                {collection?.name || 'Category'}
+                {collection?.name || (isCollection ? 'Collection' : 'Category')}
               </h1>
               <p className="text-xs text-neutral-400 mt-0.5">
-                {resources.length} {resources.length === 1 ? 'resource' : 'resources'} in this category
+                {resources.length} {resources.length === 1 ? 'resource' : 'resources'} in this {typeLabel}
               </p>
             </div>
           </div>
@@ -153,11 +159,8 @@ export const CollectionDetailPage: React.FC = () => {
       {/* Resources list / grid */}
       {isLoading ? (
         <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3' : 'space-y-2')}>
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="h-16 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
-            />
+          {[...Array(4)].map((_, i) => (
+            <ResourceCardSkeleton key={i} viewMode={viewMode} />
           ))}
         </div>
       ) : resources.length > 0 ? (

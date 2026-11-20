@@ -3,6 +3,7 @@ import { Search, Plus, Check, Loader2, Globe } from 'lucide-react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { LoadingInline } from '../ui/LoadingState';
 import { apiClient } from '../../api/client';
 import { useNotification } from '../../context/NotificationContext';
 import { getResourceTypeLabel, getResourceTypeIcon } from '../../lib/resourceTypes';
@@ -153,10 +154,7 @@ export const AddResourcesModal: React.FC<AddResourcesModalProps> = ({
 
           <div className="max-h-64 overflow-y-auto divide-y divide-[#3E3E38]">
             {isLoading ? (
-              <div className="py-12 flex flex-col items-center justify-center text-xs text-neutral-500 gap-2">
-                <Loader2 className="w-4 h-4 animate-spin text-[#D97757]" />
-                <span>Loading library resources...</span>
-              </div>
+              <LoadingInline label="Loading library resources..." className="py-12" />
             ) : filteredResources.length > 0 ? (
               filteredResources.map((resource) => {
                 const isSelected = selectedIds.includes(resource._id);

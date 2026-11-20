@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import type { Resource, Collection } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
+import { ResourceCardSkeleton } from '../components/ui/LoadingState';
 import { ResourceModal } from '../components/resources/ResourceModal';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { Button } from '../components/ui/Button';
@@ -98,26 +99,51 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12 font-sans">
-      {/* A. Add Resource Section (Top) */}
+      {/* A. Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-[#EDEDED]">
-            Resources
+          <h1 className="text-xl font-semibold tracking-tight text-[#FAF9F5]">
+            Dashboard
           </h1>
           <p className="text-xs text-neutral-400 mt-1">
-            Organize, manage, and quickly access your developer tools and references.
+            A quick overview of your saved resources and projects.
           </p>
         </div>
 
-        <Button
-          onClick={() => setIsAddOpen(true)}
-          leftIcon={<Flaticon name="plus" className="text-xs" />}
-          size="sm"
-          className="self-start sm:self-auto shrink-0"
-        >
-          Add Resource
-        </Button>
+        {totalCount > 0 && (
+          <Button
+            onClick={() => setIsAddOpen(true)}
+            leftIcon={<Flaticon name="plus" className="text-xs" />}
+            size="sm"
+            className="self-start sm:self-auto shrink-0"
+          >
+            Add Resource
+          </Button>
+        )}
       </div>
+
+      {/* First-time User Experience: Compact Contextual Empty State (Only shown when 0 resources) */}
+      {!isLoading && totalCount === 0 && (
+        <div className="p-4 sm:p-5 rounded-lg bg-[#1C1C1B] border border-[#3E3E38] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h2 className="text-sm font-semibold text-[#FAF9F5] flex items-center gap-2">
+              <Flaticon name="sparkles" className="text-xs text-[#D97757]" />
+              <span>Start by adding something useful.</span>
+            </h2>
+            <p className="text-xs text-[#B7B5A9] max-w-xl leading-relaxed">
+              Save a developer tool, GitHub repository, UI component, code snippet or reference. You can organize everything later.
+            </p>
+          </div>
+          <Button
+            onClick={() => setIsAddOpen(true)}
+            leftIcon={<Flaticon name="plus" className="text-xs" />}
+            size="sm"
+            className="shrink-0 self-start sm:self-auto"
+          >
+            Add Resource
+          </Button>
+        </div>
+      )}
 
       {/* B. Resource Summary (Three Small Figures) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -179,24 +205,14 @@ export const DashboardPage: React.FC = () => {
         {isLoading ? (
           <div className="space-y-2">
             {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="h-14 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
-              />
+              <ResourceCardSkeleton key={i} viewMode="list" />
             ))}
           </div>
         ) : recentResources.length === 0 ? (
-          <div className="p-8 rounded-md bg-[#1C1C1B] border border-[#3E3E38] text-center space-y-3">
-            <p className="text-xs text-neutral-400 max-w-sm mx-auto">
-              Your library is currently empty. Add your first resource to get started.
+          <div className="p-6 rounded-md bg-[#1C1C1B] border border-[#3E3E38] text-center">
+            <p className="text-xs text-neutral-400">
+              No recently added resources yet.
             </p>
-            <Button
-              onClick={() => setIsAddOpen(true)}
-              size="xs"
-              leftIcon={<Flaticon name="plus" className="text-xs" />}
-            >
-              Add Resource
-            </Button>
           </div>
         ) : (
           <div className="space-y-2">
@@ -232,16 +248,14 @@ export const DashboardPage: React.FC = () => {
         {isLoading ? (
           <div className="space-y-2">
             {[...Array(2)].map((_, i) => (
-              <div
-                key={i}
-                className="h-14 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
-              />
+              <ResourceCardSkeleton key={i} viewMode="list" />
             ))}
           </div>
         ) : favouriteResources.length === 0 ? (
-          <div className="p-6 rounded-md bg-[#1C1C1B] border border-[#3E3E38] text-center">
+          <div className="p-6 rounded-md bg-[#1C1C1B] border border-[#3E3E38] text-center space-y-1">
+            <h3 className="text-xs font-medium text-[#FAF9F5]">No favorites yet</h3>
             <p className="text-xs text-neutral-400">
-              No favorite resources yet. Click the star icon on any resource to add it here for quick access.
+              Star resources you use often to find them here quickly.
             </p>
           </div>
         ) : (

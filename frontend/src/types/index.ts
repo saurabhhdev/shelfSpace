@@ -47,6 +47,7 @@ export interface Collection {
   name: string;
   description: string;
   color: string;
+  type?: 'category' | 'collection';
   resourceCount?: number;
   createdAt: string;
   updatedAt: string;

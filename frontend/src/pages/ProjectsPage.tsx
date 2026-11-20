@@ -9,6 +9,7 @@ import { Input } from '../components/ui/Input';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { useNotification } from '../context/NotificationContext';
 import { formatRelativeTime } from '../lib/utils';
+import { ProjectCardSkeleton } from '../components/ui/LoadingState';
 
 export const ProjectsPage: React.FC = () => {
   const { notify } = useNotification();
@@ -164,11 +165,11 @@ export const ProjectsPage: React.FC = () => {
       {/* 1. Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#EDEDED]">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#FAF9F5]">
             Projects
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-            Organize developer resources, tools, and repositories around specific initiatives and codebases.
+            Group resources you're using for something you're building.
           </p>
         </div>
 
@@ -242,11 +243,8 @@ export const ProjectsPage: React.FC = () => {
       {/* 3. Project Cards Grid */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="h-64 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
-            />
+          {[...Array(6)].map((_, i) => (
+            <ProjectCardSkeleton key={i} />
           ))}
         </div>
       ) : filteredProjects.length > 0 ? (
@@ -254,67 +252,67 @@ export const ProjectsPage: React.FC = () => {
           {filteredProjects.map((project) => (
             <div
               key={project._id}
-              className="group flex flex-col justify-between bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 rounded-md transition-colors overflow-hidden"
+              className="group flex flex-col justify-between bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 rounded-lg p-4 transition-colors font-sans relative"
             >
-              <div>
-                {/* Cover Image or Fallback Visual (16:9 aspect ratio) */}
-                <div className="w-full aspect-[16/9] bg-[#262624] border-b border-[#3E3E38] relative overflow-hidden flex items-center justify-center">
-                  {project.imageUrl ? (
-                    <img
-                      src={project.imageUrl}
-                      alt={project.name}
-                      className="w-full h-full object-cover transition-opacity duration-150"
-                      onError={(e) => {
-                        (e.target as HTMLElement).style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#1C1C1B] to-[#262624] text-neutral-500 p-4">
-                      <div className="w-10 h-10 rounded-full bg-white/[0.04] flex items-center justify-center text-neutral-400 mb-1.5">
-                        <Flaticon name="folder-open" className="text-base" />
+              <div className="space-y-3">
+                {/* Top Row: Icon/Thumbnail + Title & Resource Count */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    {/* Compact Project Icon or Restrained Thumbnail */}
+                    <div className="w-9 h-9 rounded-md bg-[#262624] border border-[#3E3E38] flex items-center justify-center shrink-0 overflow-hidden">
+                      {project.imageUrl ? (
+                        <img
+                          src={project.imageUrl}
+                          alt=""
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <Flaticon name="folder-open" className="text-sm text-[#D97757]" />
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <Link
+                          to={`/projects/${project._id}`}
+                          className="font-semibold text-sm text-[#FAF9F5] hover:text-[#D97757] truncate block transition-colors"
+                          title={project.name}
+                        >
+                          {project.name}
+                        </Link>
+                        {project.isArchived && (
+                          <span className="px-1.5 py-0.2 rounded bg-amber-500/10 border border-amber-500/20 text-[9px] text-amber-400 font-medium">
+                            Archived
+                          </span>
+                        )}
                       </div>
-                      <span className="text-[11px] font-mono tracking-wider uppercase text-neutral-500">
-                        Project
-                      </span>
                     </div>
-                  )}
-
-                  {/* Archived status tag */}
-                  {project.isArchived && (
-                    <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-xs border border-white/10 text-[10px] text-amber-400 font-medium">
-                      Archived
-                    </div>
-                  )}
-                </div>
-
-                {/* Card Content Body */}
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <Link
-                      to={`/projects/${project._id}`}
-                      className="font-medium text-sm text-[#FAF9F5] hover:text-[#D97757] truncate block transition-colors"
-                    >
-                      {project.name}
-                    </Link>
-
-                    <span className="inline-flex items-center gap-1 font-mono text-[11px] text-neutral-400 bg-white/[0.04] px-1.5 py-0.5 rounded border border-[#3E3E38] shrink-0">
-                      <Flaticon name="layers" className="text-xs text-[#D97757]" />
-                      <span>{project.resourceCount || 0}</span>
-                    </span>
                   </div>
 
-                  {/* Short Description (2-line clamp with uniform height) */}
-                  <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
-                    {project.description?.trim() || (
-                      <span className="italic text-neutral-500">No description added.</span>
-                    )}
-                  </p>
+                  {/* Resource Count Badge */}
+                  <span
+                    className="inline-flex items-center gap-1 font-mono text-[11px] text-neutral-400 bg-white/[0.04] px-2 py-0.5 rounded border border-[#3E3E38] shrink-0"
+                    title={`${project.resourceCount || 0} resources in this project`}
+                  >
+                    <Flaticon name="layers" className="text-[10px] text-[#D97757]" />
+                    <span>{project.resourceCount || 0}</span>
+                  </span>
                 </div>
+
+                {/* Short Description (2-line clamp with consistent height) */}
+                <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
+                  {project.description?.trim() || (
+                    <span className="italic text-neutral-500/80">No description added.</span>
+                  )}
+                </p>
               </div>
 
-              {/* Card Footer: Last Updated & Compact Actions */}
-              <div className="px-4 py-2.5 border-t border-[#3E3E38] bg-[#262624]/50 flex items-center justify-between text-[11px] text-neutral-500">
-                <span>
+              {/* Card Footer: Last Updated & Compact Actions Menu */}
+              <div className="mt-3 pt-3 border-t border-[#3E3E38]/70 flex items-center justify-between text-[11px] text-neutral-500">
+                <span title={`Created ${new Date(project.createdAt).toLocaleDateString()}`}>
                   Updated {formatRelativeTime(project.updatedAt || project.createdAt)}
                 </span>
 
@@ -324,6 +322,7 @@ export const ProjectsPage: React.FC = () => {
                     variant="ghost"
                     size="sm"
                     title="Edit project"
+                    aria-label="Edit project"
                     icon={<Flaticon name="pencil" className="text-xs" />}
                   />
 
@@ -332,6 +331,7 @@ export const ProjectsPage: React.FC = () => {
                     variant="ghost"
                     size="sm"
                     title={project.isArchived ? 'Unarchive project' : 'Archive project'}
+                    aria-label={project.isArchived ? 'Unarchive project' : 'Archive project'}
                     icon={
                       project.isArchived ? (
                         <Flaticon name="refresh" className="text-xs text-amber-400" />
@@ -346,13 +346,14 @@ export const ProjectsPage: React.FC = () => {
                     variant="danger"
                     size="sm"
                     title="Delete project"
+                    aria-label="Delete project"
                     icon={<Flaticon name="trash" className="text-xs" />}
                   />
 
                   <Link
                     to={`/projects/${project._id}`}
                     className="ml-1 pl-1.5 border-l border-[#3E3E38] text-xs text-neutral-400 hover:text-white flex items-center gap-0.5 transition-colors"
-                    title="Open project"
+                    title="Open project details"
                   >
                     <span>Open</span>
                     <Flaticon name="angle-small-right" className="text-xs" />

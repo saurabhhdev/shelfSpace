@@ -3,6 +3,7 @@ import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Resource } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
+import { ResourceCardSkeleton } from '../components/ui/LoadingState';
 import { EditResourceModal } from '../components/resources/EditResourceModal';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { cn } from '../lib/utils';
@@ -95,11 +96,8 @@ export const RecentlyAddedPage: React.FC = () => {
 
       {isLoading ? (
         <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3' : 'space-y-2')}>
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="h-36 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
-            />
+          {[...Array(6)].map((_, i) => (
+            <ResourceCardSkeleton key={i} viewMode={viewMode} />
           ))}
         </div>
       ) : resources.length > 0 ? (

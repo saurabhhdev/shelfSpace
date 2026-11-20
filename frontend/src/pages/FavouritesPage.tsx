@@ -3,6 +3,7 @@ import { Flaticon } from '../components/ui/Flaticon';
 import { apiClient } from '../api/client';
 import type { Resource, Collection } from '../types';
 import { ResourceCard } from '../components/resources/ResourceCard';
+import { ResourceCardSkeleton } from '../components/ui/LoadingState';
 import { ResourceModal } from '../components/resources/ResourceModal';
 import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { useNotification } from '../context/NotificationContext';
@@ -115,11 +116,8 @@ export const FavouritesPage: React.FC = () => {
       {/* Resource list / grid */}
       {isLoading ? (
         <div className={cn(viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3' : 'space-y-2')}>
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="h-16 rounded-md bg-[#1C1C1B] animate-pulse border border-[#3E3E38]"
-            />
+          {[...Array(4)].map((_, i) => (
+            <ResourceCardSkeleton key={i} viewMode={viewMode} />
           ))}
         </div>
       ) : resources.length > 0 ? (
@@ -142,12 +140,12 @@ export const FavouritesPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B]">
-          <h3 className="text-sm font-medium text-[#FAF9F5] mb-1">
-            No favorites yet
+        <div className="py-14 text-center rounded-md border border-[#3E3E38] p-8 bg-[#1C1C1B] space-y-1">
+          <h3 className="text-sm font-medium text-[#FAF9F5]">
+            No favorites yet.
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto">
-            Click the star icon on any resource across your library to pin it here for quick access.
+            Star resources you use often to find them here quickly.
           </p>
         </div>
       )}

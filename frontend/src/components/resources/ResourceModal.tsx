@@ -78,13 +78,16 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
   const [previewImage, setPreviewImage] = useState('');
   const [favicon, setFavicon] = useState('');
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
 
-  // Projects list
+  // Projects & Collections lists
   const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
+  const [availableCollections, setAvailableCollections] = useState<Collection[]>([]);
 
   // Metadata Extraction States (Auto Add)
   const [isFetchingMeta, setIsFetchingMeta] = useState(false);
   const [hasFetchedMeta, setHasFetchedMeta] = useState(false);
+  const [fetchMetaStatus, setFetchMetaStatus] = useState<'idle' | 'fetching' | 'success' | 'partial' | 'failed' | 'invalid'>('idle');
   const [fetchMetaError, setFetchMetaError] = useState('');
   const [suggestedType, setSuggestedType] = useState<ResourceType | null>(null);
   const [typeConfidence, setTypeConfidence] = useState<'high' | 'medium' | 'low'>('medium');
@@ -95,6 +98,9 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
     confidence: 'high' | 'medium' | 'low';
     reason?: string;
   } | null>(null);
+
+  // Form organization states
+  const [isAdditionalOpen, setIsAdditionalOpen] = useState(false);
 
   // Duplicate Check State
   const [duplicateWarning, setDuplicateWarning] = useState<{ isDuplicate: boolean; title?: string } | null>(null);
@@ -112,7 +118,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
   const [formError, setFormError] = useState('');
   const initialDataRef = useRef<string>('');
 
-  // Fetch available projects on open
+  // Fetch available projects & collections on open
   useEffect(() => {
     if (isOpen) {
       apiClient
@@ -120,6 +126,15 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
         .then((res) => {
           if (res.data?.success) {
             setAvailableProjects(res.data.data || []);
+          }
+        })
+        .catch(() => {});
+
+      apiClient
+        .get('/collections', { params: { type: 'collection' } })
+        .then((res) => {
+          if (res.data?.success) {
+            setAvailableCollections(res.data.data || []);
           }
         })
         .catch(() => {});
@@ -135,10 +150,22 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
         setUrl(resource.url || '');
         setType(normalizeResourceType(resource.type));
         setDescription(resource.description || '');
-        const primaryCat = resource.collectionIds?.[0];
+
+        // Separate category (type === 'category' or default) from collections (type === 'collection')
+        const allCols = resource.collectionIds || [];
+        const catObj = allCols.find(
+          (c: any) => typeof c === 'object' && c !== null && (c.type === 'category' || !c.type)
+        );
+        const primaryCat = catObj || allCols[0];
         setCategoryId(
           typeof primaryCat === 'object' && primaryCat !== null ? primaryCat._id : primaryCat || ''
         );
+
+        const colObjs = allCols.filter(
+          (c: any) => typeof c === 'object' && c !== null && c.type === 'collection'
+        );
+        setSelectedCollectionIds(colObjs.map((c: any) => c._id));
+
         setTags(resource.tags || []);
         setNotes(resource.notes || '');
         setPreviewImage(resource.previewImage || '');
@@ -148,6 +175,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
         );
         setSelectedProjectIds(projIds);
         setHasFetchedMeta(false);
+        setIsAdditionalOpen(Boolean(resource.notes || resource.previewImage));
       } else {
         setMode('auto');
         setName('');
@@ -155,16 +183,19 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
         setType('tools');
         setDescription('');
         setCategoryId('');
+        setSelectedCollectionIds([]);
         setTags([]);
         setNotes('');
         setPreviewImage('');
         setFavicon('');
         setSelectedProjectIds(initialProjectId ? [initialProjectId] : []);
         setHasFetchedMeta(false);
+        setIsAdditionalOpen(false);
       }
       setTagInput('');
       setFormError('');
       setFetchMetaError('');
+      setFetchMetaStatus('idle');
       setSuggestedType(null);
       setTypeConfidence('medium');
       setSuggestedCategory(null);
@@ -224,6 +255,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
   const handleFetchMetadata = async () => {
     let cleanUrl = url.trim();
     if (!cleanUrl) {
+      setFetchMetaStatus('invalid');
       setFetchMetaError('Please enter a URL first.');
       return;
     }
@@ -233,8 +265,17 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
       setUrl(cleanUrl);
     }
 
+    // URL validation
+    const validUrlRegex = /^(https?:\/\/)?([\w.-]+\.[a-z]{2,}|localhost)(:\d+)?(\/.*)?$/i;
+    if (!validUrlRegex.test(cleanUrl)) {
+      setFetchMetaStatus('invalid');
+      setFetchMetaError('Please enter a valid URL (e.g. https://github.com/... or https://example.com).');
+      return;
+    }
+
     setIsFetchingMeta(true);
     setFetchMetaError('');
+    setFetchMetaStatus('fetching');
 
     try {
       const res = await apiClient.get(
@@ -272,14 +313,22 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
           }
         }
 
+        const hasFull = Boolean(data.title && (data.description || data.previewImage));
+        setFetchMetaStatus(hasFull ? 'success' : 'partial');
         setHasFetchedMeta(true);
-        notify('Resource metadata retrieved successfully', 'success');
+        if (hasFull) {
+          notify('Resource details retrieved successfully', 'success');
+        } else {
+          notify('Partial details retrieved. You can complete the remaining fields manually.', 'info');
+        }
       } else {
         setHasFetchedMeta(true);
+        setFetchMetaStatus('partial');
         setFetchMetaError('Could not retrieve full metadata. You can fill in details manually below.');
       }
     } catch (err: any) {
       setHasFetchedMeta(true);
+      setFetchMetaStatus('failed');
       setFetchMetaError(
         'Unable to retrieve automatic details from this URL. You can continue filling in details manually below.'
       );
@@ -309,6 +358,13 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
     );
   };
 
+  // Toggle Collection assignment
+  const handleToggleCollection = (colId: string) => {
+    setSelectedCollectionIds((prev) =>
+      prev.includes(colId) ? prev.filter((id) => id !== colId) : [...prev, colId]
+    );
+  };
+
   // Inline Category Creation
   const handleQuickCreateCategory = async (catName?: string) => {
     const nameToUse = (catName || newCategoryName).trim();
@@ -319,6 +375,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
       const res = await apiClient.post('/collections', {
         name: nameToUse,
         color: newCategoryColor,
+        type: 'category',
       });
       if (res.data?.success && res.data.data) {
         const created = res.data.data;
@@ -361,6 +418,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
   // Reset Auto Add back to initial URL input
   const handleResetAutoAdd = () => {
     setHasFetchedMeta(false);
+    setFetchMetaStatus('idle');
     setFetchMetaError('');
     setSuggestedType(null);
     setSuggestedCategory(null);
@@ -393,12 +451,16 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
     setIsSubmitting(true);
     setFormError('');
 
+    const allCollectionIds = Array.from(
+      new Set([categoryId, ...selectedCollectionIds].filter(Boolean))
+    );
+
     const payload: any = {
       title: name.trim(),
       url: cleanUrl,
       type,
       description: description.trim(),
-      collectionIds: categoryId ? [categoryId] : [],
+      collectionIds: allCollectionIds,
       projectIds: selectedProjectIds,
       tags,
       notes: notes.trim(),
@@ -447,7 +509,9 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
         description={
           isEdit
             ? 'Update resource information, type, category, or project assignments.'
-            : 'Save developer tools, repositories, components, snippets, and references.'
+            : mode === 'auto'
+            ? 'Paste a resource URL and Shelfspace will fetch its details for you. Review the information before saving.'
+            : 'Fill in the resource details manually.'
         }
         maxWidth="lg"
       >
@@ -518,10 +582,14 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
           {/* ==================== AUTO ADD: STEP 1 (INITIAL URL INPUT) ==================== */}
           {mode === 'auto' && !isEdit && !hasFetchedMeta && !isFetchingMeta && (
             <div className="p-4 rounded-md bg-[#262624] border border-[#3E3E38] space-y-3">
+              <p className="text-xs text-neutral-300">
+                Paste a resource URL and Shelfspace will fetch its details for you. Review the information before saving.
+              </p>
+
               <div className="flex items-center justify-between">
                 <label className="text-xs font-medium text-neutral-300 flex items-center gap-1.5">
                   <Flaticon name="globe" className="text-xs text-[#D97757]" />
-                  <span>Enter Resource URL *</span>
+                  <span>Enter Resource URL <span className="text-[#D97757]">*</span></span>
                 </label>
                 <span className="text-[11px] text-neutral-500">
                   GitHub repo, documentation, or tool URL
@@ -533,7 +601,11 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                   <Input
                     placeholder="https://github.com/facebook/react or https://..."
                     value={url}
-                    onChange={(e) => setUrl(e.target.value)}
+                    onChange={(e) => {
+                      setUrl(e.target.value);
+                      if (fetchMetaError) setFetchMetaError('');
+                      if (fetchMetaStatus !== 'idle') setFetchMetaStatus('idle');
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
@@ -558,7 +630,7 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
 
               {/* Retrieval Notice / Fallback Message */}
               {fetchMetaError && (
-                <div className="text-[11px] text-amber-400/90 flex items-center gap-1.5 pt-1">
+                <div className="text-[11px] text-rose-400 flex items-center gap-1.5 pt-1">
                   <Flaticon name="info" className="text-xs shrink-0" />
                   <span>{fetchMetaError}</span>
                 </div>
@@ -569,7 +641,10 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                 <span>Pasting a link will extract title, description, and preview image automatically.</span>
                 <button
                   type="button"
-                  onClick={() => setMode('manual')}
+                  onClick={() => {
+                    setMode('manual');
+                    setFetchMetaError('');
+                  }}
                   className="text-neutral-400 hover:text-white underline cursor-pointer"
                 >
                   Or fill manually
@@ -595,389 +670,495 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
 
           {/* ==================== FORM BODY (Manual Mode, Edit Mode, or Auto Mode Post-Fetch) ==================== */}
           {(mode === 'manual' || isEdit || showAutoReviewForm) && !isFetchingMeta && (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Auto Mode: Top bar to change URL or re-fetch */}
-              {mode === 'auto' && !isEdit && (
-                <div className="flex items-center justify-between p-2.5 rounded-md bg-[#262624] border border-[#3E3E38] text-xs">
-                  <div className="flex items-center gap-2 truncate mr-2">
-                    <Flaticon name="globe" className="text-xs text-[#D97757] shrink-0" />
-                    <span className="text-neutral-400 truncate">{url}</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleResetAutoAdd}
-                    className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-white shrink-0 cursor-pointer"
-                    title="Change URL"
-                  >
-                    <Flaticon name="refresh" className="text-[10px]" />
-                    <span>Change URL</span>
-                  </button>
-                </div>
-              )}
+            <form onSubmit={handleSubmit} className="flex flex-col">
+              {/* Scrollable Form Content */}
+              <div className="max-h-[58vh] overflow-y-auto pr-1 space-y-5">
+                {/* Auto Mode: Top Status & URL Switcher */}
+                {mode === 'auto' && !isEdit && (
+                  <div className="space-y-2">
+                    {/* Retrieval status alert */}
+                    {fetchMetaStatus === 'success' && (
+                      <div className="p-2.5 rounded-md bg-emerald-950/20 border border-emerald-900/40 text-xs text-emerald-300 flex items-center gap-2">
+                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span>Details retrieved successfully. Review and edit the suggestions below before saving.</span>
+                      </div>
+                    )}
+                    {fetchMetaStatus === 'partial' && (
+                      <div className="p-2.5 rounded-md bg-amber-950/20 border border-amber-900/40 text-xs text-amber-300 flex items-center gap-2">
+                        <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <span>Partial metadata retrieved. You can complete the remaining details manually below.</span>
+                      </div>
+                    )}
+                    {fetchMetaStatus === 'failed' && (
+                      <div className="p-2.5 rounded-md bg-amber-950/20 border border-amber-900/40 text-xs text-amber-300 flex items-center gap-2">
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <span>Unable to retrieve automatic details from this URL. You can continue filling in details manually below.</span>
+                      </div>
+                    )}
 
-              {/* Preview Image Banner (if available) */}
-              {previewImage && (
-                <div className="relative w-full aspect-[16/9] max-h-44 rounded-md bg-[#262624] border border-[#3E3E38] overflow-hidden group">
-                  <img
-                    src={previewImage}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
-                    onError={() => setPreviewImage('')}
-                  />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-between p-3">
-                    <span className="text-[11px] text-white/90 bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs">
-                      Preview Image
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setPreviewImage('')}
-                      className="p-1 rounded-md bg-black/70 text-neutral-300 hover:text-rose-400 transition-colors cursor-pointer"
-                      title="Remove preview image"
-                    >
-                      <Flaticon name="cross" className="text-xs" />
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Manual Mode / Edit Mode URL Input */}
-              {(mode === 'manual' || isEdit) && (
-                <div>
-                  <label className="text-xs font-medium text-neutral-300 block mb-1">
-                    Resource URL *
-                  </label>
-                  <Input
-                    placeholder="https://example.com"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    required
-                  />
-                  {url && !/^https?:\/\//i.test(url) && (
-                    <span className="text-[11px] text-neutral-500 mt-1 block">
-                      URL should begin with https:// or http://
-                    </span>
-                  )}
-                </div>
-              )}
-
-              {/* Title / Name */}
-              <div>
-                <label className="text-xs font-medium text-neutral-300 block mb-1">
-                  Resource Name *
-                </label>
-                <Input
-                  placeholder="e.g. Next.js, Radix UI, Docker Documentation"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </div>
-
-              {/* Resource Type Selection (6 Core Types) */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-medium text-neutral-300">
-                    Resource Type *
-                  </label>
-                  {suggestedType && (
-                    <span className="text-[10px] text-[#D97757] flex items-center gap-1 font-mono">
-                      <Sparkles className="w-2.5 h-2.5" />
-                      Suggested based on website
-                    </span>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                  {RESOURCE_TYPES.map((t) => {
-                    const Icon = t.icon;
-                    const isSelected = type === t.id;
-                    return (
+                    <div className="flex items-center justify-between p-2.5 rounded-md bg-[#262624] border border-[#3E3E38] text-xs">
+                      <div className="flex items-center gap-2 truncate mr-2">
+                        <Flaticon name="globe" className="text-xs text-[#D97757] shrink-0" />
+                        <span className="text-neutral-300 truncate font-mono text-[11px]">{url}</span>
+                      </div>
                       <button
-                        key={t.id}
                         type="button"
-                        onClick={() => setType(t.id)}
-                        className={cn(
-                          'flex items-center gap-2 p-2 rounded-md border text-xs text-left transition-colors cursor-pointer',
-                          isSelected
-                            ? 'bg-[#D97757]/10 border-[#D97757] text-white font-medium'
-                            : 'bg-[#1C1C1B] border-[#3E3E38] text-neutral-400 hover:text-white hover:border-neutral-500'
-                        )}
+                        onClick={handleResetAutoAdd}
+                        className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-white shrink-0 cursor-pointer"
+                        title="Change URL"
                       >
-                        <Icon
-                          className={cn(
-                            'w-3.5 h-3.5 shrink-0',
-                            isSelected ? 'text-[#D97757]' : 'text-neutral-500'
-                          )}
-                        />
-                        <span className="truncate">{t.label}</span>
+                        <Flaticon name="refresh" className="text-[10px]" />
+                        <span>Change URL</span>
                       </button>
-                    );
-                  })}
-                </div>
-              </div>
+                    </div>
+                  </div>
+                )}
 
-              {/* Description */}
-              <div>
-                <label className="text-xs font-medium text-neutral-300 block mb-1">
-                  Description (optional)
-                </label>
-                <textarea
-                  rows={2}
-                  className="w-full rounded-md p-2.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
-                  placeholder="Brief summary of what this resource provides..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  maxLength={1000}
-                />
-              </div>
+                {/* Preview Image Banner (if available) */}
+                {previewImage && (
+                  <div className="relative w-full aspect-[16/9] max-h-44 rounded-md bg-[#262624] border border-[#3E3E38] overflow-hidden group">
+                    <img
+                      src={previewImage}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                      onError={() => setPreviewImage('')}
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-between p-3">
+                      <span className="text-[11px] text-white/90 bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs">
+                        Preview Image
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setPreviewImage('')}
+                        className="p-1 rounded-md bg-black/70 text-neutral-300 hover:text-rose-400 transition-colors cursor-pointer"
+                        title="Remove preview image"
+                      >
+                        <Flaticon name="cross" className="text-xs" />
+                      </button>
+                    </div>
+                  </div>
+                )}
 
-              {/* Category Assignment & Creation */}
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-medium text-neutral-300">
-                    Category (optional)
-                  </label>
-                  {!isCreatingCategory && (
-                    <button
-                      type="button"
-                      onClick={() => setIsCreatingCategory(true)}
-                      className="text-[11px] text-[#D97757] hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <Plus className="w-3 h-3" />
-                      <span>New Category</span>
-                    </button>
+                {/* ================= 1. BASIC DETAILS ================= */}
+                <div className="space-y-3.5">
+                  <div className="flex items-center gap-1.5 pb-1 border-b border-[#3E3E38] text-xs font-semibold text-neutral-300 uppercase tracking-wider">
+                    <Flaticon name="document" className="text-xs text-[#D97757]" />
+                    <span>Basic Details</span>
+                  </div>
+
+                  {/* Manual Mode / Edit Mode URL Input */}
+                  {(mode === 'manual' || isEdit) && (
+                    <div>
+                      <label className="text-xs font-medium text-neutral-300 block mb-1">
+                        Resource URL <span className="text-[#D97757]">*</span>
+                      </label>
+                      <Input
+                        placeholder="https://example.com"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        required
+                      />
+                      {url && !/^https?:\/\//i.test(url) && (
+                        <span className="text-[11px] text-neutral-500 mt-1 block">
+                          URL should begin with https:// or http://
+                        </span>
+                      )}
+                    </div>
                   )}
+
+                  {/* Title / Name */}
+                  <div>
+                    <label className="text-xs font-medium text-neutral-300 block mb-1">
+                      Resource Name <span className="text-[#D97757]">*</span>
+                    </label>
+                    <Input
+                      placeholder="e.g. Next.js, Radix UI, Docker Documentation"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  {/* Resource Type Selection */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-medium text-neutral-300">
+                        Resource Type <span className="text-[#D97757]">*</span>
+                      </label>
+                      {suggestedType && (
+                        <span className="text-[10px] text-[#D97757] flex items-center gap-1 font-mono">
+                          <Sparkles className="w-2.5 h-2.5" />
+                          Suggested type (editable)
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                      {RESOURCE_TYPES.map((t) => {
+                        const Icon = t.icon;
+                        const isSelected = type === t.id;
+                        return (
+                          <button
+                            key={t.id}
+                            type="button"
+                            onClick={() => setType(t.id)}
+                            title={t.description}
+                            className={cn(
+                              'flex items-center gap-2 p-2 rounded-md border text-xs text-left transition-colors cursor-pointer group',
+                              isSelected
+                                ? 'bg-[#D97757]/10 border-[#D97757] text-white font-medium'
+                                : 'bg-[#1C1C1B] border-[#3E3E38] text-neutral-400 hover:text-white hover:border-neutral-500'
+                            )}
+                          >
+                            <Icon
+                              className={cn(
+                                'w-3.5 h-3.5 shrink-0',
+                                isSelected ? 'text-[#D97757]' : 'text-neutral-500 group-hover:text-neutral-300'
+                              )}
+                            />
+                            <div className="truncate flex-1">
+                              <span className="truncate block">{t.label}</span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="text-xs font-medium text-neutral-300 block mb-1">
+                      Description <span className="text-neutral-500 font-normal">(optional)</span>
+                    </label>
+                    <textarea
+                      rows={2}
+                      className="w-full rounded-md p-2.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
+                      placeholder="Brief summary of what this resource provides..."
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      maxLength={1000}
+                    />
+                  </div>
                 </div>
 
-                {/* Inline Category Creator */}
-                {isCreatingCategory ? (
-                  <div className="p-3 bg-[#262624] border border-[#3E3E38] rounded-md space-y-2 mb-2">
-                    <div className="text-xs font-medium text-[#FAF9F5]">Create Category</div>
+                {/* ================= 2. ORGANIZATION ================= */}
+                <div className="space-y-3.5 pt-1">
+                  <div className="flex items-center gap-1.5 pb-1 border-b border-[#3E3E38] text-xs font-semibold text-neutral-300 uppercase tracking-wider">
+                    <Flaticon name="folder" className="text-xs text-[#D97757]" />
+                    <span>Organization</span>
+                  </div>
+
+                  {/* Category Assignment & Creation */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-medium text-neutral-300">
+                        Category <span className="text-neutral-500 font-normal">(optional)</span>
+                      </label>
+                      {!isCreatingCategory && (
+                        <button
+                          type="button"
+                          onClick={() => setIsCreatingCategory(true)}
+                          className="text-[11px] text-[#D97757] hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <Plus className="w-3 h-3" />
+                          <span>New Category</span>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Inline Category Creator */}
+                    {isCreatingCategory ? (
+                      <div className="p-3 bg-[#262624] border border-[#3E3E38] rounded-md space-y-2 mb-2">
+                        <div className="text-xs font-medium text-[#FAF9F5]">Create Category</div>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            placeholder="Category name..."
+                            value={newCategoryName}
+                            onChange={(e) => setNewCategoryName(e.target.value)}
+                            className="flex-1 px-2.5 py-1 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded text-[#FAF9F5] focus:outline-none"
+                          />
+                          <div className="flex items-center gap-1">
+                            {MUTED_COLORS.map((c) => (
+                              <button
+                                key={c}
+                                type="button"
+                                onClick={() => setNewCategoryColor(c)}
+                                className={cn(
+                                  'w-4 h-4 rounded-full transition-transform',
+                                  newCategoryColor === c ? 'scale-125 ring-1 ring-white' : 'opacity-70'
+                                )}
+                                style={{ backgroundColor: c }}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-end gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => setIsCreatingCategory(false)}
+                            className="text-xs text-neutral-400 hover:text-white px-2 py-0.5 cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                          <Button
+                            type="button"
+                            size="xs"
+                            isLoading={isSavingCategory}
+                            onClick={() => handleQuickCreateCategory()}
+                          >
+                            Create & Select
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <select
+                        value={categoryId}
+                        onChange={(e) => setCategoryId(e.target.value)}
+                        className="w-full px-2.5 py-2 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded-md text-[#FAF9F5] focus:outline-none focus:border-neutral-500 cursor-pointer"
+                      >
+                        <option value="">No Category</option>
+                        {categories.map((cat) => (
+                          <option key={cat._id} value={cat._id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+
+                    {/* Suggested Category Matching / Creation Banner */}
+                    {suggestedCategory?.isExisting && categoryId === suggestedCategory.categoryId && (
+                      <div className="mt-1.5 flex items-center gap-1.5 text-[11px] p-2 rounded bg-[#D97757]/10 border border-[#D97757]/20 text-[#D97757]">
+                        <Check className="w-3.5 h-3.5 shrink-0" />
+                        <span>
+                          Suggested Category: <strong>{suggestedCategory.name}</strong> <span className="text-neutral-400 text-[10px] font-normal">(editable suggestion)</span>
+                        </span>
+                      </div>
+                    )}
+
+                    {suggestedCategory && !suggestedCategory.isExisting && !categoryId && !isCreatingCategory && (
+                      <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] p-2 rounded bg-white/[0.02] border border-[#3E3E38]">
+                        <div className="flex items-center gap-1.5 text-neutral-300 truncate">
+                          <Sparkles className="w-3.5 h-3.5 text-[#D97757] shrink-0" />
+                          <span className="truncate">
+                            Suggested Category: <strong className="text-white">{suggestedCategory.name}</strong> <span className="text-neutral-500 text-[10px]">(editable suggestion)</span>
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleQuickCreateCategory(suggestedCategory.name)}
+                          className="text-[#D97757] hover:underline font-medium shrink-0 cursor-pointer"
+                        >
+                          + Create & Assign
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Tags Section */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-medium text-neutral-300">
+                        Tags <span className="text-neutral-500 font-normal">(optional)</span>
+                      </label>
+                      <div className="flex items-center gap-2">
+                        {tags.length > 0 && mode === 'auto' && (
+                          <span className="text-[10px] text-neutral-400 font-mono">
+                            {tags.length} suggested tags (editable)
+                          </span>
+                        )}
+                        {mode === 'auto' && !isEdit && (
+                          <button
+                            type="button"
+                            onClick={handleFetchMetadata}
+                            className="text-[10px] text-neutral-400 hover:text-white flex items-center gap-1 cursor-pointer"
+                            title="Re-analyse and refresh suggestions"
+                          >
+                            <RotateCcw className="w-2.5 h-2.5" />
+                            <span>Refresh suggestions</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1.5 mb-2">
+                      {tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-white/[0.04] text-[#FAF9F5] border border-[#3E3E38]"
+                        >
+                          <span>#{tag}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveTag(tag)}
+                            className="text-neutral-500 hover:text-white cursor-pointer"
+                            title={`Remove #${tag}`}
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+
                     <div className="flex items-center gap-2">
                       <input
                         type="text"
-                        placeholder="Category name..."
-                        value={newCategoryName}
-                        onChange={(e) => setNewCategoryName(e.target.value)}
-                        className="flex-1 px-2.5 py-1 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded text-[#FAF9F5] focus:outline-none"
+                        placeholder="Add custom tag (press Enter)..."
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleAddTag(tagInput);
+                          }
+                        }}
+                        className="flex-1 px-2.5 py-1.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded-md text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500"
                       />
-                      <div className="flex items-center gap-1">
-                        {MUTED_COLORS.map((c) => (
-                          <button
-                            key={c}
-                            type="button"
-                            onClick={() => setNewCategoryColor(c)}
-                            className={cn(
-                              'w-4 h-4 rounded-full transition-transform',
-                              newCategoryColor === c ? 'scale-125 ring-1 ring-white' : 'opacity-70'
-                            )}
-                            style={{ backgroundColor: c }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-end gap-2 pt-1">
-                      <button
-                        type="button"
-                        onClick={() => setIsCreatingCategory(false)}
-                        className="text-xs text-neutral-400 hover:text-white px-2 py-0.5"
-                      >
-                        Cancel
-                      </button>
                       <Button
                         type="button"
+                        variant="ghost"
                         size="xs"
-                        isLoading={isSavingCategory}
-                        onClick={() => handleQuickCreateCategory()}
+                        onClick={() => handleAddTag(tagInput)}
+                        disabled={!tagInput.trim()}
                       >
-                        Create & Select
+                        Add Tag
                       </Button>
                     </div>
                   </div>
-                ) : (
-                  <select
-                    value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                    className="w-full px-2.5 py-2 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded-md text-[#FAF9F5] focus:outline-none focus:border-neutral-500 cursor-pointer"
-                  >
-                    <option value="">No Category</option>
-                    {categories.map((cat) => (
-                      <option key={cat._id} value={cat._id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
 
-                {/* Suggested Category Matching / Creation Banner */}
-                {suggestedCategory?.isExisting && categoryId === suggestedCategory.categoryId && (
-                  <div className="mt-1.5 flex items-center gap-1.5 text-[11px] p-2 rounded bg-[#D97757]/10 border border-[#D97757]/20 text-[#D97757]">
-                    <Check className="w-3.5 h-3.5 shrink-0" />
-                    <span>
-                      Recommended: <strong>{suggestedCategory.name}</strong> ({suggestedCategory.reason || 'matched existing category'})
-                    </span>
-                  </div>
-                )}
-
-                {suggestedCategory && !suggestedCategory.isExisting && !categoryId && !isCreatingCategory && (
-                  <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] p-2 rounded bg-white/[0.02] border border-[#3E3E38]">
-                    <div className="flex items-center gap-1.5 text-neutral-300 truncate">
-                      <Sparkles className="w-3.5 h-3.5 text-[#D97757] shrink-0" />
-                      <span className="truncate">
-                        Suggested Category: <strong className="text-white">{suggestedCategory.name}</strong>
-                      </span>
+                  {/* Projects Assignment */}
+                  {availableProjects.length > 0 && (
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="text-xs font-medium text-neutral-300">
+                          Assign to Projects <span className="text-neutral-500 font-normal">(optional)</span>
+                        </label>
+                        <span className="text-[11px] text-neutral-500 font-mono">
+                          {selectedProjectIds.length} selected
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-[#262624] border border-[#3E3E38] rounded-md">
+                        {availableProjects.map((p) => {
+                          const isAssigned = selectedProjectIds.includes(p._id);
+                          return (
+                            <button
+                              key={p._id}
+                              type="button"
+                              onClick={() => handleToggleProject(p._id)}
+                              className={cn(
+                                'flex items-center gap-1.5 px-2 py-1 rounded text-xs border transition-colors cursor-pointer select-none',
+                                isAssigned
+                                  ? 'bg-[#D97757]/10 border-[#D97757] text-white font-medium'
+                                  : 'bg-[#1C1C1B] border-[#3E3E38] text-neutral-400 hover:text-white'
+                              )}
+                            >
+                              <FolderKanban
+                                className={cn(
+                                  'w-3 h-3',
+                                  isAssigned ? 'text-[#D97757]' : 'text-neutral-500'
+                                )}
+                              />
+                              <span>{p.name}</span>
+                              {isAssigned && <Check className="w-2.5 h-2.5 ml-0.5 text-[#D97757]" />}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => handleQuickCreateCategory(suggestedCategory.name)}
-                      className="text-[#D97757] hover:underline font-medium shrink-0 cursor-pointer"
-                    >
-                      + Create & Assign
-                    </button>
-                  </div>
-                )}
-              </div>
+                  )}
 
-              {/* Tags Section */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-medium text-neutral-300">
-                    Tags (optional)
-                  </label>
-                  <div className="flex items-center gap-2">
-                    {tags.length > 0 && mode === 'auto' && (
-                      <span className="text-[10px] text-neutral-500 font-mono">
-                        {tags.length} auto-generated
-                      </span>
-                    )}
-                    {mode === 'auto' && !isEdit && (
-                      <button
-                        type="button"
-                        onClick={handleFetchMetadata}
-                        className="text-[10px] text-neutral-400 hover:text-white flex items-center gap-1 cursor-pointer"
-                        title="Re-analyse and refresh suggestions"
-                      >
-                        <RotateCcw className="w-2.5 h-2.5" />
-                        <span>Refresh suggestions</span>
-                      </button>
-                    )}
-                  </div>
+                  {/* Collections Assignment */}
+                  {availableCollections.length > 0 && (
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="text-xs font-medium text-neutral-300">
+                          Add to Collections <span className="text-neutral-500 font-normal">(optional)</span>
+                        </label>
+                        <span className="text-[11px] text-neutral-500 font-mono">
+                          {selectedCollectionIds.length} selected
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-[#262624] border border-[#3E3E38] rounded-md">
+                        {availableCollections.map((c) => {
+                          const isAssigned = selectedCollectionIds.includes(c._id);
+                          return (
+                            <button
+                              key={c._id}
+                              type="button"
+                              onClick={() => handleToggleCollection(c._id)}
+                              className={cn(
+                                'flex items-center gap-1.5 px-2 py-1 rounded text-xs border transition-colors cursor-pointer select-none',
+                                isAssigned
+                                  ? 'bg-[#D97757]/10 border-[#D97757] text-white font-medium'
+                                  : 'bg-[#1C1C1B] border-[#3E3E38] text-neutral-400 hover:text-white'
+                              )}
+                            >
+                              <span
+                                className="w-2 h-2 rounded-full shrink-0"
+                                style={{ backgroundColor: c.color || '#3b82f6' }}
+                              />
+                              <span>{c.name}</span>
+                              {isAssigned && <Check className="w-2.5 h-2.5 ml-0.5 text-[#D97757]" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 mb-2">
-                  {tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-white/[0.04] text-[#FAF9F5] border border-[#3E3E38]"
-                    >
-                      <span>#{tag}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveTag(tag)}
-                        className="text-neutral-500 hover:text-white cursor-pointer"
-                        title={`Remove #${tag}`}
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder="Add custom tag (press Enter)..."
-                    value={tagInput}
-                    onChange={(e) => setTagInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleAddTag(tagInput);
-                      }
-                    }}
-                    className="flex-1 px-2.5 py-1.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] rounded-md text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500"
-                  />
-                  <Button
+                {/* ================= 3. ADDITIONAL DETAILS (COLLAPSIBLE) ================= */}
+                <div className="space-y-3 pt-1">
+                  <button
                     type="button"
-                    variant="ghost"
-                    size="xs"
-                    onClick={() => handleAddTag(tagInput)}
-                    disabled={!tagInput.trim()}
+                    onClick={() => setIsAdditionalOpen(!isAdditionalOpen)}
+                    className="w-full flex items-center justify-between pb-1 border-b border-[#3E3E38] text-xs font-semibold text-neutral-300 uppercase tracking-wider hover:text-white transition-colors cursor-pointer"
                   >
-                    Add Tag
-                  </Button>
+                    <div className="flex items-center gap-1.5">
+                      <Flaticon name="edit" className="text-xs text-[#D97757]" />
+                      <span>Additional Details</span>
+                      <span className="text-[10px] text-neutral-500 lowercase font-normal">(optional)</span>
+                    </div>
+                    <Flaticon
+                      name={isAdditionalOpen ? "angle-up" : "angle-down"}
+                      className="text-xs text-neutral-400"
+                    />
+                  </button>
+
+                  {isAdditionalOpen && (
+                    <div className="space-y-3.5 pt-1 animate-in fade-in duration-150">
+                      {/* Personal Notes */}
+                      <div>
+                        <label className="text-xs font-medium text-neutral-300 block mb-1">
+                          Personal Notes <span className="text-neutral-500 font-normal">(optional)</span>
+                        </label>
+                        <textarea
+                          rows={2}
+                          className="w-full rounded-md p-2.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
+                          placeholder="Installation notes, quick usage commands, or personal reminders..."
+                          value={notes}
+                          onChange={(e) => setNotes(e.target.value)}
+                        />
+                      </div>
+
+                      {/* Custom Preview Image URL input */}
+                      <div>
+                        <label className="text-xs font-medium text-neutral-400 block mb-1">
+                          Custom Preview Image URL <span className="text-neutral-500 font-normal">(optional)</span>
+                        </label>
+                        <Input
+                          placeholder="https://example.com/og-image.png"
+                          value={previewImage}
+                          onChange={(e) => setPreviewImage(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Projects Assignment */}
-              {availableProjects.length > 0 && (
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-medium text-neutral-300">
-                      Assign to Projects (optional)
-                    </label>
-                    <span className="text-[11px] text-neutral-500 font-mono">
-                      {selectedProjectIds.length} selected
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-[#262624] border border-[#3E3E38] rounded-md">
-                    {availableProjects.map((p) => {
-                      const isAssigned = selectedProjectIds.includes(p._id);
-                      return (
-                        <button
-                          key={p._id}
-                          type="button"
-                          onClick={() => handleToggleProject(p._id)}
-                          className={cn(
-                            'flex items-center gap-1.5 px-2 py-1 rounded text-xs border transition-colors cursor-pointer select-none',
-                            isAssigned
-                              ? 'bg-[#D97757]/10 border-[#D97757] text-white font-medium'
-                              : 'bg-[#1C1C1B] border-[#3E3E38] text-neutral-400 hover:text-white'
-                          )}
-                        >
-                          <FolderKanban
-                            className={cn(
-                              'w-3 h-3',
-                              isAssigned ? 'text-[#D97757]' : 'text-neutral-500'
-                            )}
-                          />
-                          <span>{p.name}</span>
-                          {isAssigned && <Check className="w-2.5 h-2.5 ml-0.5 text-[#D97757]" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Personal Notes */}
-              <div>
-                <label className="text-xs font-medium text-neutral-300 block mb-1">
-                  Personal Notes (optional)
-                </label>
-                <textarea
-                  rows={2}
-                  className="w-full rounded-md p-2.5 text-xs bg-[#1C1C1B] border border-[#3E3E38] text-[#FAF9F5] placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
-                  placeholder="Installation notes, quick usage commands, or personal reminders..."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                />
-              </div>
-
-              {/* Custom Preview Image URL input */}
-              <div>
-                <label className="text-xs font-medium text-neutral-400 block mb-1">
-                  Custom Preview Image URL (optional)
-                </label>
-                <Input
-                  placeholder="https://example.com/og-image.png"
-                  value={previewImage}
-                  onChange={(e) => setPreviewImage(e.target.value)}
-                />
-              </div>
-
-              {/* Sticky Footer Actions */}
-              <div className="pt-3 border-t border-[#3E3E38] flex items-center justify-between sticky bottom-0 bg-[#1C1C1B] pb-1 z-10">
+              {/* Fixed Footer Actions */}
+              <div className="pt-3 border-t border-[#3E3E38] flex items-center justify-between shrink-0 bg-[#1C1C1B] mt-3">
                 <Button
                   type="button"
                   variant="ghost"

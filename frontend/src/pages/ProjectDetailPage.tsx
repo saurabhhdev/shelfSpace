@@ -13,6 +13,7 @@ import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { useNotification } from '../context/NotificationContext';
 import { RESOURCE_TYPES } from '../lib/resourceTypes';
 import { cn, formatRelativeTime } from '../lib/utils';
+import { DetailPageSkeleton } from '../components/ui/LoadingState';
 
 export const ProjectDetailPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -210,14 +211,7 @@ export const ProjectDetailPage: React.FC = () => {
   }, [resources, selectedType, onlyFavorites, search]);
 
   if (isLoading || !project) {
-    return (
-      <div className="py-24 text-center text-xs text-neutral-400 font-sans">
-        <div className="w-8 h-8 rounded-md bg-[#1C1C1B] border border-[#3E3E38] flex items-center justify-center mx-auto mb-3">
-          <span className="w-2.5 h-2.5 rounded-sm bg-[#D97757] animate-pulse"></span>
-        </div>
-        <span>Loading project details...</span>
-      </div>
-    );
+    return <DetailPageSkeleton />;
   }
 
   return (
@@ -290,7 +284,7 @@ export const ProjectDetailPage: React.FC = () => {
               size="xs"
               leftIcon={<Flaticon name="plus" className="text-xs" />}
               onClick={() => setIsAddExistingModalOpen(true)}
-              title="Add existing resources from your library"
+              title="Add a resource you've already saved."
             >
               Add Existing
             </Button>
@@ -299,7 +293,7 @@ export const ProjectDetailPage: React.FC = () => {
               size="xs"
               leftIcon={<Flaticon name="plus" className="text-xs" />}
               onClick={() => setIsCreateResourceModalOpen(true)}
-              title="Create new resource directly inside this project"
+              title="Create a new resource and add it to this project."
             >
               New Resource
             </Button>
@@ -470,10 +464,10 @@ export const ProjectDetailPage: React.FC = () => {
             <Flaticon name="folder-open" className="text-base" />
           </div>
           <h3 className="text-sm font-medium text-[#FAF9F5] mb-1">
-            No resources in this project yet
+            Nothing in this project yet.
           </h3>
           <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
-            Add existing resources from your library or save new developer tools and components directly into this project.
+            Add resources you've already saved or create something new.
           </p>
           <div className="flex items-center justify-center gap-2">
             <Button
@@ -481,6 +475,7 @@ export const ProjectDetailPage: React.FC = () => {
               variant="outline"
               leftIcon={<Flaticon name="plus" className="text-xs" />}
               onClick={() => setIsAddExistingModalOpen(true)}
+              title="Add a resource you've already saved."
             >
               Add Existing
             </Button>
@@ -488,6 +483,7 @@ export const ProjectDetailPage: React.FC = () => {
               size="xs"
               leftIcon={<Flaticon name="plus" className="text-xs" />}
               onClick={() => setIsCreateResourceModalOpen(true)}
+              title="Create a new resource and add it to this project."
             >
               New Resource
             </Button>
