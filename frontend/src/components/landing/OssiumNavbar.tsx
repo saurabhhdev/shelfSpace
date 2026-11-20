@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Flaticon } from '../ui/Flaticon';
 import { useAuth } from '../../context/AuthContext';
-import { SplitText } from '../ui/SplitText';
 import { ShelfspaceLogoIcon } from '../ui/ShelfspaceLogo';
 import { InteractiveHoverButton } from '../ui/InteractiveHoverButton';
 import { VscGithubAlt } from 'react-icons/vsc';
@@ -43,25 +42,25 @@ export const OssiumNavbar: React.FC = () => {
           {/* What You Can Do Anchor */}
           <a
             href="#what-you-can-do"
-            className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
+            className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors duration-150 inline-flex items-center"
           >
-            <SplitText hoverColor="text-white">What You Can Do</SplitText>
+            What You Can Do
           </a>
 
           {/* Features Anchor */}
           <a
             href="#features"
-            className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
+            className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors duration-150 inline-flex items-center"
           >
-            <SplitText hoverColor="text-white">Features</SplitText>
+            Features
           </a>
 
           {/* FAQ Anchor */}
           <a
             href="#faq"
-            className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors inline-flex items-center"
+            className="px-3 py-1.5 text-xs sm:text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.04] rounded-md transition-colors duration-150 inline-flex items-center"
           >
-            <SplitText hoverColor="text-white">FAQ</SplitText>
+            FAQ
           </a>
 
           {/* Star on GitHub in Center Navigation */}
@@ -118,23 +117,23 @@ export const OssiumNavbar: React.FC = () => {
             <a
               href="#what-you-can-do"
               onClick={() => setMobileMenuOpen(false)}
-              className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
+              className="block px-3 py-2 rounded-md text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.05] transition-colors duration-150"
             >
-              <SplitText hoverColor="text-[#D97757]">What You Can Do</SplitText>
+              What You Can Do
             </a>
             <a
               href="#features"
               onClick={() => setMobileMenuOpen(false)}
-              className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
+              className="block px-3 py-2 rounded-md text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.05] transition-colors duration-150"
             >
-              <SplitText hoverColor="text-[#D97757]">Features</SplitText>
+              Features
             </a>
             <a
               href="#faq"
               onClick={() => setMobileMenuOpen(false)}
-              className="group block px-3 py-2 rounded-md text-sm font-medium text-[#FAF9F5] hover:bg-white/[0.06]"
+              className="block px-3 py-2 rounded-md text-sm font-medium text-[#B7B5A9] hover:text-[#FAF9F5] hover:bg-white/[0.05] transition-colors duration-150"
             >
-              <SplitText hoverColor="text-[#D97757]">FAQ</SplitText>
+              FAQ
             </a>
             <a
               href="https://github.com/saurabhhdev/shelfSpace"

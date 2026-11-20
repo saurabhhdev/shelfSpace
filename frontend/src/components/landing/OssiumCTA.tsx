@@ -11,12 +11,12 @@ export const OssiumCTA: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Strong Editorial Headline */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#FAF9F5] leading-[1.12] max-w-2xl mx-auto">
-          Keep Your Next Project <span className="text-[#D97757]">Within Reach</span>.
+          Ready to organize your <span className="text-[#D97757]">developer stack</span>?
         </h2>
 
         {/* Comfortable Readable Description */}
         <p className="mt-5 text-sm sm:text-base md:text-lg text-[#B7B5A9] max-w-xl mx-auto leading-relaxed">
-          Save the tools, repositories, components and references you find useful. Keep them organized in one place and come back whenever you need them.
+          Join developers and designers organizing their favorite tools, UI kits, and repositories in Shelfspace.
         </p>
 
         {/* CTA Button - Clean, simple, non-3D with smooth hover */}
