@@ -92,12 +92,6 @@ export const AuthPage: React.FC = () => {
     }
   };
 
-  const handleFillDemo = () => {
-    setEmail('demo@shelfspace.dev');
-    setPassword('Password123!');
-    setErrorMessage('');
-  };
-
   const switchMode = (loginMode: boolean) => {
     setIsLogin(loginMode);
     setErrorMessage('');
@@ -416,21 +410,6 @@ export const AuthPage: React.FC = () => {
                 </span>
               )}
             </div>
-
-            {/* One-click Demo Credentials Helper (Login mode only) */}
-            {isLogin && (
-              <div className="mt-5 pt-4 border-t border-[#3E3E38]/70 flex items-center justify-between text-[11px] text-[#B7B5A9]">
-                <span>Testing Shelfspace?</span>
-                <button
-                  type="button"
-                  onClick={handleFillDemo}
-                  className="text-[#D97757] hover:text-[#EE8360] font-medium cursor-pointer transition-colors inline-flex items-center gap-1 group"
-                >
-                  <span>Fill Demo Account</span>
-                  <Flaticon name="arrow-small-right" className="text-[10px] group-hover:translate-x-0.5 transition-transform" />
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
