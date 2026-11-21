@@ -10,16 +10,22 @@ import { formatUser } from '../../utils/formatters';
 const isProduction = env.isProduction;
 
 function getCookieOptions() {
-  const isProd = env.isProduction;
-  // If frontend and backend are on separate subdomains (e.g., shelfspace.vercel.app and shelfspace-api.vercel.app),
-  // browsers treat them as cross-site. SameSite MUST be 'none' and secure MUST be true for cross-origin cookies.
+  const isProd = env.isProduction || Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
+  // Cross-subdomain Vercel deployments (e.g. shelf-space-two.vercel.app -> shelfspace-ruddy.vercel.app)
+  // require SameSite=none and Secure=true.
   const sameSite: 'lax' | 'strict' | 'none' = env.COOKIE_SAME_SITE || (isProd ? 'none' : 'lax');
   const secure: boolean = sameSite === 'none' ? true : (env.COOKIE_SECURE ?? isProd);
+
+  const rawDomain = env.COOKIE_DOMAIN?.trim();
+  // Reject 'localhost' or '*.vercel.app' as explicit domains (browsers block cookies on Public Suffix List domains like vercel.app)
+  const isInvalidDomain = !rawDomain || rawDomain === 'localhost' || rawDomain.endsWith('vercel.app');
+  const domain = isInvalidDomain ? undefined : rawDomain;
+
   return {
     httpOnly: true,
     secure,
     sameSite,
-    domain: env.COOKIE_DOMAIN || undefined,
+    domain,
     path: '/',
   };
 }

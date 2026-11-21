@@ -56,8 +56,8 @@ app.use(
       if (allowedOrigins.includes(normalizedOrigin)) {
         return callback(null, true);
       }
-      // Allow Vercel preview deployments if they originate from shelfspace
-      if (/^https:\/\/shelfspace.*\.vercel\.app$/.test(normalizedOrigin)) {
+      // Allow Vercel deployments if they originate from shelfspace or shelf-space
+      if (/^https:\/\/shelf-?space.*\.vercel\.app$/.test(normalizedOrigin)) {
         return callback(null, true);
       }
       if (!env.isProduction) {

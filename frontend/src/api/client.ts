@@ -1,7 +1,10 @@
 import axios from 'axios';
 
-const rawBaseUrl = import.meta.env.VITE_API_URL || '/api';
-export const API_BASE_URL = rawBaseUrl.replace(/\/+$/, '');
+const rawBaseUrl = (import.meta.env.VITE_API_URL || '/api').trim();
+// Clean duplicate slashes in path (e.g. https://domain.vercel.app//api -> https://domain.vercel.app/api)
+export const API_BASE_URL = rawBaseUrl
+  .replace(/([^:]\/)\/+/g, '$1')
+  .replace(/\/+$/, '');
 
 let inMemoryToken: string | null = null;
 
