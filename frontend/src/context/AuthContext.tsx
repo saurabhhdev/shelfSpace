@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { User } from '../types';
-import { apiClient } from '../api/client';
+import { apiClient, setAccessToken } from '../api/client';
 
 interface AuthContextType {
   user: User | null;
@@ -28,6 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch {
       setUser(null);
+      setAccessToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -39,6 +40,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     const res = await apiClient.post('/auth/login', { email, password });
+    if (res.data?.data?.accessToken) {
+      setAccessToken(res.data.data.accessToken);
+    }
     if (res.data?.data?.user) {
       setUser(res.data.data.user);
     }
@@ -46,6 +50,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const register = async (name: string, email: string, password: string) => {
     const res = await apiClient.post('/auth/register', { name, email, password });
+    if (res.data?.data?.accessToken) {
+      setAccessToken(res.data.data.accessToken);
+    }
     if (res.data?.data?.user) {
       setUser(res.data.data.user);
     }
@@ -55,6 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await apiClient.post('/auth/logout');
     } finally {
+      setAccessToken(null);
       setUser(null);
     }
   };

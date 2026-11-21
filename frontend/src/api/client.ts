@@ -1,12 +1,47 @@
 import axios from 'axios';
 
+const rawBaseUrl = import.meta.env.VITE_API_URL || '/api';
+export const API_BASE_URL = rawBaseUrl.replace(/\/+$/, '');
+
+let inMemoryToken: string | null = null;
+
+export const setAccessToken = (token: string | null) => {
+  inMemoryToken = token;
+  if (token) {
+    try {
+      localStorage.setItem('shelfspace_token', token);
+    } catch {}
+  } else {
+    try {
+      localStorage.removeItem('shelfspace_token');
+    } catch {}
+  }
+};
+
+export const getAccessToken = (): string | null => {
+  if (inMemoryToken) return inMemoryToken;
+  try {
+    return localStorage.getItem('shelfspace_token');
+  } catch {
+    return null;
+  }
+};
+
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: API_BASE_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
   },
+});
+
+apiClient.interceptors.request.use((config) => {
+  const token = getAccessToken();
+  if (token && !config.headers.Authorization) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 let isRefreshing = false;
@@ -24,7 +59,13 @@ const processQueue = (error: any = null) => {
 };
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If an access token is returned in response data, record it
+    if (response.data?.data?.accessToken) {
+      setAccessToken(response.data.data.accessToken);
+    }
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
 
@@ -50,16 +91,19 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await axios.post(
-          (import.meta.env.VITE_API_URL || '/api') + '/auth/refresh',
+        const refreshRes = await axios.post(
+          `${API_BASE_URL}/auth/refresh`,
           {},
           { withCredentials: true }
         );
+        if (refreshRes.data?.data?.accessToken) {
+          setAccessToken(refreshRes.data.data.accessToken);
+        }
         processQueue(null);
         return apiClient(originalRequest);
       } catch (refreshErr) {
+        setAccessToken(null);
         processQueue(refreshErr);
-        // Clear local cache / state if needed
         return Promise.reject(refreshErr);
       } finally {
         isRefreshing = false;
