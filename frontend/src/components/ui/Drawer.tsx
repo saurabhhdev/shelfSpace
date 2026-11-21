@@ -47,7 +47,7 @@ export const Drawer: React.FC<DrawerProps> = ({
     <div className="fixed inset-0 z-50 flex justify-end">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 transition-opacity animate-in fade-in"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in"
         onClick={onClose}
       />
 
@@ -59,27 +59,27 @@ export const Drawer: React.FC<DrawerProps> = ({
           widths[width]
         )}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#3E3E38] bg-[#1C1C1B]">
-          <div>
+        <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-[#3E3E38] bg-[#1C1C1B]">
+          <div className="min-w-0 pr-4">
             {title && (
-              <h2 className="text-base font-semibold text-[#FAF9F5]">
+              <h2 className="text-sm sm:text-base font-semibold text-[#FAF9F5] truncate">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="text-xs text-neutral-400 mt-0.5">{description}</p>
+              <p className="text-xs text-neutral-400 mt-0.5 leading-relaxed">{description}</p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-white p-1.5 rounded-md hover:bg-white/[0.05] transition-colors cursor-pointer"
+            className="text-neutral-400 hover:text-white p-1.5 rounded-md hover:bg-white/[0.05] transition-colors cursor-pointer shrink-0"
             aria-label="Close drawer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">{children}</div>
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 overscroll-contain">{children}</div>
       </div>
     </div>
   );

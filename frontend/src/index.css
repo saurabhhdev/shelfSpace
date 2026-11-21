@@ -59,6 +59,12 @@ i.fi, i[class*="fi-"] {
     color-scheme: dark;
   }
 
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   html, body {
     background-color: #262624;
     color: #FAF9F5;
@@ -67,6 +73,7 @@ i.fi, i[class*="fi-"] {
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     letter-spacing: -0.014em;
+    -webkit-overflow-scrolling: touch;
   }
 
   ::selection {
@@ -90,57 +97,6 @@ i.fi, i[class*="fi-"] {
   }
 }
 
-/* Split-Text Vertical Stagger Hover Animation */
-.split-text-wrapper {
-  position: relative;
-  display: inline-flex;
-  overflow: hidden;
-  vertical-align: middle;
-  line-height: 1.2;
-}
-
-.split-char {
-  display: inline-block;
-  transform: translateY(0%);
-  transition: transform 0.38s cubic-bezier(0.76, 0, 0.24, 1), color 0.3s ease;
-  will-change: transform;
-}
-
-.split-char-clone {
-  display: inline-block;
-  transform: translateY(105%);
-  transition: transform 0.38s cubic-bezier(0.76, 0, 0.24, 1), color 0.3s ease;
-  will-change: transform;
-}
-
-.group:hover .split-char,
-.group:focus-visible .split-char,
-.split-trigger:hover .split-char,
-.split-text-wrapper:hover .split-char,
-a:hover .split-char,
-button:hover .split-char {
-  transform: translateY(-105%);
-}
-
-.group:hover .split-char-clone,
-.group:focus-visible .split-char-clone,
-.split-trigger:hover .split-char-clone,
-.split-text-wrapper:hover .split-char-clone,
-a:hover .split-char-clone,
-button:hover .split-char-clone {
-  transform: translateY(0%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .split-char,
-  .split-char-clone {
-    transition: none !important;
-    transform: none !important;
-  }
-  .split-char-clone {
-    display: none !important;
-  }
-}
 
 /* Custom Minimalist Scrollbars */
 ::-webkit-scrollbar {

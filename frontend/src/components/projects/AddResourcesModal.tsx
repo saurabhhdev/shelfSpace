@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Check, Loader2, Globe } from 'lucide-react';
+import { Search, Plus, Check, Globe } from 'lucide-react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';

@@ -70,10 +70,10 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   // ==================== LIST VIEW LAYOUT ====================
   if (viewMode === 'list') {
     return (
-      <div className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 rounded-md transition-colors gap-3 font-sans">
-        <div className="flex items-center gap-3 min-w-0 flex-1">
+      <div className="group flex flex-col sm:flex-row sm:items-center justify-between p-2.5 sm:p-3 bg-[#1C1C1B] border border-[#3E3E38] hover:border-neutral-500 rounded-md transition-colors gap-2.5 sm:gap-3 font-sans">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
           {/* Thumbnail Preview (Left) */}
-          <div className="w-24 sm:w-28 h-16 sm:h-18 rounded-md overflow-hidden shrink-0 border border-[#3E3E38] bg-[#262624] relative">
+          <div className="w-20 sm:w-28 h-14 sm:h-18 rounded-md overflow-hidden shrink-0 border border-[#3E3E38] bg-[#262624] relative">
             {resource.previewImage && !imageError ? (
               <img
                 src={resource.previewImage}

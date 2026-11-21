@@ -130,21 +130,23 @@ export const AppLayout: React.FC = () => {
   return (
     <div className="relative min-h-screen flex bg-[#262624] text-[#FAF9F5] font-sans selection:bg-[#D97757] selection:text-white overflow-x-hidden">
       {/* Mobile Drawer Backdrop */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/80 md:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
+      <div
+        className={cn(
+          'fixed inset-0 z-40 bg-black/70 backdrop-blur-xs transition-opacity duration-200 md:hidden',
+          isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        )}
+        onClick={() => setIsMobileMenuOpen(false)}
+        aria-hidden="true"
+      />
 
       {/* ==================== LEFT SIDEBAR ==================== */}
       <aside
         className={cn(
-          'border-r border-[#3E3E38] bg-[#1C1C1B] transition-all duration-150 ease-in-out select-none shrink-0 flex flex-col justify-between',
+          'border-r border-[#3E3E38] bg-[#1C1C1B] transition-transform duration-200 ease-out select-none shrink-0 flex flex-col justify-between',
           // Mobile: fixed slide-over drawer; Desktop: natural relative column that flows with the layout
-          'fixed inset-y-0 left-0 z-40 md:relative md:inset-auto md:z-auto md:min-h-screen md:h-auto',
-          isCollapsed ? 'w-16' : 'w-56',
-          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          'fixed inset-y-0 left-0 z-40 md:relative md:inset-auto md:z-auto md:min-h-screen md:h-auto w-64 max-w-[85vw] md:max-w-none md:transition-all',
+          isCollapsed ? 'md:w-16' : 'md:w-56',
+          isMobileMenuOpen ? 'translate-x-0 shadow-2xl shadow-black/80' : '-translate-x-full md:translate-x-0'
         )}
       >
         <div className="flex-1 flex flex-col min-h-0">
@@ -486,23 +488,35 @@ export const AppLayout: React.FC = () => {
 
       {/* ==================== MAIN VIEW AREA ==================== */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#262624]">
-        {/* Top Header: Compact Global Search */}
-        <header className="h-14 border-b border-[#3E3E38] bg-[#262624]/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-3">
+        {/* Top Header: Compact Global Search & Mobile Brand */}
+        <header className="h-14 border-b border-[#3E3E38] bg-[#262624]/85 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-3.5 sm:px-6">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden text-neutral-400 hover:text-white p-1 cursor-pointer"
+              className="md:hidden text-neutral-400 hover:text-white p-1.5 -ml-1 rounded-md hover:bg-white/[0.04] transition-colors cursor-pointer"
+              aria-label="Open navigation menu"
             >
               <Flaticon name="menu-burger" className="text-sm" />
             </button>
+
+            <Link
+              to="/dashboard"
+              className="flex items-center gap-2 md:hidden select-none"
+              title="Shelfspace Dashboard"
+            >
+              <ShelfspaceLogoIcon size={16} />
+              <span className="text-xs font-semibold text-[#FAF9F5] tracking-tight">
+                Shelfspace
+              </span>
+            </Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {/* Compact Global Search */}
             <button
               type="button"
               onClick={() => setIsCommandOpen(true)}
-              className="flex items-center gap-2 h-8 px-3 rounded-md bg-[#1C1C1B] border border-[#3E3E38] text-xs text-neutral-400 hover:border-neutral-500 hover:text-white transition-colors cursor-pointer"
+              className="flex items-center gap-2 h-8 px-2.5 sm:px-3 rounded-md bg-[#1C1C1B] border border-[#3E3E38] text-xs text-neutral-400 hover:border-neutral-500 hover:text-white transition-colors cursor-pointer"
             >
               <Flaticon name="search" className="text-xs text-neutral-400" />
               <span className="hidden sm:inline">Search...</span>
@@ -514,7 +528,7 @@ export const AppLayout: React.FC = () => {
         </header>
 
         {/* Content Outlet */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto">
           <Outlet />
         </main>
       </div>

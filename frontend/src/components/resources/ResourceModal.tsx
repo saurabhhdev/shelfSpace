@@ -8,12 +8,8 @@ import {
   GitBranch,
   Layers,
   Code2,
-  Palette,
-  BookOpen,
   X,
   Plus,
-  AlertCircle,
-  AlertTriangle,
   Sparkles,
   FolderKanban,
   Check,
@@ -21,7 +17,7 @@ import {
 } from 'lucide-react';
 import { apiClient } from '../../api/client';
 import { Alert } from '../ui/Alert';
-import { RESOURCE_TYPES, normalizeResourceType, getResourceTypeIcon } from '../../lib/resourceTypes';
+import { RESOURCE_TYPES, normalizeResourceType } from '../../lib/resourceTypes';
 import { useNotification } from '../../context/NotificationContext';
 import type { Resource, ResourceType, Collection, Project } from '../../types';
 import { cn } from '../../lib/utils';
@@ -685,17 +681,17 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                   <div className="space-y-2">
                     {/* Retrieval status alert */}
                     {fetchMetaStatus === 'success' && (
-                      <Alert variant="success" className="py-2 px-3 text-xs">
+                      <Alert variant="success" onDismiss={() => setFetchMetaStatus('idle')} className="py-2 px-3 text-xs">
                         Details retrieved successfully. Review and edit the suggestions below before saving.
                       </Alert>
                     )}
                     {fetchMetaStatus === 'partial' && (
-                      <Alert variant="warning" className="py-2 px-3 text-xs">
+                      <Alert variant="warning" onDismiss={() => setFetchMetaStatus('idle')} className="py-2 px-3 text-xs">
                         Partial metadata retrieved. You can complete the remaining details manually below.
                       </Alert>
                     )}
                     {fetchMetaStatus === 'failed' && (
-                      <Alert variant="warning" className="py-2 px-3 text-xs">
+                      <Alert variant="warning" onDismiss={() => setFetchMetaStatus('idle')} className="py-2 px-3 text-xs">
                         Unable to retrieve automatic details from this URL. You can continue filling in details manually below.
                       </Alert>
                     )}
