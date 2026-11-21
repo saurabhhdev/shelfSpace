@@ -12,6 +12,7 @@ import { useNotification } from '../context/NotificationContext';
 import { getResourceTypeIcon } from '../lib/resourceTypes';
 import { cn, formatRelativeTime } from '../lib/utils';
 import { CollectionRowSkeleton, LoadingInline } from '../components/ui/LoadingState';
+import { Alert } from '../components/ui/Alert';
 
 const MUTED_COLORS = [
   '#D97757', // Terracotta (MX Icons)
@@ -397,9 +398,9 @@ export const CollectionsPage: React.FC = () => {
       >
         <form onSubmit={handleSaveEdit} className="space-y-4 font-sans pt-1">
           {editError && (
-            <div className="p-2.5 rounded-md bg-rose-950/20 border border-rose-900/40 text-xs text-rose-400">
+            <Alert variant="error" onDismiss={() => setEditError('')}>
               {editError}
-            </div>
+            </Alert>
           )}
 
           <div>

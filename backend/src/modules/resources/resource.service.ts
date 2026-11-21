@@ -256,8 +256,8 @@ export class ResourceService {
     return formatResource(
       created,
       tags,
-      data.projectIds || [],
-      data.collectionIds || []
+      projectIds || [],
+      collectionIds || []
     );
   }
 

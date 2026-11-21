@@ -6,7 +6,7 @@ import { ResourceService } from './modules/resources/resource.service';
 
 async function startServer() {
   try {
-    // 1. Connect to MongoDB
+    // 1. Connect to PostgreSQL (Neon)
     await connectDB();
 
     // 2. Schedule daily cleanup for expired trash (Phase 2 & Phase 6 requirement: 30-day trash retention)

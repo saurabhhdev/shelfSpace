@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { Alert } from '../ui/Alert';
 import { apiClient } from '../../api/client';
 import { useNotification } from '../../context/NotificationContext';
 import type { Project } from '../../types';
@@ -74,9 +75,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     >
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
         {error && (
-          <div className="p-3 text-xs rounded-md bg-red-500/10 border border-red-500/20 text-red-400">
+          <Alert variant="error" onDismiss={() => setError('')} className="mb-2">
             {error}
-          </div>
+          </Alert>
         )}
 
         <div className="space-y-1.5">

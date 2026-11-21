@@ -14,6 +14,7 @@ import {
 import { Drawer } from '../ui/Drawer';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { Alert } from '../ui/Alert';
 import type { ResourceType, Project, Collection } from '../../types';
 import { apiClient } from '../../api/client';
 import { cn } from '../../lib/utils';
@@ -230,9 +231,9 @@ export const QuickAddDrawer: React.FC<QuickAddDrawerProps> = ({
       </div>
 
       {errorMessage && (
-        <div className="mb-4 p-3 rounded-md bg-rose-950/20 border border-rose-900/40 text-xs text-rose-400">
+        <Alert variant="error" onDismiss={() => setErrorMessage('')} className="mb-4">
           {errorMessage}
-        </div>
+        </Alert>
       )}
 
       {/* MODE 1: IMPORT FROM URL */}

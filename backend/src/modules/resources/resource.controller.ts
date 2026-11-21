@@ -119,7 +119,13 @@ export class ResourceController {
 
       return sendSuccess(res, extracted, 'Metadata extracted');
     } catch (err: any) {
-      return sendError(res, err.message || 'Failed to extract metadata', 400);
+      const rawUrl = (req.query.url as string) || '';
+      try {
+        const fallback = await MetadataService.extract(rawUrl);
+        return sendSuccess(res, fallback, 'Fallback metadata extracted');
+      } catch {
+        return sendError(res, err.message || 'Failed to extract metadata', 400);
+      }
     }
   }
 

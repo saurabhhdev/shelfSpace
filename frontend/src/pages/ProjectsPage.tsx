@@ -10,6 +10,7 @@ import { DeleteConfirmModal } from '../components/ui/DeleteConfirmModal';
 import { useNotification } from '../context/NotificationContext';
 import { formatRelativeTime } from '../lib/utils';
 import { ProjectCardSkeleton } from '../components/ui/LoadingState';
+import { Alert } from '../components/ui/Alert';
 
 export const ProjectsPage: React.FC = () => {
   const { notify } = useNotification();
@@ -412,9 +413,9 @@ export const ProjectsPage: React.FC = () => {
       >
         <form onSubmit={handleSave} className="space-y-4 font-sans">
           {error && (
-            <div className="p-3 rounded-md bg-rose-950/20 text-xs text-rose-400 border border-rose-900/40">
+            <Alert variant="error" onDismiss={() => setError('')}>
               {error}
-            </div>
+            </Alert>
           )}
 
           <Input

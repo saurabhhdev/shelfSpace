@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Flaticon } from '../components/ui/Flaticon';
 import { cn } from '../lib/utils';
 import { ShelfspaceLogoIcon } from '../components/ui/ShelfspaceLogo';
+import { Alert } from '../components/ui/Alert';
 
 export const AuthPage: React.FC = () => {
   const location = useLocation();
@@ -184,18 +185,13 @@ export const AuthPage: React.FC = () => {
 
             {/* Error Banner */}
             {errorMessage && (
-              <div className="mb-4 p-3 rounded-lg bg-rose-950/30 border border-rose-900/50 flex items-start gap-2.5 text-xs text-rose-300 animate-fade-in">
-                <Flaticon name="exclamation" className="text-xs text-rose-400 mt-0.5 shrink-0" />
-                <div className="flex-1 leading-relaxed">{errorMessage}</div>
-                <button
-                  type="button"
-                  onClick={() => setErrorMessage('')}
-                  className="text-rose-400 hover:text-rose-200 cursor-pointer p-0.5"
-                  aria-label="Dismiss error"
-                >
-                  <Flaticon name="cross" className="text-[10px]" />
-                </button>
-              </div>
+              <Alert
+                variant="error"
+                onDismiss={() => setErrorMessage('')}
+                className="mb-4"
+              >
+                {errorMessage}
+              </Alert>
             )}
 
             {/* Main Auth Form */}

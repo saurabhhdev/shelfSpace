@@ -2,6 +2,7 @@
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { Alert } from '../ui/Alert';
 import type { Resource, ResourceType, Project, Collection } from '../../types';
 import { apiClient } from '../../api/client';
 import { X } from 'lucide-react';
@@ -117,9 +118,9 @@ export const EditResourceModal: React.FC<EditResourceModalProps> = ({
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 rounded-md bg-rose-950/20 text-xs text-rose-400 border border-rose-900/40">
+          <Alert variant="error" onDismiss={() => setError('')} className="mb-2">
             {error}
-          </div>
+          </Alert>
         )}
 
         <div>

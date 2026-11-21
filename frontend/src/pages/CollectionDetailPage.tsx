@@ -42,8 +42,8 @@ export const CollectionDetailPage: React.FC = () => {
         setAllCategories(catsRes.data.data);
       }
     } catch (err) {
-      console.error('Category not found', err);
-      navigate('/categories');
+      console.error('Collection not found', err);
+      navigate(window.location.pathname.startsWith('/collections') ? '/collections' : '/categories');
     } finally {
       setIsLoading(false);
     }

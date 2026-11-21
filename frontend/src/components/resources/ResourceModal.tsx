@@ -14,17 +14,13 @@ import {
   Plus,
   AlertCircle,
   AlertTriangle,
-  Loader2,
-  ExternalLink,
   Sparkles,
-  PenLine,
   FolderKanban,
-  Globe,
-  Image as ImageIcon,
   Check,
   RotateCcw,
 } from 'lucide-react';
 import { apiClient } from '../../api/client';
+import { Alert } from '../ui/Alert';
 import { RESOURCE_TYPES, normalizeResourceType, getResourceTypeIcon } from '../../lib/resourceTypes';
 import { useNotification } from '../../context/NotificationContext';
 import type { Resource, ResourceType, Collection, Project } from '../../types';
@@ -327,6 +323,15 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
         setFetchMetaError('Could not retrieve full metadata. You can fill in details manually below.');
       }
     } catch (err: any) {
+      try {
+        const parsed = new URL(cleanUrl);
+        const domain = parsed.hostname.replace(/^www\./, '');
+        const prefix = domain.split('.')[0] || domain;
+        const readable = prefix.charAt(0).toUpperCase() + prefix.slice(1);
+        if (!name) setName(readable);
+      } catch {
+        // ignore
+      }
       setHasFetchedMeta(true);
       setFetchMetaStatus('failed');
       setFetchMetaError(
@@ -495,8 +500,6 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
     }
   };
 
-  const TypeIcon = getResourceTypeIcon(type);
-
   // Determine whether the review/details form should be shown in Auto mode
   const showAutoReviewForm = mode === 'auto' && (hasFetchedMeta || isFetchingMeta);
 
@@ -563,20 +566,24 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
 
           {/* Duplicate URL Warning Banner */}
           {duplicateWarning && (
-            <div className="p-3 rounded-md bg-amber-950/20 border border-amber-900/40 text-xs text-amber-300 flex items-start gap-2.5">
-              <Flaticon name="exclamation" className="text-xs shrink-0 text-amber-400 mt-0.5" />
-              <div className="flex-1">
-                <span className="font-medium">Duplicate URL detected:</span> A resource with this URL already exists in your library ({duplicateWarning.title}). You can still save it if this duplicate is intentional.
-              </div>
-            </div>
+            <Alert
+              variant="warning"
+              title="Duplicate URL detected"
+              className="mb-1"
+            >
+              A resource with this URL already exists in your library ({duplicateWarning.title}). You can still save it if this duplicate is intentional.
+            </Alert>
           )}
 
           {/* Form Error Banner */}
           {formError && (
-            <div className="p-3 rounded-md bg-rose-950/20 border border-rose-900/40 text-xs text-rose-400 flex items-center gap-2">
-              <Flaticon name="info" className="text-xs shrink-0" />
-              <span>{formError}</span>
-            </div>
+            <Alert
+              variant="error"
+              onDismiss={() => setFormError('')}
+              className="mb-1"
+            >
+              {formError}
+            </Alert>
           )}
 
           {/* ==================== AUTO ADD: STEP 1 (INITIAL URL INPUT) ==================== */}
@@ -678,22 +685,19 @@ export const ResourceModal: React.FC<ResourceModalProps> = ({
                   <div className="space-y-2">
                     {/* Retrieval status alert */}
                     {fetchMetaStatus === 'success' && (
-                      <div className="p-2.5 rounded-md bg-emerald-950/20 border border-emerald-900/40 text-xs text-emerald-300 flex items-center gap-2">
-                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span>Details retrieved successfully. Review and edit the suggestions below before saving.</span>
-                      </div>
+                      <Alert variant="success" className="py-2 px-3 text-xs">
+                        Details retrieved successfully. Review and edit the suggestions below before saving.
+                      </Alert>
                     )}
                     {fetchMetaStatus === 'partial' && (
-                      <div className="p-2.5 rounded-md bg-amber-950/20 border border-amber-900/40 text-xs text-amber-300 flex items-center gap-2">
-                        <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                        <span>Partial metadata retrieved. You can complete the remaining details manually below.</span>
-                      </div>
+                      <Alert variant="warning" className="py-2 px-3 text-xs">
+                        Partial metadata retrieved. You can complete the remaining details manually below.
+                      </Alert>
                     )}
                     {fetchMetaStatus === 'failed' && (
-                      <div className="p-2.5 rounded-md bg-amber-950/20 border border-amber-900/40 text-xs text-amber-300 flex items-center gap-2">
-                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                        <span>Unable to retrieve automatic details from this URL. You can continue filling in details manually below.</span>
-                      </div>
+                      <Alert variant="warning" className="py-2 px-3 text-xs">
+                        Unable to retrieve automatic details from this URL. You can continue filling in details manually below.
+                      </Alert>
                     )}
 
                     <div className="flex items-center justify-between p-2.5 rounded-md bg-[#262624] border border-[#3E3E38] text-xs">

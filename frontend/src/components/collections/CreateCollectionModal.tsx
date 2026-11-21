@@ -3,6 +3,7 @@ import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Flaticon } from '../ui/Flaticon';
+import { Alert } from '../ui/Alert';
 import { apiClient } from '../../api/client';
 import { useNotification } from '../../context/NotificationContext';
 import { PRE_MADE_COLLECTIONS, type PreMadeCollection } from '../../lib/collectionTemplates';
@@ -196,9 +197,9 @@ export const CreateCollectionModal: React.FC<CreateCollectionModalProps> = ({
         )}
 
         {error && (
-          <div className="p-2.5 rounded-md bg-red-500/10 border border-red-500/20 text-xs text-red-400">
+          <Alert variant="error" onDismiss={() => setError('')} className="mb-2">
             {error}
-          </div>
+          </Alert>
         )}
 
         {/* 1. Pre-made Categories List (Only when creating Category & on premade tab) */}
