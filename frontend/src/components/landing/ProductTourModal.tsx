@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Flaticon } from '../ui/Flaticon';
 import { useAuth } from '../../context/AuthContext';
-import { cn } from '../../lib/utils';
 
 interface ProductTourModalProps {
   isOpen: boolean;

@@ -1,30 +1,11 @@
 import { Pool } from 'pg';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
 
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 async function wipeAll() {
-  console.log('--- 1. Wiping MongoDB ---');
-  try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/shelfspace';
-    await mongoose.connect(mongoUri);
-    const db = mongoose.connection.db;
-    if (db) {
-      const collections = await db.listCollections().toArray();
-      for (const c of collections) {
-        const res = await db.collection(c.name).deleteMany({});
-        console.log(`MongoDB: Cleared collection "${c.name}" (${res.deletedCount} records deleted)`);
-      }
-    }
-    await mongoose.disconnect();
-    console.log('✓ MongoDB is completely empty!\n');
-  } catch (err: any) {
-    console.error('MongoDB wipe error:', err.message);
-  }
-
-  console.log('--- 2. Wiping Neon PostgreSQL ---');
+  console.log('--- Wiping Neon PostgreSQL ---');
   try {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {

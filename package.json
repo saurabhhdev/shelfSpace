@@ -11,7 +11,7 @@
     "build": "npm run build:backend && npm run build:frontend",
     "test:backend": "cd backend && npm test",
     "test": "npm run test:backend",
-    "seed": "node scripts/seed.cjs"
+    "seed": "npm --prefix backend run seed"
   },
   "keywords": [
     "shelfspace",
