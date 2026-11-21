@@ -15,6 +15,7 @@ export const env = {
   COOKIE_DOMAIN: process.env.COOKIE_DOMAIN || undefined,
   COOKIE_SAME_SITE: (process.env.COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || undefined,
   COOKIE_SECURE: process.env.COOKIE_SECURE !== undefined ? process.env.COOKIE_SECURE === 'true' : undefined,
+  CRON_SECRET: process.env.CRON_SECRET || '',
   isProduction: process.env.NODE_ENV === 'production',
 };
 

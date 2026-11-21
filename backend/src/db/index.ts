@@ -12,7 +12,7 @@ export const pool = new Pool({
   ssl: env.DATABASE_URL.includes('neon.tech') || env.isProduction
     ? { rejectUnauthorized: false }
     : undefined,
-  max: 20,
+  max: parseInt(process.env.PG_MAX_POOL || (env.isProduction ? '5' : '20'), 10),
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
 });
