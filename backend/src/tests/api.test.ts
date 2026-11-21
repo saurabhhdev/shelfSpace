@@ -3,8 +3,8 @@ import request from 'supertest';
 import app from '../app';
 import { connectDB, disconnectDB } from '../config/db';
 import { db } from '../db';
-import { users, resources, projects, collections } from '../db/schema';
-import { ilike } from 'drizzle-orm';
+import { users, resources, projects, collections, sessions } from '../db/schema';
+import { ilike, eq } from 'drizzle-orm';
 import { validateSafeUrl, isPrivateIP } from '../utils/ssrf';
 import { normalizeUrl } from '../modules/resources/metadata.service';
 import { ClassificationService } from '../modules/resources/classification.service';
@@ -502,6 +502,103 @@ describe('Shelfspace Backend Core Integration Tests', { timeout: 30000 }, () => 
       expect(designResult.type).toBe('design');
       expect(designResult.suggestedTags).toContain('figma');
       expect(designResult.suggestedCategory?.name).toBe('Design Resources');
+    });
+  });
+
+  describe('Security & Regression Bug Fixes Verification', () => {
+    let authCookieUserX: string;
+    let authCookieUserY: string;
+    let userXProjectId: string;
+
+    beforeAll(async () => {
+      // Create User X
+      const resX = await request(app).post('/api/auth/register').send({
+        name: 'User X Sec',
+        email: `userx-${Date.now()}@test-shelfspace.dev`,
+        password: 'Password123!',
+      });
+      const cX = resX.headers['set-cookie'];
+      authCookieUserX = Array.isArray(cX) ? cX.join('; ') : String(cX || '');
+
+      // Create Project for User X
+      const projX = await request(app)
+        .post('/api/projects')
+        .set('Cookie', authCookieUserX)
+        .send({ name: 'TEST_UserX_Project', description: 'User X Private Project' });
+      userXProjectId = projX.body.data._id;
+
+      // Create User Y
+      const resY = await request(app).post('/api/auth/register').send({
+        name: 'User Y Sec',
+        email: `usery-${Date.now()}@test-shelfspace.dev`,
+        password: 'Password123!',
+      });
+      const cY = resY.headers['set-cookie'];
+      authCookieUserY = Array.isArray(cY) ? cY.join('; ') : String(cY || '');
+    });
+
+    it('rejects cross-user association of project IDs during resource creation', async () => {
+      const res = await request(app)
+        .post('/api/resources')
+        .set('Cookie', authCookieUserY)
+        .send({
+          type: 'tools',
+          title: 'TEST_Cross_User_Resource',
+          projectIds: [userXProjectId],
+        });
+
+      // Should be rejected because userXProjectId does not belong to User Y
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+      expect(res.body.message).toMatch(/belong to another user/i);
+    });
+
+    it('rejects access when session expiresAt is in the past', async () => {
+      // 1. Create a dedicated session for testing expiration
+      const resTemp = await request(app).post('/api/auth/register').send({
+        name: 'Temp Expire User',
+        email: `expire-${Date.now()}@test-shelfspace.dev`,
+        password: 'Password123!',
+      });
+      const cTemp = resTemp.headers['set-cookie'];
+      const tempCookie = Array.isArray(cTemp) ? cTemp.join('; ') : String(cTemp || '');
+
+      // Verify it can access /api/auth/me initially
+      const meBefore = await request(app).get('/api/auth/me').set('Cookie', tempCookie);
+      expect(meBefore.status).toBe(200);
+
+      // 2. Fetch the session ID from /api/auth/sessions
+      const sessionsRes = await request(app).get('/api/auth/sessions').set('Cookie', tempCookie);
+      const activeSessionId = sessionsRes.body.data.sessions[0]._id;
+
+      // 3. Artificially set expiresAt in the database to 1 hour ago
+      await db
+        .update(sessions)
+        .set({ expiresAt: new Date(Date.now() - 3600 * 1000) })
+        .where(eq(sessions.id, activeSessionId));
+
+      // 4. Request /api/auth/me again -> should fail with 401 Session expired
+      const meAfter = await request(app).get('/api/auth/me').set('Cookie', tempCookie);
+      expect(meAfter.status).toBe(401);
+      expect(meAfter.body.success).toBe(false);
+      expect(meAfter.body.message).toMatch(/expired or was revoked/i);
+    });
+
+    it('successfully executes importFromUrl without variable reference errors', async () => {
+      const res = await request(app)
+        .post('/api/resources/import')
+        .set('Cookie', authCookieUserX)
+        .send({
+          url: 'https://example.com',
+          projectIds: [userXProjectId],
+          tags: ['test-import', 'example'],
+        });
+
+      expect(res.status).toBe(201);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.url).toBe('https://example.com');
+      expect(res.body.data.projectIds).toContain(userXProjectId);
+      expect(res.body.data.tags).toContain('test-import');
     });
   });
 });

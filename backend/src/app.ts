@@ -16,6 +16,11 @@ import searchRoutes from './modules/search/search.routes';
 
 const app: Application = express();
 
+// Trust reverse proxy in production (Render, Railway, Vercel, Nginx, Cloudflare)
+if (env.isProduction) {
+  app.set('trust proxy', 1);
+}
+
 // Security middleware
 app.use(
   helmet({
@@ -24,24 +29,36 @@ app.use(
   })
 );
 
-// CORS configuration
-const allowedOrigins = [
-  env.FRONTEND_URL,
+// CORS configuration (supports comma-separated production origins & strips trailing slashes)
+const configuredOrigins = (env.FRONTEND_URL || '')
+  .split(',')
+  .map((o) => o.trim().replace(/\/+$/, ''))
+  .filter(Boolean);
+
+const defaultOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://localhost:3000',
   'http://127.0.0.1:3000',
 ];
 
+const allowedOrigins = Array.from(new Set([...configuredOrigins, ...defaultOrigins]));
+
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps, curl, or server-to-server)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(null, true); // Permissive for local development
+      if (!origin) {
+        return callback(null, true);
       }
+      const normalizedOrigin = origin.replace(/\/+$/, '');
+      if (allowedOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+      if (!env.isProduction) {
+        return callback(null, true); // Permissive for local development only
+      }
+      return callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

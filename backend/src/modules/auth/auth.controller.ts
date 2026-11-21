@@ -9,42 +9,37 @@ import { formatUser } from '../../utils/formatters';
 
 const isProduction = env.isProduction;
 
-function setAuthCookies(res: Response, accessToken: string, refreshToken: string) {
-  res.cookie('access_token', accessToken, {
+function getCookieOptions() {
+  const sameSite: 'lax' | 'strict' | 'none' = env.COOKIE_SAME_SITE || (isProduction ? 'lax' : 'lax');
+  const secure: boolean = sameSite === 'none' ? true : (env.COOKIE_SECURE ?? isProduction);
+  return {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
-    maxAge: 15 * 60 * 1000, // 15 mins
+    secure,
+    sameSite,
     domain: env.COOKIE_DOMAIN,
     path: '/',
+  };
+}
+
+function setAuthCookies(res: Response, accessToken: string, refreshToken: string) {
+  const baseOptions = getCookieOptions();
+
+  res.cookie('access_token', accessToken, {
+    ...baseOptions,
+    maxAge: 15 * 60 * 1000, // 15 mins
   });
 
   res.cookie('refresh_token', refreshToken, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    ...baseOptions,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    domain: env.COOKIE_DOMAIN,
-    path: '/',
   });
 }
 
 function clearAuthCookies(res: Response) {
-  res.clearCookie('access_token', {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
-    domain: env.COOKIE_DOMAIN,
-    path: '/',
-  });
+  const baseOptions = getCookieOptions();
 
-  res.clearCookie('refresh_token', {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
-    domain: env.COOKIE_DOMAIN,
-    path: '/',
-  });
+  res.clearCookie('access_token', baseOptions);
+  res.clearCookie('refresh_token', baseOptions);
 }
 
 export class AuthController {
@@ -185,7 +180,7 @@ export class AuthController {
         res,
         {
           message: 'If an account exists with this email, a reset token has been generated.',
-          token: result.token, // For dev testing
+          ...(isProduction ? {} : { token: result.token }),
         },
         'Password reset link generated'
       );

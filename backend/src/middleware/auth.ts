@@ -40,7 +40,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
       .from(sessions)
       .where(eq(sessions.id, payload.sessionId));
 
-    if (!session || session.isRevoked) {
+    if (!session || session.isRevoked || (session.expiresAt && new Date() > new Date(session.expiresAt))) {
       sendError(res, 'Session has expired or was revoked. Please log in again.', 401);
       return;
     }

@@ -118,7 +118,7 @@ export class AuthService {
       .from(sessions)
       .where(eq(sessions.id, payload.sessionId));
 
-    if (!session || session.isRevoked) {
+    if (!session || session.isRevoked || (session.expiresAt && new Date() > new Date(session.expiresAt))) {
       throw new Error('Session has been revoked or expired.');
     }
 
