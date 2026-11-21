@@ -10,13 +10,16 @@ import { formatUser } from '../../utils/formatters';
 const isProduction = env.isProduction;
 
 function getCookieOptions() {
-  const sameSite: 'lax' | 'strict' | 'none' = env.COOKIE_SAME_SITE || (isProduction ? 'lax' : 'lax');
-  const secure: boolean = sameSite === 'none' ? true : (env.COOKIE_SECURE ?? isProduction);
+  const isProd = env.isProduction;
+  // If frontend and backend are on separate subdomains (e.g., shelfspace.vercel.app and shelfspace-api.vercel.app),
+  // browsers treat them as cross-site. SameSite MUST be 'none' and secure MUST be true for cross-origin cookies.
+  const sameSite: 'lax' | 'strict' | 'none' = env.COOKIE_SAME_SITE || (isProd ? 'none' : 'lax');
+  const secure: boolean = sameSite === 'none' ? true : (env.COOKIE_SECURE ?? isProd);
   return {
     httpOnly: true,
     secure,
     sameSite,
-    domain: env.COOKIE_DOMAIN,
+    domain: env.COOKIE_DOMAIN || undefined,
     path: '/',
   };
 }
@@ -107,7 +110,11 @@ export class AuthController {
 
   static async refresh(req: Request, res: Response) {
     try {
-      const refreshToken = req.cookies?.refresh_token;
+      const refreshToken =
+        req.cookies?.refresh_token ||
+        req.body?.refreshToken ||
+        (req.headers['x-refresh-token'] as string);
+
       if (!refreshToken) {
         return sendError(res, 'No refresh token provided', 401);
       }
