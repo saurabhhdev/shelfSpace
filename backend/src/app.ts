@@ -13,6 +13,7 @@ import resourceRoutes from './modules/resources/resource.routes';
 import projectRoutes from './modules/projects/project.routes';
 import collectionRoutes from './modules/collections/collection.routes';
 import searchRoutes from './modules/search/search.routes';
+import cronRoutes from './modules/cron/cron.routes';
 
 const app: Application = express();
 
@@ -55,6 +56,10 @@ app.use(
       if (allowedOrigins.includes(normalizedOrigin)) {
         return callback(null, true);
       }
+      // Allow Vercel preview deployments if they originate from shelfspace
+      if (/^https:\/\/shelfspace.*\.vercel\.app$/.test(normalizedOrigin)) {
+        return callback(null, true);
+      }
       if (!env.isProduction) {
         return callback(null, true); // Permissive for local development only
       }
@@ -62,7 +67,7 @@ app.use(
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-Cron-Secret', 'X-Refresh-Token'],
   })
 );
 
@@ -73,6 +78,21 @@ app.use(cookieParser());
 
 // Global Rate Limiter
 app.use('/api', globalLimiter);
+
+// Root informational endpoint
+app.get('/', (req: Request, res: Response) => {
+  return sendSuccess(
+    res,
+    {
+      name: 'Shelfspace API',
+      status: 'healthy',
+      version: '1.0.0',
+      health: '/api/health',
+      docs: 'https://github.com/saurabhhdev/shelfSpace',
+    },
+    'Welcome to the Shelfspace Backend API'
+  );
+});
 
 // Health check endpoint (Phase 0)
 app.get('/api/health', (req: Request, res: Response) => {
@@ -96,6 +116,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/collections', collectionRoutes);
 app.use('/api/categories', collectionRoutes); // Full compatibility alias for Phase 8 Categories
 app.use('/api/search', searchRoutes);
+app.use('/api/cron', cronRoutes);
 
 // Catch-all 404 & Global error handlers
 app.use(notFoundHandler);

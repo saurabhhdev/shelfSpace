@@ -601,4 +601,49 @@ describe('Shelfspace Backend Core Integration Tests', { timeout: 30000 }, () => 
       expect(res.body.data.tags).toContain('test-import');
     });
   });
+
+  describe('Vercel Serverless & Cron Integration', () => {
+    it('Root endpoint returns healthy API metadata', async () => {
+      const res = await request(app).get('/');
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.name).toBe('Shelfspace API');
+    });
+
+    it('rejects unauthenticated cron invocation when secret is configured', async () => {
+      const originalSecret = process.env.CRON_SECRET;
+      process.env.CRON_SECRET = 'test_cron_secret_123';
+
+      try {
+        const res = await request(app).get('/api/cron/cleanup-trash');
+        expect(res.status).toBe(401);
+        expect(res.body.success).toBe(false);
+
+        const resWrong = await request(app)
+          .get('/api/cron/cleanup-trash')
+          .set('Authorization', 'Bearer wrong_secret');
+        expect(resWrong.status).toBe(401);
+      } finally {
+        process.env.CRON_SECRET = originalSecret;
+      }
+    });
+
+    it('executes cron cleanup successfully with valid Bearer secret', async () => {
+      const originalSecret = process.env.CRON_SECRET;
+      process.env.CRON_SECRET = 'test_cron_secret_123';
+
+      try {
+        const res = await request(app)
+          .get('/api/cron/cleanup-trash')
+          .set('Authorization', 'Bearer test_cron_secret_123');
+
+        expect(res.status).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(typeof res.body.data.cleanedCount).toBe('number');
+        expect(res.body.data.executedAt).toBeDefined();
+      } finally {
+        process.env.CRON_SECRET = originalSecret;
+      }
+    });
+  });
 });
